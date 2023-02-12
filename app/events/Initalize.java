@@ -29,8 +29,10 @@ public class Initalize implements EventProcessor{
 		
 		gameState.something = true;
 		//Initialize the board height and width and draw it
-		//Board board= new Board(9,5);
-		Board.drawBoard(out);
+		Board board= new Board(9,5);
+		gameState.board  =board;
+		gameState.board.drawBoard(out,gameState);
+		//Board.drawBoard(out);
 		// User 1 makes a change
 		//CommandDemo.executeDemo(out); // this executes the command demo, comment out this when implementing your solution
 		//CheckMoveLogic.executeDemo(out);

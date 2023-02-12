@@ -27,11 +27,11 @@ public class Position {
 	}
 	
 	//Define the position of the tile
-	public Position(int xpos, int ypos)
+	public Position(int tilex, int tiley)
 	{
 		super();
-		this.xpos=xpos;
-		this.ypos=ypos;
+		this.tilex=tilex;
+		this.tiley=tiley;
 	}
 	
 	public int getXpos() {

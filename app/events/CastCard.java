@@ -1,19 +1,30 @@
 package events;
 
 import structures.basic.Position;
+import structures.basic.Tile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import akka.actor.ActorRef;
+import commands.BasicCommands;
+import structures.GameState;
+import structures.basic.BigCard;
 import structures.basic.Card;
+import structures.basic.EffectAnimation;
 import structures.basic.ImageCorrection;
 import structures.basic.Unit;
 import structures.basic.UnitAnimation;
 import structures.basic.UnitAnimationSet;
 import structures.basic.UnitAnimationType;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 /**
  * This class will identify the card based on its type, i.e, a unit or spell card. It will then cast it on the tile when the user clicks on it card
  * and on the target tile. If it is a unit card then this class will spawn the corresponding unit on the target tile.
  * If it is a spell card then this class will cast the spell on the unit which occupies the target tile.
  */
-public class CastCard {
+public class CastCard implements EventProcessor {
     /**
      * A reference to CardClicked event.
      */
@@ -27,7 +38,13 @@ public class CastCard {
     /**
      * A unit that casted
      */
-    private Unit unit;
+    private Unit unit=null;
+    
+    /**
+     * A tile to be placed 
+     */
+    private Tile tile=null;
+    
 
     /**
      * The constructor is to pass the reference of a TileCliked and CardClicked event object to create a
@@ -35,26 +52,61 @@ public class CastCard {
      * @param cardclick A reference to a CardClicked event
      * @param tileclick A reference to a TileCliked event
      */
-    public CastCard(CardClicked cardclick, TileClicked tileclick){
-        this.cardClicked=cardclick;
-        this.tileClicked=tileclick;
+    public CastCard(CardClicked cardClick, TileClicked tileClick){
+        this.cardClicked=cardClick;
+        this.tileClicked=tileClick;
     }
 
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public void transform(){
-    	//Get clicked card id
-    	int id=cardClicked.getHandPosition();
-    	//Get the position
-    	structures.basic.Position position=tileClicked.getPosition();
-    	//Get the unit animation type
-    	UnitAnimationSet animation = new UnitAnimationSet();
+    public void transform(String card){  	
+    	//The deck of cards library
+    	String[] units = {
+				StaticConfFiles.u_azure_herald,
+				StaticConfFiles.u_azurite_lion,
+				StaticConfFiles.u_comodo_charger,
+				StaticConfFiles.u_fire_spitter,
+				StaticConfFiles.u_hailstone_golem,
+				StaticConfFiles.u_ironcliff_guardian,
+				StaticConfFiles.u_pureblade_enforcer,
+				StaticConfFiles.u_silverguard_knight,
+		};
     	
-    	//Get the imagecorrection
-    	ImageCorrection image = new ImageCorrection();
+    	//Transform the card into units
     	
-    	unit= new Unit(id,UnitAnimationType.idle, position,animation,image);
+    	switch(card)
+    	{
+    	  case "Azure Herald":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
+	    	  break;
+    	  case "Azurite Lion":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, 0, Unit.class);
+	    	  break;
+    	  case "Comodo Charger":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, 0, Unit.class);
+	    	  break;
+    	  case "Fire Spitter":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter, 0, Unit.class);
+	    	  break;
+    	  case "Hailstone Golem":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, 0, Unit.class);
+	    	  break;
+    	  case "Ironcliff Guardian":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, 0, Unit.class);
+	    	  break;	  
+    	  case "Pureblade Enforcer":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 0, Unit.class);
+	    	  break;
+     	  case "Silverguard Knight":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
+	    	  break;
+	      default:
+	    	  break;
+	    
+    	}
+    	// unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
+    
 
     }
 
@@ -62,10 +114,15 @@ public class CastCard {
 	/**
      * The function will place the unit on the tile
      */
-    public void placeUnit(){
-    	//The unit will display on the board
-    	transform();
-        
+    public void placeUnit(ActorRef out, GameState gameState){
+    	//The unit will display on the board with animation
+    	unit.setPositionByTile(tile);
+    	BasicCommands.drawUnit(out, unit, tile);
+    	//play the animation 
+    	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+    	 //set the card click status to false when place the unit
+        gameState.cardIsClicked=false;
+        try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
 
     /**
@@ -75,4 +132,23 @@ public class CastCard {
     public void placeSpell(Unit unit){
 
     }
+
+	@Override
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+		// TODO Auto-generated method stub
+		Card card=cardClicked.getCard();
+		tile=tileClicked.getClickedTile();
+		if(gameState.cardIsClicked)
+		{
+		    //Play the card
+			transform(card.getCardname());
+			placeUnit(out, gameState);
+			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+			//delete the card when it is played
+			BasicCommands.deleteCard(out, cardClicked.getHandPosition());
+			//Stop the animation
+			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		}	
+	}
 }

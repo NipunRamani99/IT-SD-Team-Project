@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import events.CardClicked;
 import events.EndTurnClicked;
 import events.EventProcessor;
@@ -19,6 +20,7 @@ import events.OtherClicked;
 import events.TileClicked;
 import events.UnitMoving;
 import events.UnitStopped;
+import events.CastCard;
 import play.libs.Json;
 import structures.GameState;
 import utils.ImageListForPreLoad;
@@ -40,7 +42,7 @@ public class GameActor extends AbstractActor {
 	private ActorRef out; // The ActorRef can be used to send messages to the front-end UI
 	private Map<String,EventProcessor> eventProcessors; // Classes used to process each type of event
 	private GameState gameState; // A class that can be used to hold game state information
-
+    private static boolean gameStateInit=false;
 	/**
 	 * Constructor for the GameActor. This is called by the GameController when the websocket
 	 * connection to the front-end is established.
@@ -51,20 +53,42 @@ public class GameActor extends AbstractActor {
 
 		this.out = out; // save this, so we can send commands to the front-end later
 		
-	
 		// create class instances to respond to the various events that we might recieve
 		eventProcessors = new HashMap<String,EventProcessor>();
-		eventProcessors.put("initalize", new Initalize());
+		if(false==gameStateInit)
+		{
+			 gameState = new GameState();
+			 gameStateInit=true;
+			 eventProcessors.put("initalize", new Initalize());
+		}		
 		eventProcessors.put("heartbeat", new Heartbeat());
-		eventProcessors.put("unitMoving", new UnitMoving());
+		//Card cast event
+
+		//eventProcessors.put("CardCast", (EventProcessor) new CastCard(new CardClicked(), new TileClicked()));
+		UnitMoving move = new UnitMoving();
+		eventProcessors.put("unitMoving", move);
+		
 		eventProcessors.put("unitstopped", new UnitStopped());
-		eventProcessors.put("tileclicked", new TileClicked());
-		eventProcessors.put("cardclicked", new CardClicked());
+		
+		//Card clicked action 
+		CardClicked cardClick = new CardClicked();
+		eventProcessors.put("cardclicked", cardClick);
+		
+		//Tile click action
+		TileClicked tileClick = new TileClicked();
+		eventProcessors.put("tileclicked", tileClick);
+	
+		//Card cast event	
+		CastCard castCard = new CastCard(cardClick,tileClick);
+		gameState.castCard=castCard;
+		//eventProcessors.put("tileclicked", castCard);
+		
 		eventProcessors.put("endturnclicked", new EndTurnClicked());
 		eventProcessors.put("otherclicked", new OtherClicked());
 		
-		// Initalize a new game state object
-		gameState = new GameState();
+		// Initialize a new game state object
+
+		
 		
 		// Get the list of image files to pre-load the UI with
 		Set<String> images = ImageListForPreLoad.getImageListForPreLoad();
