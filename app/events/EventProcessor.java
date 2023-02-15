@@ -20,7 +20,7 @@ public interface EventProcessor {
      * to send commands back to the front-end, and a reference to the GameState class,
      * which as the name suggests can be used to hold game state information.
 	 * @param message
-	 * 
+	 * @return
 	 */
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message);
 	

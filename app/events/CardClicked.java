@@ -11,8 +11,8 @@ import structures.GameState;
  * The event returns the position in the player's hand the card resides within.
  * 
  * { 
- *   messageType = "cardClicked"
- *   position = hand index position [1-6]
+ *   messageType = “cardClicked”
+ *   position = <hand index position [1-6]>
  * }
  * 
  * @author Dr. Richard McCreadie
@@ -20,20 +20,12 @@ import structures.GameState;
  */
 public class CardClicked implements EventProcessor{
 
-	//The id of the card that clicked
-	private int handPosition;
-	
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		
-		 handPosition = message.get("position").asInt();				
+		int handPosition = message.get("position").asInt();
+		
+		
 	}
-	
-	//Get the Id of the clicked card
-	public int getHandPosition()
-	{
-		return handPosition;
-	}
-	
 
 }

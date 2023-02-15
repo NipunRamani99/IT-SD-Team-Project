@@ -25,15 +25,6 @@ public class Position {
 		this.tilex = tilex;
 		this.tiley = tilexy;
 	}
-	
-	//Define the position of the tile
-	public Position(int xpos, int ypos)
-	{
-		super();
-		this.xpos=xpos;
-		this.ypos=ypos;
-	}
-	
 	public int getXpos() {
 		return xpos;
 	}

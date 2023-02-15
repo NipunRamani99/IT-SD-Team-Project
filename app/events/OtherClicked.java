@@ -10,7 +10,7 @@ import structures.GameState;
  * somewhere that is not on a card tile or the end-turn button.
  * 
  * { 
- *   messageType = "otherClicked"
+ *   messageType = “otherClicked”
  * }
  * 
  * @author Dr. Richard McCreadie

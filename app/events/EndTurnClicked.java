@@ -10,7 +10,7 @@ import structures.GameState;
  * the end-turn button.
  * 
  * { 
- *   messageType = "endTurnClicked"
+ *   messageType = “endTurnClicked”
  * }
  * 
  * @author Dr. Richard McCreadie
@@ -18,13 +18,9 @@ import structures.GameState;
  */
 public class EndTurnClicked implements EventProcessor{
 
-	private void checkWinner(GameState gameState) {
-		//Check if player/Ai's avatar has 0 health.
-		//Check if player/Ai's deck of cards is empty.
-	}
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		 checkWinner(gameState);
+		
 	}
 
 }

@@ -11,8 +11,8 @@ import structures.GameState;
  * The event reports the unique id of the unit.
  * 
  * { 
- *   messageType = "unitStopped"
- *   id = unit id
+ *   messageType = “unitStopped”
+ *   id = <unit id>
  * }
  * 
  * @author Dr. Richard McCreadie

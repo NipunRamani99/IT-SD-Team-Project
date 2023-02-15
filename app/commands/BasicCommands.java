@@ -167,7 +167,7 @@ public class BasicCommands {
 	 * which animation to switch to.
 	 * @param out
 	 * @param unit
-	 * @param animationToPlay
+	 * @param animation
 	 */
 	@SuppressWarnings({"deprecation"})
 	public static void playUnitAnimation(ActorRef out, Unit unit, UnitAnimationType animationToPlay) {
@@ -372,9 +372,7 @@ public class BasicCommands {
 	 * Plays a projectile fire animation between two tiles
 	 * @param out
 	 * @param effect
-	 * @param mode
-	 * @param startTile
-	 * @param targetTile
+	 * @param tile
 	 */
 	@SuppressWarnings({"deprecation"})
 	public static void playProjectileAnimation(ActorRef out, EffectAnimation effect, int mode, Tile startTile, Tile targetTile) {
