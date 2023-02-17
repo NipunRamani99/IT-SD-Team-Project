@@ -105,8 +105,8 @@ public class Board {
     	}	
     	
 
-    	//Initialize 6 cards
-		for (int i=0;i<6;i++) {
+    	//Initialize 3 cards
+		for (int i=0;i<3;i++) {
 			// drawCard [1]
 			//BasicCommands.addPlayer1Notification(out, deck1CardFile, 2);
 			Card card = deck1.getCard();
