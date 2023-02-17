@@ -93,7 +93,6 @@ public class Board {
 		   		tiles.add(w+h*width,tile);
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
- 	
     	}	
 //    	Tile tile = BasicObjectBuilders.loadTile(2,1);
 //		BasicCommands.drawTile(out, tile, 0);
@@ -136,7 +135,10 @@ public class Board {
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);	
 		//Get related tiles
-		unit.setPositionByTile(getTile(0,2)); 	
+		unit.setPositionByTile(getTile(0,2)); 
+		//The tile set the unit
+		getTile(0,2).setUnit(unit);
+		
 		BasicCommands.drawUnit(out, unit, getTile(0,2));
 		
 //		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);

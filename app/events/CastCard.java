@@ -62,16 +62,16 @@ public class CastCard implements EventProcessor {
      */
     public void transform(String card){  	
     	//The deck of cards library
-    	String[] units = {
-				StaticConfFiles.u_azure_herald,
-				StaticConfFiles.u_azurite_lion,
-				StaticConfFiles.u_comodo_charger,
-				StaticConfFiles.u_fire_spitter,
-				StaticConfFiles.u_hailstone_golem,
-				StaticConfFiles.u_ironcliff_guardian,
-				StaticConfFiles.u_pureblade_enforcer,
-				StaticConfFiles.u_silverguard_knight,
-		};
+//    	String[] units = {
+//				StaticConfFiles.u_azure_herald,
+//				StaticConfFiles.u_azurite_lion,
+//				StaticConfFiles.u_comodo_charger,
+//				StaticConfFiles.u_fire_spitter,
+//				StaticConfFiles.u_hailstone_golem,
+//				StaticConfFiles.u_ironcliff_guardian,
+//				StaticConfFiles.u_pureblade_enforcer,
+//				StaticConfFiles.u_silverguard_knight,
+//		};
     	
     	//Transform the card into units
     	
@@ -117,6 +117,9 @@ public class CastCard implements EventProcessor {
     public void placeUnit(ActorRef out, GameState gameState){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
+    	//set the unit to the tile
+    	tile.setUnit(unit);
+    	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
@@ -146,6 +149,8 @@ public class CastCard implements EventProcessor {
 			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 			//delete the card when it is played
 			BasicCommands.deleteCard(out, cardClicked.getHandPosition());
+			//set the clicked tile to be occupied
+			tile.setOccupied(true);
 			//Stop the animation
 			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}

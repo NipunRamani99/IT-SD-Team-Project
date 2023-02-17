@@ -28,6 +28,36 @@ public class Tile {
 	int tilex;
 	int tiley;
 	
+	//Define the tile is occupied or not
+	private boolean occupied = false;
+	
+	private Unit unit;
+	
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+		this.setOccupied(true);
+	}
+
+	//return the tile status
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	//set the tile status
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
+	}
+
+	public void clearUnit()
+	{
+		this.unit=null;
+		this.setOccupied(false);
+	}
+	
 	public Tile() {}
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {
@@ -40,6 +70,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=false;
 	}
 	
 	public Tile(List<String> tileTextures, int xpos, int ypos, int width, int height, int tilex, int tiley) {
@@ -51,6 +82,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=false;
 	}
 	public List<String> getTileTextures() {
 		return tileTextures;

@@ -68,39 +68,45 @@ public class TileClicked implements EventProcessor{
 		tilex = message.get("tilex").asInt();
 		tiley = message.get("tiley").asInt();
 		
-		BasicCommands.addPlayer1Notification(out, "The tilex "+tilex, 1);
 		//int xpos = message.get("xpos").asInt();
 		//int ypos = message.get("ypos").asInt();
 		tile=gameState.board.getTile(tilex,tiley);
 		
-		if(true==gameState.cardIsClicked)
+		//If card is clicked, play the card on the board
+		if(true==gameState.cardIsClicked&& !tile.isOccupied())
 		{
 			gameState.castCard.processEvent(out, gameState, message);
 		}
-		
-		//this.position= new Position(tilex,tiley);
-		
-//		if(tile==null)
-//		BasicCommands.addPlayer1Notification(out, " get position "+ "tile empty", 5);
-//		else
-//		BasicCommands.addPlayer1Notification(out, " get position "+ "has tile", 5);
-//		if(gameState.cardIsClicked)
-//		{
-////			CastCard castcard = new CastCard(gameState); 
-////			castcard.processEvent(out, gameState, message);
-//		}
-		
+	
+		// If the tile has the unit
+		if(tile.isOccupied())
+		{
+			//get the unit from the tile
+			gameState.unit = tile.getUnit();
+			BasicCommands.addPlayer1Notification(out, "get the unit ",1);
+		}
+		//Execute the unit moving
+		else if(!tile.isOccupied()&&null!=gameState.unit)
+		{
+//			//get the position and tile if this unit
+//			Position position=gameState.unit.getPosition();
+//			//According to the position to get the tile
+//			Tile unitTile= gameState.board.getTile(position.getTilex(), position.getTiley());
+			//moving the unit
+			BasicCommands.addPlayer1Notification(out, "Moving ",1);
+			BasicCommands.moveUnitToTile(out, gameState.unit, tile);
+			gameState.unit.setPositionByTile(tile);
+			tile.setUnit(gameState.unit);
+			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+			//clear the unit in the gameState
+			gameState.unit=null;
+			
+		}
+		else
+		{
+			gameState.unit=null;
+		}
 	     
-		//Check if Unit is clicked
-//		if(gameState.cardClicked == true) {
-//			//Perform the action corresponding to the card
-//			gameState.cardClicked = false;
-//		}
-//		if (gameState.unitClicked == true) {
-//			//If tile is empty move the unit
-//			//if tile is not empty perform attack action	
-//			gameState.unitClicked  = false;
-//		}
 		
 	}
 
@@ -119,5 +125,11 @@ public class TileClicked implements EventProcessor{
 	public int getTileY()
 	{
 		return this.tiley;
+	}
+	
+	//Move the unit
+	public void unitMoving()
+	{
+		
 	}
 }

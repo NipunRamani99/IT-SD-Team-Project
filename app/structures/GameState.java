@@ -1,6 +1,7 @@
 package structures;
 import structures.basic.Player;
 import structures.basic.Tile;
+import structures.basic.Unit;
 import structures.basic.Board;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class GameState {
 	public boolean something = false;
 	public ArrayList<Tile> tiles;
 	public Position position;
+	public Unit unit=null;
 	
 	Player playerAi;
 	Player user;
