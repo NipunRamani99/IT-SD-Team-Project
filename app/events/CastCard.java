@@ -40,10 +40,13 @@ public class CastCard implements EventProcessor {
      */
     private Unit unit=null;
     
+    
     /**
      * A tile to be placed 
      */
     private Tile tile=null;
+    
+    private String spellName = null;
     
 
     /**
@@ -60,22 +63,10 @@ public class CastCard implements EventProcessor {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public void transform(String card){  	
-    	//The deck of cards library
-    	String[] units = {
-				StaticConfFiles.u_azure_herald,
-				StaticConfFiles.u_azurite_lion,
-				StaticConfFiles.u_comodo_charger,
-				StaticConfFiles.u_fire_spitter,
-				StaticConfFiles.u_hailstone_golem,
-				StaticConfFiles.u_ironcliff_guardian,
-				StaticConfFiles.u_pureblade_enforcer,
-				StaticConfFiles.u_silverguard_knight,
-		};
-    	
+    public void transform(String cardName){  	
     	//Transform the card into units
     	
-    	switch(card)
+    	switch(cardName)
     	{
     	  case "Azure Herald":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
@@ -101,6 +92,18 @@ public class CastCard implements EventProcessor {
      	  case "Silverguard Knight":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
 	    	  break;
+     	  case "Truestrike":
+     		  spellName = StaticConfFiles.f1_inmolation;
+     		  break;
+     	  case "Sundrop Elixir":
+    		  spellName = StaticConfFiles.f1_summon;
+    		  break;
+     	  case "Staff of Y’Kir":
+   		      spellName = StaticConfFiles.f1_buff;
+   		      break;
+     	  case "Entropic Decay":
+  		      spellName = StaticConfFiles.f1_martyrdom;
+  		      break;
 	      default:
 	    	  break;
 	    
@@ -129,8 +132,11 @@ public class CastCard implements EventProcessor {
      * The function will place the spell on a unit, and perform an action on that unit
      * @param unit The unit is the destination unit that the spell card will cast to
      */
-    public void placeSpell(Unit unit){
-
+    public void placeSpell(ActorRef out, GameState gameState, String spellName){
+    	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
+		BasicCommands.playEffectAnimation(out, ef, tile);
+		gameState.cardIsClicked=false;
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
 
 	@Override
@@ -142,13 +148,23 @@ public class CastCard implements EventProcessor {
 		{
 		    //Play the card
 			transform(card.getCardname());
-			placeUnit(out, gameState);
-			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-			//delete the card when it is played
-			BasicCommands.deleteCard(out, cardClicked.getHandPosition());
-			//Stop the animation
-			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			if(unit != null) {
+			    placeUnit(out, gameState);
+			    BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+				//delete the card when it is played
+				BasicCommands.deleteCard(out, cardClicked.getHandPosition());
+				//Stop the animation
+				BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+				unit = null;
+				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			}else if(spellName != null) {
+				placeSpell(out, gameState, spellName);
+				BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+				//delete the card when it is played
+				BasicCommands.deleteCard(out, cardClicked.getHandPosition());
+				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			}
+			
 		}	
 	}
 }

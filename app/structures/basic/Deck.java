@@ -1,7 +1,6 @@
 package structures.basic;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
@@ -39,8 +38,6 @@ public class Deck {
 			Card card = BasicObjectBuilders.loadCard(deck.get(i), i, Card.class);
 			this.cardDeck.add(card);
 		}
-		
-		Collections.shuffle(cardDeck);
 	}
 	
 	public void loadDeck2(ArrayList<Card> cardDeck) {
@@ -60,14 +57,15 @@ public class Deck {
 			Card card = BasicObjectBuilders.loadCard(deck.get(i), i, Card.class);
 			this.cardDeck.add(card);
 		}
-		
-		Collections.shuffle(cardDeck);
 	}
 	
 	//use this method when you need to draw a card from deck
 	public Card getCard() {
-		Card card = cardDeck.get(0);
-		this.cardDeck.remove(0);
+		Card card = new Card();
+		if (!cardDeck.isEmpty()) {
+		    card = cardDeck.get(0);
+		    this.cardDeck.remove(0);
+		}
 		return card;
 	}
 }
