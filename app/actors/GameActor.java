@@ -143,4 +143,3 @@ public class GameActor extends AbstractActor {
 		out.tell(returnMessage, out);
 	}
 }
->>>>>>> JunGao
