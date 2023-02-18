@@ -39,7 +39,7 @@ public class Tile {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
-		this.setOccupied(true);
+		this.occupied=true;
 	}
 
 	//return the tile status
@@ -48,14 +48,10 @@ public class Tile {
 	}
 
 	//set the tile status
-	public void setOccupied(boolean occupied) {
-		this.occupied = occupied;
-	}
-
 	public void clearUnit()
 	{
 		this.unit=null;
-		this.setOccupied(false);
+		this.occupied=false;
 	}
 	
 	public Tile() {}

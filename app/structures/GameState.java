@@ -24,12 +24,14 @@ public class GameState {
 	public boolean cardIsClicked =false; 
 	public CastCard castCard=null;
 	public Board board = null;
-	public static Tile clickedTile=null;
+	public Tile firstClickedTile=null;
+	public Tile secondClickedTile=null;
 	public CardClicked cardClick=null;
 	public boolean something = false;
 	public ArrayList<Tile> tiles;
 	public Position position;
 	public Unit unit=null;
+	public boolean isMove = false;
 	
 	Player playerAi;
 	Player user;

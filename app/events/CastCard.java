@@ -24,7 +24,7 @@ import utils.StaticConfFiles;
  * and on the target tile. If it is a unit card then this class will spawn the corresponding unit on the target tile.
  * If it is a spell card then this class will cast the spell on the unit which occupies the target tile.
  */
-public class CastCard implements EventProcessor {
+public class CastCard implements EventProcessor,Runnable {
     /**
      * A reference to CardClicked event.
      */
@@ -45,6 +45,15 @@ public class CastCard implements EventProcessor {
      */
     private Tile tile=null;
     
+    //A card
+    private Card card;
+    
+    //Gamestate
+    private GameState gameState;
+    
+    //Actor
+    private ActorRef out;
+    
 
     /**
      * The constructor is to pass the reference of a TileCliked and CardClicked event object to create a
@@ -60,19 +69,7 @@ public class CastCard implements EventProcessor {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public void transform(String card){  	
-    	//The deck of cards library
-//    	String[] units = {
-//				StaticConfFiles.u_azure_herald,
-//				StaticConfFiles.u_azurite_lion,
-//				StaticConfFiles.u_comodo_charger,
-//				StaticConfFiles.u_fire_spitter,
-//				StaticConfFiles.u_hailstone_golem,
-//				StaticConfFiles.u_ironcliff_guardian,
-//				StaticConfFiles.u_pureblade_enforcer,
-//				StaticConfFiles.u_silverguard_knight,
-//		};
-    	
+    public void transform(String card){  	    	
     	//Transform the card into units
     	
     	switch(card)
@@ -106,15 +103,13 @@ public class CastCard implements EventProcessor {
 	    
     	}
     	// unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
-    
-
     }
 
 
 	/**
      * The function will place the unit on the tile
      */
-    public void placeUnit(ActorRef out, GameState gameState){
+    public void placeUnit(){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
@@ -125,6 +120,9 @@ public class CastCard implements EventProcessor {
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
         gameState.cardIsClicked=false;
+        //Set you unit
+        tile.setUnit(unit);
+        
         try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
 
@@ -139,21 +137,27 @@ public class CastCard implements EventProcessor {
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// TODO Auto-generated method stub
-		Card card=cardClicked.getCard();
+		card=cardClicked.getCard();
 		tile=tileClicked.getClickedTile();
+		this.out=out;
+		this.gameState=gameState;
+			
+	}
+
+	@Override
+	public void run() {
 		if(gameState.cardIsClicked)
 		{
 		    //Play the card
 			transform(card.getCardname());
-			placeUnit(out, gameState);
+			placeUnit();
 			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 			//delete the card when it is played
 			BasicCommands.deleteCard(out, cardClicked.getHandPosition());
-			//set the clicked tile to be occupied
-			tile.setOccupied(true);
 			//Stop the animation
-			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		}	
+		
 	}
 }

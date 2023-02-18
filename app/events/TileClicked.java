@@ -10,6 +10,7 @@ import structures.GameState;
 import structures.basic.*;
 import events.CastCard;
 
+
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case a tile.
  * The event returns the x (horizontal) and y (vertical) indices of the tile that was
@@ -68,46 +69,81 @@ public class TileClicked implements EventProcessor{
 		tilex = message.get("tilex").asInt();
 		tiley = message.get("tiley").asInt();
 		
-		//int xpos = message.get("xpos").asInt();
-		//int ypos = message.get("ypos").asInt();
+//		int xpos = message.get("xpos").asInt();
+//		int ypos = message.get("ypos").asInt();
 		tile=gameState.board.getTile(tilex,tiley);
 		
-		//If card is clicked, play the card on the board
-		if(true==gameState.cardIsClicked&& !tile.isOccupied())
+		if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
 		{
-			gameState.castCard.processEvent(out, gameState, message);
+			gameState.firstClickedTile=tile;
 		}
-	
-		// If the tile has the unit
-		if(tile.isOccupied())
+		else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
 		{
-			//get the unit from the tile
-			gameState.unit = tile.getUnit();
-			BasicCommands.addPlayer1Notification(out, "get the unit ",1);
-		}
-		//Execute the unit moving
-		else if(!tile.isOccupied()&&null!=gameState.unit)
-		{
-//			//get the position and tile if this unit
-//			Position position=gameState.unit.getPosition();
-//			//According to the position to get the tile
-//			Tile unitTile= gameState.board.getTile(position.getTilex(), position.getTiley());
-			//moving the unit
-			BasicCommands.addPlayer1Notification(out, "Moving ",1);
-			BasicCommands.moveUnitToTile(out, gameState.unit, tile);
-			gameState.unit.setPositionByTile(tile);
-			tile.setUnit(gameState.unit);
-			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
-			//clear the unit in the gameState
-			gameState.unit=null;
-			
+			gameState.secondClickedTile=tile;
 		}
 		else
 		{
-			gameState.unit=null;
+			gameState.firstClickedTile=null;
+			gameState.secondClickedTile=null;
 		}
-	     
 		
+		
+		//If card is clicked, play the card on the board
+		if(true==gameState.cardIsClicked&& !tile.isOccupied()&&!gameState.isMove)
+		{
+			//Create a thread for cast event 
+			Thread cast = new Thread(gameState.castCard);
+			gameState.castCard.processEvent(out, gameState, message);
+			cast.start();
+			//Only playing the card
+			try {
+				cast.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		//moving the unit
+		if(!gameState.isMove)
+		{
+			// If the first tile has the unit without click the second tile
+			//get the unit from the first tile
+			if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
+			{
+				if(gameState.firstClickedTile.isOccupied())
+				{
+					//get the unit from the tile
+					gameState.unit = gameState.firstClickedTile.getUnit();
+					BasicCommands.addPlayer1Notification(out, "get the unit ",1);
+					//gameState.isMove=false;
+				}
+				
+			}
+			//If the first tile has the unit and second tile is clicked, move the unit
+			else if(null!=gameState.firstClickedTile&&null!=gameState.secondClickedTile)
+			{
+				if(gameState.firstClickedTile.isOccupied())
+				{
+					UnitMoving move = new UnitMoving();
+					move.processEvent(out, gameState, message);
+					//Create the thread for the event
+					Thread m= new Thread(move);
+					m.start();
+					//only execute the movement
+					try {
+						m.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		
+			
+		}
+						
 	}
 
 	
@@ -127,9 +163,45 @@ public class TileClicked implements EventProcessor{
 		return this.tiley;
 	}
 	
-	//Move the unit
-	public void unitMoving()
-	{
-		
-	}
+//	//Move the unit
+//	private void unitMoving(ActorRef out,GameState gameState)
+//	{
+//	
+//	
+//		// If the tile has the unit
+//		if(tile.isOccupied())
+//		{
+//			//get the unit from the tile
+//			gameState.unit = gameState.firstClickedTile.getUnit();
+//			BasicCommands.addPlayer1Notification(out, "get the unit ",1);
+//			tile.clearUnit();
+//			//gameState.isMove=false;
+//		}
+//		//Execute the unit moving
+//		else if(!tile.isOccupied()&&null!=gameState.unit)
+//		{
+//			//Clear the first tile status 
+//			gameState.firstClickedTile.clearUnit();
+//			//set the move status to false
+//			gameState.isMove=true;
+//			BasicCommands.addPlayer1Notification(out, "Moving ",1);
+//			//moving the unit
+//			BasicCommands.moveUnitToTile(out, gameState.unit, tile);
+//			gameState.unit.setPositionByTile(tile);
+//			//set the second tile status with unit
+//			tile.setUnit(gameState.unit);
+//			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+//			//clear the unit in the gameState
+//			gameState.unit=null;
+//			//Set the status to false after moving
+//			while(UnitAnimationType.idle==gameState.unit.getAnimation()) gameState.isMove=false;
+//			
+//			
+//		}
+//		else
+//		{
+//			gameState.isMove=false;
+//		}
+//	     
+//	}
 }
