@@ -51,7 +51,7 @@ public class Attack implements EventProcessor {
     public Attack(Unit myUnit, Player player){
         this.myUnit = myUnit;
         this.player1 = player;
-//        this.player2 = player;
+        this.player2 = player;
 
     }
 
