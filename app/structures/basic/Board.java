@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ai.AIPlayer;
+import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
@@ -93,7 +95,6 @@ public class Board {
 		   		tiles.add(w+h*width,tile);
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
- 	
     	}	
 //    	Tile tile = BasicObjectBuilders.loadTile(2,1);
 //		BasicCommands.drawTile(out, tile, 0);
@@ -122,22 +123,24 @@ public class Board {
 			BasicCommands.drawCard(out, card, i+1, 0);
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
-//			// drawCard [1] Highlight
-//			BasicCommands.addPlayer1Notification(out, deck1CardFile+" Highlight", 2);
-//			BasicCommands.drawCard(out, card, 1, 1);
-//			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-//
-//			// deleteCard [1]
-//			BasicCommands.addPlayer1Notification(out, "deleteCard", 2);
-//			BasicCommands.deleteCard(out, 1);
-//			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);	
 		//Get related tiles
-		unit.setPositionByTile(getTile(0,2)); 	
-		BasicCommands.drawUnit(out, unit, getTile(0,2));
+		Tile tile=this.getTile(0, 2);
+		unit.setPositionByTile(tile); 
+		//The tile set the unit
+		tile.setUnit(unit);	
+		BasicCommands.drawUnit(out, unit, tile);
+		
+		
+		//Create an AI player
+		AIPlayer ai = new AIPlayer(gameState.board, cards);
+		//Initialize the AI part
+		ai.processEvent(out,gameState,ActionType.Init);
+		gameState.ai=ai;
+		
 		
 //		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
 //		unit2.setPositionByTile(getTile(1,2)); 	

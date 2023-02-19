@@ -1,10 +1,13 @@
 package structures;
 import structures.basic.Player;
 import structures.basic.Tile;
+import structures.basic.Unit;
 import structures.basic.Board;
 
 import java.util.ArrayList;
 
+import ai.AIPlayer;
+import ai.ActionType;
 import structures.basic.Position;
 import events.CardClicked;
 import events.CastCard;
@@ -23,13 +26,20 @@ public class GameState {
 	public boolean cardIsClicked =false; 
 	public CastCard castCard=null;
 	public Board board = null;
-	public static Tile clickedTile=null;
+	public Tile firstClickedTile=null;
+	public Tile secondClickedTile=null;
 	public CardClicked cardClick=null;
 	public boolean something = false;
 	public ArrayList<Tile> tiles;
 	public Position position;
+	public Unit unit=null;
+	public boolean isMove = false;
+	public boolean endTurn =false;
+	//public ActionType type;
 	
-	Player playerAi;
-	Player user;
+	public AIPlayer ai;
+	
+	public Player playerAi;
+	public Player user;
 
 }

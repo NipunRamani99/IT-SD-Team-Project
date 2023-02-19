@@ -28,7 +28,76 @@ public class Tile {
 	int tilex;
 	int tiley;
 	
-	public Tile() {}
+	public enum Occupied
+	{
+		//NO occupied
+		none,
+		//Occupied by the human unit
+		userOccupied,
+		//Occupied by the AI unit
+		aiOccupied;
+	}
+	
+	//The occupied status
+	private Occupied occupied;
+	
+	//The User unit
+	private Unit unit;
+	
+	//The ai unit
+	private Unit aiUnit;
+	
+	/**
+	 * for the human player
+	 * 
+	 */
+	
+//	//Define the tile is occupied or not
+//	private boolean occupied = false;
+	
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+		this.occupied=Occupied.userOccupied;
+	}
+	
+	/**
+	 * for the ai player
+	 */
+	
+	//Set the Ai unit
+	
+	public void setAiUnit(Unit unit)
+	{
+		this.aiUnit = unit;
+		this.occupied=Occupied.aiOccupied;
+	}
+	
+	//Get the Ai unit
+	public Unit getAiUnit() {
+		return aiUnit;
+	}
+
+	//return the tile status
+	public Occupied isOccupied() {
+		return occupied;
+	}
+	
+	
+	//set the tile status
+	public void clearUnit()
+	{
+		this.unit=null;
+		this.occupied=Occupied.none;
+	}
+	
+	public Tile()
+	{
+		this.occupied=Occupied.none;
+	}
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {
 		super();
@@ -40,6 +109,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=Occupied.none;
 	}
 	
 	public Tile(List<String> tileTextures, int xpos, int ypos, int width, int height, int tilex, int tiley) {
@@ -51,6 +121,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=Occupied.none;
 	}
 	public List<String> getTileTextures() {
 		return tileTextures;

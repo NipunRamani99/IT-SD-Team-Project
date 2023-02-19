@@ -11,8 +11,8 @@ import structures.GameState;
  * The event reports the unique id of the unit.
  * 
  * { 
- *   messageType = “unitStopped”
- *   id = <unit id>
+ *   messageType = "unitStopped"
+ *   id = unit id
  * }
  * 
  * @author Dr. Richard McCreadie
@@ -24,6 +24,7 @@ public class UnitStopped implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		
 		int unitid = message.get("id").asInt();
+		gameState.isMove= false;
 		
 	}
 

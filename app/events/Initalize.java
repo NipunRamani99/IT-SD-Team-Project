@@ -7,6 +7,7 @@ import demo.CheckMoveLogic;
 import demo.CommandDemo;
 import structures.GameState;
 import structures.basic.Board;
+import structures.basic.Player;
 
 /**
  * Indicates that both the core game loop in the browser is starting, meaning
@@ -28,6 +29,12 @@ public class Initalize implements EventProcessor{
 		gameState.gameInitalised = true;
 		
 		gameState.something = true;
+		
+		//initialize the ai player 
+		Player PlayerAi =new Player();
+		PlayerAi.setHealth(10);
+		gameState.playerAi=PlayerAi;
+		
 		//Initialize the board height and width and draw it
 		Board board= new Board(9,5);
 		gameState.board  =board;

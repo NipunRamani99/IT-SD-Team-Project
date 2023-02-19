@@ -35,12 +35,14 @@ public class CardClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		
-		 handPosition = message.get("position").asInt();
-		 card=gameState.board.getCard(handPosition);
-		 gameState.cardIsClicked=true;
-		//Highlight the card when click		
-		 BasicCommands.drawCard(out, card, handPosition, 1);
-		 
+		if(!gameState.isMove)
+		{
+			 handPosition = message.get("position").asInt();
+			 card=gameState.board.getCard(handPosition);
+			 gameState.cardIsClicked=true;
+			//Highlight the card when click		
+			 BasicCommands.drawCard(out, card, handPosition, 1);
+		}		 
 	}
 	
 	//Get the Id of the clicked card

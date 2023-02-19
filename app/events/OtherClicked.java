@@ -10,7 +10,7 @@ import structures.GameState;
  * somewhere that is not on a card tile or the end-turn button.
  * 
  * { 
- *   messageType = “otherClicked”
+ *   messageType = "otherClicked"
  * }
  * 
  * @author Dr. Richard McCreadie
@@ -21,9 +21,11 @@ public class OtherClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		
-		
+		//If click the other place, all the state will be reset
+		gameState.cardClick=null;
+		gameState.cardIsClicked=false;
+		gameState.firstClickedTile=null;
+		gameState.secondClickedTile=null;
 	}
 
 }
-
-
