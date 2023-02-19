@@ -7,6 +7,11 @@ public enum ActionType {
      * No action
      */
     None,
+    
+    /**
+     * Initialize
+     */
+    Init,
     /**
      * Moving the unit
      */
@@ -16,13 +21,13 @@ public enum ActionType {
      */
     UnitAttack,
     /**
-     * Moving the avatar
+     * AI unit Moving 
      */
-    AvatarMove,
+    AIMove,
     /**
-     * Avatar launch an attack
+     * AI unit launch an attack
      */
-    AvatarAttack,
+    AIAttack,
     /**
      * The action is to cast a unit on the tile from card in the hand
      */

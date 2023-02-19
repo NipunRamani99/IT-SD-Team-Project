@@ -4,10 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import ai.Action;
+import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.*;
+import structures.basic.Tile.Occupied;
 import events.CastCard;
 
 
@@ -66,83 +69,55 @@ public class TileClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
-		tilex = message.get("tilex").asInt();
-		tiley = message.get("tiley").asInt();
-		
-//		int xpos = message.get("xpos").asInt();
-//		int ypos = message.get("ypos").asInt();
-		tile=gameState.board.getTile(tilex,tiley);
-		
-		if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
-		{
-			gameState.firstClickedTile=tile;
-		}
-		else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
-		{
-			gameState.secondClickedTile=tile;
-		}
-		else
-		{
-			gameState.firstClickedTile=null;
-			gameState.secondClickedTile=null;
-		}
-		
-		
-		//If card is clicked, play the card on the board
-		if(true==gameState.cardIsClicked&& !tile.isOccupied()&&!gameState.isMove)
-		{
-			//Create a thread for cast event 
-			Thread cast = new Thread(gameState.castCard);
-			gameState.castCard.processEvent(out, gameState, message);
-			cast.start();
-			//Only playing the card
-			try {
-				cast.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		//moving the unit
 		if(!gameState.isMove)
 		{
-			// If the first tile has the unit without click the second tile
-			//get the unit from the first tile
-			if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
-			{
-				if(gameState.firstClickedTile.isOccupied())
-				{
-					//get the unit from the tile
-					gameState.unit = gameState.firstClickedTile.getUnit();
-					BasicCommands.addPlayer1Notification(out, "get the unit ",1);
-					//gameState.isMove=false;
-				}
-				
-			}
-			//If the first tile has the unit and second tile is clicked, move the unit
-			else if(null!=gameState.firstClickedTile&&null!=gameState.secondClickedTile)
-			{
-				if(gameState.firstClickedTile.isOccupied())
-				{
-					UnitMoving move = new UnitMoving();
-					move.processEvent(out, gameState, message);
-					//Create the thread for the event
-					Thread m= new Thread(move);
-					m.start();
-					//only execute the movement
-					try {
-						m.join();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-			}
-		
+			tilex = message.get("tilex").asInt();
+			tiley = message.get("tiley").asInt();
 			
-		}
+//			int xpos = message.get("xpos").asInt();
+//			int ypos = message.get("ypos").asInt();
+			tile=gameState.board.getTile(tilex,tiley);
+			
+			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
+			{
+				gameState.firstClickedTile=tile;
+			}
+			else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
+			{
+				gameState.secondClickedTile=tile;
+			}
+			else
+			{
+				gameState.firstClickedTile=null;
+				gameState.secondClickedTile=null;
+			}
+				
+			//If card is clicked, play the card on the board
+			if(true==gameState.cardIsClicked&& Occupied.none==tile.isOccupied())
+			{
+				castCard(out, gameState, message);
+			}
+
+			//moving the unit
+			unitMoving(out, gameState, message);
+			
+			//Attack the unit
+			if(null!=gameState.firstClickedTile&& null!=gameState.secondClickedTile)
+			{
+				Unit aiUnit = gameState.secondClickedTile.getAiUnit();
+				if(gameState.playerAi.getHealth()>0)
+				{
+					BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
+    				//user lunch an attack
+					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+        			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
+        			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+				}
+				unitAttack(out, gameState, message);
+			}
+			
+				
+		}		
 						
 	}
 
@@ -163,45 +138,119 @@ public class TileClicked implements EventProcessor{
 		return this.tiley;
 	}
 	
-//	//Move the unit
-//	private void unitMoving(ActorRef out,GameState gameState)
-//	{
-//	
-//	
-//		// If the tile has the unit
-//		if(tile.isOccupied())
-//		{
-//			//get the unit from the tile
-//			gameState.unit = gameState.firstClickedTile.getUnit();
-//			BasicCommands.addPlayer1Notification(out, "get the unit ",1);
-//			tile.clearUnit();
-//			//gameState.isMove=false;
-//		}
-//		//Execute the unit moving
-//		else if(!tile.isOccupied()&&null!=gameState.unit)
-//		{
-//			//Clear the first tile status 
-//			gameState.firstClickedTile.clearUnit();
-//			//set the move status to false
-//			gameState.isMove=true;
-//			BasicCommands.addPlayer1Notification(out, "Moving ",1);
-//			//moving the unit
-//			BasicCommands.moveUnitToTile(out, gameState.unit, tile);
-//			gameState.unit.setPositionByTile(tile);
-//			//set the second tile status with unit
-//			tile.setUnit(gameState.unit);
-//			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
-//			//clear the unit in the gameState
-//			gameState.unit=null;
-//			//Set the status to false after moving
-//			while(UnitAnimationType.idle==gameState.unit.getAnimation()) gameState.isMove=false;
-//			
-//			
-//		}
-//		else
-//		{
-//			gameState.isMove=false;
-//		}
-//	     
-//	}
+	/**
+	 * Move the unit
+	 * @param out
+	 * @param gameState
+	 * @param message
+	 */
+	private void unitMoving(ActorRef out,GameState gameState,JsonNode message)
+	{
+		// If the first tile has the unit without click the second tile
+		//get the unit from the first tile
+		if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
+		{
+			//For the user
+			if(Occupied.userOccupied==gameState.firstClickedTile.isOccupied())
+			{
+				//get the unit from the tile
+				gameState.unit = gameState.firstClickedTile.getUnit();
+				BasicCommands.addPlayer1Notification(out, "get the unit ",1);
+				//gameState.isMove=false;
+			}
+			//For the ai
+			if(Occupied.aiOccupied==gameState.firstClickedTile.isOccupied())
+			{
+				//get the unit from the tile
+				gameState.unit = gameState.firstClickedTile.getAiUnit();
+				BasicCommands.addPlayer1Notification(out, "Ai get the unit ",1);
+				//gameState.isMove=false;
+			}
+			
+		}
+		//If the first tile has the unit and second tile is clicked, move the unit
+	   if(null!=gameState.firstClickedTile&&null!=gameState.secondClickedTile)
+		{
+			if(Occupied.userOccupied==gameState.firstClickedTile.isOccupied()&&
+				Occupied.none==gameState.secondClickedTile.isOccupied())
+			{
+				UnitMoving move = new UnitMoving();
+				move.processEvent(out, gameState, message);
+				//Create the thread for the event
+				Thread m= new Thread(move);
+				m.start();
+				//only execute the movement
+				try {
+					m.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+	     
+	}
+	/**
+	 * Cast the card on the tile
+	 * @param out
+	 * @param gameState
+	 * @param message
+	 */
+	private void castCard(ActorRef out,GameState gameState,JsonNode message)
+	{
+		//Create a thread for cast event 
+		Thread cast = new Thread(gameState.castCard);
+		gameState.castCard.processEvent(out, gameState, message);
+		cast.start();
+		//Only playing the card
+		try {
+			cast.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Attack the Ai unit
+	 * @param out
+	 * @param gameState
+	 * @param message
+	 */
+	private void unitAttack(ActorRef out,GameState gameState,JsonNode message)
+	{
+		//Create unit attack action 
+		Action attack = new Action(ActionType.UnitAttack, out, gameState);
+		//create a thread
+		Thread userAttack = new Thread(attack);
+		
+		userAttack.start();
+		
+		try {
+			userAttack.join();
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		} catch (InterruptedException e) {
+			//Print the exception message
+			e.printStackTrace();
+		}
+		
+		//if the AI unit is not dead, ai attack back
+		
+		//Create ai unit attack action 
+		Action aiUnitAttack = new Action(ActionType.AIAttack, out, gameState);
+		//create a thread
+		Thread aiAttack = new Thread(aiUnitAttack);
+		aiAttack.start();
+		
+		try {
+			aiAttack.join();
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		} catch (InterruptedException e) {
+			//Print the exception message
+			e.printStackTrace();
+		}
+		
+	}
 }

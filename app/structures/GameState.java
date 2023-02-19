@@ -6,6 +6,8 @@ import structures.basic.Board;
 
 import java.util.ArrayList;
 
+import ai.AIPlayer;
+import ai.ActionType;
 import structures.basic.Position;
 import events.CardClicked;
 import events.CastCard;
@@ -32,8 +34,12 @@ public class GameState {
 	public Position position;
 	public Unit unit=null;
 	public boolean isMove = false;
+	public boolean endTurn =false;
+	//public ActionType type;
 	
-	Player playerAi;
-	Player user;
+	public AIPlayer ai;
+	
+	public Player playerAi;
+	public Player user;
 
 }

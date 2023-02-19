@@ -3,6 +3,7 @@ package events;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.GameState;
 
 /**
@@ -24,7 +25,12 @@ public class EndTurnClicked implements EventProcessor{
 	}
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		 checkWinner(gameState);
+		if(!gameState.isMove)
+		{
+			 checkWinner(gameState);
+			 gameState.endTurn = true;
+			 BasicCommands.addPlayer1Notification(out, "endturn", 1);
+		}		
 	}
 
 }

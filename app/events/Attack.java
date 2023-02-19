@@ -2,12 +2,17 @@ package events;
 
 import structures.basic.Player;
 import structures.basic.Unit;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import akka.actor.ActorRef;
+import structures.GameState;
 import structures.basic.*;
 
 /**
  * This class will define the action of the unit attack, player attack, and attack between unit and player
  */
-public class Attack {
+public class Attack implements  EventProcessor,Runnable  {
     /**
      * This unit is for the friendly unit that will launch an attack
      */
@@ -26,6 +31,16 @@ public class Attack {
      * This player is for the player 2 information
      */
     private Player player2;
+    
+    /**
+     * The actor reference
+     */
+    private ActorRef out;
+    
+    /**
+     * The gameState
+     */
+    private GameState gameState;
 
     /**
      * This constructor is for the attack between two units
@@ -33,7 +48,8 @@ public class Attack {
      * @param enemyUnit the unit refer to the attacked unit
      */
     public Attack(Unit myUnit, Unit enemyUnit){
-    	//UnitAnimation()
+    	//enemy unit attack
+    	//setUnitAttack()
 
     }
 
@@ -55,4 +71,18 @@ public class Attack {
     public Attack(Player player1, Player player2){
 
     }
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+		// TODO Auto-generated method stub
+		this.out=out;
+		this.gameState=gameState;
+		
+	}
 }

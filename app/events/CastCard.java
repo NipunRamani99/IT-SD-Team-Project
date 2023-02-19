@@ -48,7 +48,7 @@ public class CastCard implements EventProcessor,Runnable {
     //A card
     private Card card;
     
-    //Gamestate
+    //Game state
     private GameState gameState;
     
     //Actor
