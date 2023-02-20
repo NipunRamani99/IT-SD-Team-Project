@@ -45,7 +45,7 @@ public class UnitMoving implements EventProcessor, Runnable{
 			BasicCommands.moveUnitToTile(out, gameState.unit, gameState.secondClickedTile);
 			gameState.unit.setPositionByTile(gameState.secondClickedTile);
 
-			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			
 			//Clear the first tile status 
 			gameState.firstClickedTile.clearUnit();
@@ -65,7 +65,7 @@ public class UnitMoving implements EventProcessor, Runnable{
 			BasicCommands.moveUnitToTile(out, gameState.unit, gameState.secondClickedTile);
 			gameState.unit.setPositionByTile(gameState.secondClickedTile);
 
-			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			
 			//Clear the first tile status 
 			gameState.firstClickedTile.clearUnit();

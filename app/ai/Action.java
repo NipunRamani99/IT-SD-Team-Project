@@ -133,7 +133,7 @@ public class Action implements Runnable{
 		
 		Tile aiTile1 = board.getTile(7, 3);
 		BasicCommands.moveUnitToTile(out, unit, aiTile1);
-		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out,unit,UnitAnimationType.attack);
 		//move unit to tile
 		

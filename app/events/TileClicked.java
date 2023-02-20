@@ -244,13 +244,13 @@ public class TileClicked implements EventProcessor{
 		Thread aiAttack = new Thread(aiUnitAttack);
 		aiAttack.start();
 		
-		try {
-			aiAttack.join();
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		} catch (InterruptedException e) {
-			//Print the exception message
-			e.printStackTrace();
-		}
+//		try {
+//			aiAttack.join();
+//			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//		} catch (InterruptedException e) {
+//			//Print the exception message
+//			e.printStackTrace();
+//		}
 		
 	}
 }

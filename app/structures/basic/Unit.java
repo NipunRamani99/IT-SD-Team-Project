@@ -25,13 +25,22 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+
+	int healthPoints;
+	int attackPoints;
+	int manaCost;
 	
 	public Unit() {}
 	
-	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
+	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction, int healthPoints, int attackPoints, int manaCost) {
 		super();
 		this.id = id;
 		this.animation = UnitAnimationType.idle;
+
+		this.healthPoints = healthPoints;
+		this.attackPoints = attackPoints;
+		this.manaCost = manaCost;
+
 		
 		position = new Position(0,0,0,0);
 		this.correction = correction;
