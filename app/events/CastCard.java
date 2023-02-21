@@ -97,8 +97,8 @@ public class CastCard implements EventProcessor {
 	    	  break;
 	    
     	}
-		unit.setHealth(health);
-		unit.setAttack(attack);
+		//unit.setHealth(health);
+		//unit.setAttack(attack);
     	// unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
     
 
