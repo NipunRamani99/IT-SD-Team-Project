@@ -126,7 +126,7 @@ public class Board {
 		}
 		
 		// Draw a unit
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);	
+		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
 		//Get related tiles
 		Tile tile=this.getTile(0, 2);
 		unit.setPositionByTile(tile); 

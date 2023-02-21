@@ -26,6 +26,18 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 	
+	private boolean isChosed=false;
+	
+	//Choose the unit
+	public boolean isChosed() {
+		return isChosed;
+	}
+
+	//set the status to the unit
+	public void setChosed(boolean isChosed) {
+		this.isChosed = isChosed;
+	}
+
 	public Unit() {}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {

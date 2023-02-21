@@ -102,7 +102,7 @@ public class CastCard implements EventProcessor,Runnable {
 	    	  break;
 	    
     	}
-    	// unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
+    	 unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id++, Unit.class);
     }
 
 

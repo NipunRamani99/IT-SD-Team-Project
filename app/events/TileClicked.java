@@ -99,20 +99,22 @@ public class TileClicked implements EventProcessor{
 			}
 
 			//moving the unit
+			
 			unitMoving(out, gameState, message);
 			
 			//Attack the unit
 			if(null!=gameState.firstClickedTile&& null!=gameState.secondClickedTile)
 			{
-				Unit aiUnit = gameState.secondClickedTile.getAiUnit();
-				if(gameState.playerAi.getHealth()>0)
-				{
-					BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
-    				//user lunch an attack
-					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-        			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
-        			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-				}
+				//improve to check if there is an ai unit on the second tile
+//				Unit aiUnit = gameState.secondClickedTile.getAiUnit();
+//				if(gameState.playerAi.getHealth()>0)
+//				{
+//					BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
+//    				//user lunch an attack
+//					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//        			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
+//        			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//				}
 				unitAttack(out, gameState, message);
 			}
 			
@@ -155,6 +157,7 @@ public class TileClicked implements EventProcessor{
 			{
 				//get the unit from the tile
 				gameState.unit = gameState.firstClickedTile.getUnit();
+				gameState.unit.setChosed(true);
 				BasicCommands.addPlayer1Notification(out, "get the unit ",1);
 				//gameState.isMove=false;
 			}
@@ -163,6 +166,7 @@ public class TileClicked implements EventProcessor{
 			{
 				//get the unit from the tile
 				gameState.unit = gameState.firstClickedTile.getAiUnit();
+				gameState.unit.setChosed(true);
 				BasicCommands.addPlayer1Notification(out, "Ai get the unit ",1);
 				//gameState.isMove=false;
 			}
@@ -219,15 +223,13 @@ public class TileClicked implements EventProcessor{
 	 * @param gameState
 	 * @param message
 	 */
-	private void unitAttack(ActorRef out,GameState gameState,JsonNode message)
+	private synchronized void unitAttack(ActorRef out,GameState gameState,JsonNode message)
 	{
 		//Create unit attack action 
 		Action attack = new Action(ActionType.UnitAttack, out, gameState);
 		//create a thread
 		Thread userAttack = new Thread(attack);
-		
-		userAttack.start();
-		
+		userAttack.start();	
 		try {
 			userAttack.join();
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -244,13 +246,13 @@ public class TileClicked implements EventProcessor{
 		Thread aiAttack = new Thread(aiUnitAttack);
 		aiAttack.start();
 		
-		try {
-			aiAttack.join();
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		} catch (InterruptedException e) {
-			//Print the exception message
-			e.printStackTrace();
-		}
+//		try {
+//			aiAttack.join();
+//			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//		} catch (InterruptedException e) {
+//			//Print the exception message
+//			e.printStackTrace();
+//		}
 		
 	}
 }

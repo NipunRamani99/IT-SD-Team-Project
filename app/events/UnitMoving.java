@@ -32,13 +32,14 @@ public class UnitMoving implements EventProcessor, Runnable{
 		this.out=out;	
 		//set the move status to false
 		gameState.isMove=true;
+		
 	}
 
 	@Override
 	public void run() {
-		
+
 		//Check if is the user turn
-		if(!gameState.endTurn)  //User turn
+		if(!gameState.endTurn&&true==gameState.unit.isChosed())  //User turn
 		{
 			BasicCommands.addPlayer1Notification(out, "Moving ",1);
 			//moving the unit

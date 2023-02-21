@@ -55,11 +55,12 @@ public class Tile {
 //	//Define the tile is occupied or not
 //	private boolean occupied = false;
 	
-	public Unit getUnit() {
+	public synchronized Unit getUnit() {
+		if(null!=this.aiUnit) aiUnit.setChosed(true);
 		return unit;
 	}
 
-	public void setUnit(Unit unit) {
+	public synchronized void setUnit(Unit unit) {
 		this.unit = unit;
 		this.occupied=Occupied.userOccupied;
 	}
@@ -70,26 +71,30 @@ public class Tile {
 	
 	//Set the Ai unit
 	
-	public void setAiUnit(Unit unit)
+	public synchronized void setAiUnit(Unit unit)
 	{
 		this.aiUnit = unit;
+		//aiUnit.setChosed(false);
 		this.occupied=Occupied.aiOccupied;
 	}
 	
 	//Get the Ai unit
-	public Unit getAiUnit() {
+	public synchronized Unit getAiUnit() {
+		
+		if(null!=this.aiUnit) aiUnit.setChosed(true);
 		return aiUnit;
 	}
 
 	//return the tile status
-	public Occupied isOccupied() {
+	public synchronized Occupied isOccupied() {
 		return occupied;
 	}
 	
 	
 	//set the tile status
-	public void clearUnit()
+	public synchronized void clearUnit()
 	{
+		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
 	}

@@ -35,6 +35,8 @@ public class GameState {
 	public Unit unit=null;
 	public boolean isMove = false;
 	public boolean endTurn =false;
+	
+	public int id=0;
 	//public ActionType type;
 	
 	public AIPlayer ai;
