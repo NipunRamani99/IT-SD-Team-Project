@@ -25,6 +25,7 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+
 	
 	private boolean isChosed=false;
 	
@@ -37,6 +38,9 @@ public class Unit {
 	public void setChosed(boolean isChosed) {
 		this.isChosed = isChosed;
 	}
+
+
+	private Tile tile;
 
 	public Unit() {}
 	
@@ -97,6 +101,7 @@ public class Unit {
 		return position;
 	}
 
+
 	public void setPosition(Position position) {
 		this.position = position;
 	}
@@ -118,6 +123,12 @@ public class Unit {
 	public void setPositionByTile(Tile tile) {
 		position = new Position(tile.getXpos(),tile.getYpos(),tile.getTilex(),tile.getTiley());
 	}
-	
-	
+
+	public Tile getTile() {
+		return tile;
+	}
+
+	public void setTile(Tile tile) {
+		this.tile = tile;
+	}
 }

@@ -1,4 +1,5 @@
 package structures;
+<<<<<<< HEAD
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -9,6 +10,12 @@ import java.util.ArrayList;
 import ai.AIPlayer;
 import ai.ActionType;
 import structures.basic.Position;
+=======
+import structures.basic.*;
+
+import java.util.ArrayList;
+
+>>>>>>> dev/nipun
 import events.CardClicked;
 import events.CastCard;
 import events.TileClicked;
@@ -23,7 +30,8 @@ public class GameState {
 
 	
 	public boolean gameInitalised = false;
-	public boolean cardIsClicked =false; 
+	public boolean cardIsClicked =false;
+	public boolean unitIsClicked = false;
 	public CastCard castCard=null;
 	public Board board = null;
 	public Tile firstClickedTile=null;
@@ -43,5 +51,10 @@ public class GameState {
 	
 	public Player playerAi;
 	public Player user;
+
+	public int handPosition = -1;
+	public Card card = null;
+
+
 
 }

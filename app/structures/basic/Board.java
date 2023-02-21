@@ -37,6 +37,8 @@ public class Board {
     //The card arrayList;
     static ArrayList<Card> cards=  new ArrayList<Card>();
 
+    static ArrayList<Unit> units = new ArrayList<>();
+
     /**
      * Board constructor to create a board of given width and height.
      * @param width width of the board.
@@ -64,7 +66,10 @@ public class Board {
      * @return Tile instance
      */
     public Tile getTile(int x, int y) {
-        return tiles.get(x + y*width);
+        if(x >= 0 && x < width && y >= 0 && y <height)
+            return tiles.get(x + y*width);
+        else
+            return null;
     }
 
     /**
@@ -121,13 +126,13 @@ public class Board {
 			//Add the card in the arraylist
 			cards.add(i, card);
 			BasicCommands.drawCard(out, card, i+1, 0);
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
 		}
 		
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
 		//Get related tiles
+
 		Tile tile=this.getTile(0, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
@@ -141,6 +146,7 @@ public class Board {
 		ai.processEvent(out,gameState,ActionType.Init);
 		gameState.ai=ai;
 		
+
 		
 //		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
 //		unit2.setPositionByTile(getTile(1,2)); 	
@@ -156,4 +162,10 @@ public class Board {
     {
     	return cards.get(pos-1);
     }
+    public List<Card> getCards(){return cards;}
+    public List<Unit> getUnits() {return units; }
+    public void addUnit(Unit unit) {
+        units.add(unit);
+    }
+
 }

@@ -8,10 +8,12 @@ import ai.Action;
 import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import org.checkerframework.checker.signedness.qual.Constant;
 import structures.GameState;
 import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import events.CastCard;
+import utils.Constants;
 
 
 /**
@@ -48,7 +50,7 @@ public class TileClicked implements EventProcessor{
 	
 	//The y position of the clicked tile
 	private int tiley;
-	
+
 	//Get the position 
 	public Position getPosition()
 	{
@@ -78,6 +80,7 @@ public class TileClicked implements EventProcessor{
 //			int ypos = message.get("ypos").asInt();
 			tile=gameState.board.getTile(tilex,tiley);
 			
+			hightTiles(out, gameState,message);
 			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
 			{
 				gameState.firstClickedTile=tile;
@@ -120,9 +123,25 @@ public class TileClicked implements EventProcessor{
 			
 				
 		}		
-						
+
 	}
 
+	private void resetBoardSelection(ActorRef out, GameState gameState) {
+		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
+			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+				Tile tile = gameState.board.getTile(i, j);
+				BasicCommands.drawTile(out, tile, 0);
+				tile.setTileState(TileState.None);
+			}
+		}
+	}
+	
+	private void resetCardSelection(ActorRef out, GameState gameState) {
+		BasicCommands.drawCard(out, gameState.card, gameState.handPosition, 0);
+		gameState.card = null;
+		gameState.handPosition = -1;
+		gameState.cardIsClicked = false;
+	}
 	
 	//Get the tile
 	public Tile getClickedTile()
@@ -138,6 +157,56 @@ public class TileClicked implements EventProcessor{
 	public int getTileY()
 	{
 		return this.tiley;
+	}
+	
+	private void hightTiles(ActorRef out, GameState gameState, JsonNode message)
+	{
+		if(tile.getTileState() == TileState.None) {
+			gameState.unitIsClicked = false;
+			gameState.cardIsClicked = false;
+			resetBoardSelection(out, gameState);
+			BasicCommands.drawCard(out, gameState.card, gameState.handPosition, 0);
+			gameState.card = null;
+			gameState.handPosition = -1;
+			gameState.cardIsClicked = false;
+		}
+		if(gameState.cardIsClicked && tile.getTileState() == TileState.Reachable)
+		{
+			if(tile.getUnit() == null)
+				gameState.castCard.processEvent(out, gameState, message);
+		}
+		if(tile.getUnit() != null && !gameState.unitIsClicked) {
+			for(int i = -1; i <=1; i++ ) {
+				for(int j = -1; j <= 1; j++) {
+					int x = tilex + i;
+					int y = tiley + j;
+					Tile surroundingTile = gameState.board.getTile(x, y);
+					if(surroundingTile == tile)
+						continue;
+					if (surroundingTile != null) {
+						if(surroundingTile.getUnit() == null) {
+							surroundingTile.setTileState(TileState.Reachable);
+							BasicCommands.drawTile(out, surroundingTile, 1);
+						}
+						else {
+							surroundingTile.setTileState(TileState.Occupied);
+							BasicCommands.drawTile(out, surroundingTile, 2);
+						}
+					}
+				}
+			}
+			gameState.unitIsClicked = true;
+		}
+		if(tile.getUnit() == null && gameState.unitIsClicked) {
+			for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
+				for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+					Tile surroundingTile = gameState.board.getTile(i, j);
+					BasicCommands.drawTile(out, surroundingTile, 0);
+				}
+			}
+			gameState.unitIsClicked = false;
+		}
+
 	}
 	
 	/**
