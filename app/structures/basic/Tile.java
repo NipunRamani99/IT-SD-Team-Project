@@ -27,7 +27,9 @@ public class Tile {
 	int height;
 	int tilex;
 	int tiley;
-	
+	TileState tileState = TileState.None;
+	Unit unit = null;
+
 	public Tile() {}
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {
@@ -94,7 +96,22 @@ public class Tile {
 	public void setTiley(int tiley) {
 		this.tiley = tiley;
 	}
-	
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
+
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public TileState getTileState() {
+		return tileState;
+	}
+
+	public void setTileState(TileState tileState) {
+		this.tileState = tileState;
+	}
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.

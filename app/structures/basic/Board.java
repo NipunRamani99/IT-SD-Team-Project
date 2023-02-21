@@ -35,6 +35,8 @@ public class Board {
     //The card arrayList;
     static ArrayList<Card> cards=  new ArrayList<Card>();
 
+    static ArrayList<Unit> units = new ArrayList<>();
+
     /**
      * Board constructor to create a board of given width and height.
      * @param width width of the board.
@@ -62,7 +64,10 @@ public class Board {
      * @return Tile instance
      */
     public Tile getTile(int x, int y) {
-        return tiles.get(x + y*width);
+        if(x >= 0 && x < width && y >= 0 && y <height)
+            return tiles.get(x + y*width);
+        else
+            return null;
     }
 
     /**
@@ -120,7 +125,6 @@ public class Board {
 			//Add the card in the arraylist
 			cards.add(i, card);
 			BasicCommands.drawCard(out, card, i+1, 0);
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
 //			// drawCard [1] Highlight
 //			BasicCommands.addPlayer1Notification(out, deck1CardFile+" Highlight", 2);
@@ -136,7 +140,9 @@ public class Board {
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);	
 		//Get related tiles
-		unit.setPositionByTile(getTile(0,2)); 	
+		unit.setPositionByTile(getTile(0,2));
+        units.add(unit);
+        getTile(0,2).setUnit(unit);
 		BasicCommands.drawUnit(out, unit, getTile(0,2));
 		
 //		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
@@ -153,4 +159,10 @@ public class Board {
     {
     	return cards.get(pos-1);
     }
+    public List<Card> getCards(){return cards;}
+    public List<Unit> getUnits() {return units; }
+    public void addUnit(Unit unit) {
+        units.add(unit);
+    }
+
 }

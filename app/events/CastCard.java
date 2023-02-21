@@ -1,22 +1,14 @@
 package events;
 
-import structures.basic.Position;
-import structures.basic.Tile;
+import structures.basic.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
-import structures.basic.BigCard;
-import structures.basic.Card;
-import structures.basic.EffectAnimation;
-import structures.basic.ImageCorrection;
-import structures.basic.Unit;
-import structures.basic.UnitAnimation;
-import structures.basic.UnitAnimationSet;
-import structures.basic.UnitAnimationType;
 import utils.BasicObjectBuilders;
+import utils.Constants;
 import utils.StaticConfFiles;
 
 /**
@@ -60,7 +52,7 @@ public class CastCard implements EventProcessor {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public void transform(String card){  	
+    public void transform(String card,int health, int attack){
     	//The deck of cards library
     	String[] units = {
 				StaticConfFiles.u_azure_herald,
@@ -105,6 +97,8 @@ public class CastCard implements EventProcessor {
 	    	  break;
 	    
     	}
+		unit.setHealth(health);
+		unit.setAttack(attack);
     	// unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
     
 
@@ -117,13 +111,33 @@ public class CastCard implements EventProcessor {
     public void placeUnit(ActorRef out, GameState gameState){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
+		tile.setUnit(unit);
+		gameState.board.addUnit(unit);
     	BasicCommands.drawUnit(out, unit, tile);
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
-        gameState.cardIsClicked=false;
+        resetBoardSelection(out, gameState);
+		resetCardSelection(out, gameState);
+		gameState.cardIsClicked=false;
+
         try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
+	private void resetCardSelection(ActorRef out, GameState gameState) {
+		BasicCommands.drawCard(out, gameState.card, gameState.handPosition, 0);
+		gameState.card = null;
+		gameState.handPosition = -1;
+		gameState.cardIsClicked = false;
+	}
+	private void resetBoardSelection(ActorRef out, GameState gameState) {
+		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
+			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+				Tile tile = gameState.board.getTile(i, j);
+				BasicCommands.drawTile(out, tile, 0);
+				tile.setTileState(TileState.None);
+			}
+		}
+	}
 
     /**
      * The function will place the spell on a unit, and perform an action on that unit
@@ -137,11 +151,13 @@ public class CastCard implements EventProcessor {
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// TODO Auto-generated method stub
 		Card card=cardClicked.getCard();
+		int attack = card.getBigCard().getAttack();
+		int health = card.getBigCard().getHealth();
 		tile=tileClicked.getClickedTile();
 		if(gameState.cardIsClicked)
 		{
 		    //Play the card
-			transform(card.getCardname());
+			transform(card.getCardname(), health, attack);
 			placeUnit(out, gameState);
 			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 			//delete the card when it is played
