@@ -1,21 +1,13 @@
 package structures;
-<<<<<<< HEAD
-import structures.basic.Player;
-import structures.basic.Tile;
-import structures.basic.Unit;
-import structures.basic.Board;
+
 
 import java.util.ArrayList;
 
 import ai.AIPlayer;
 import ai.ActionType;
 import structures.basic.Position;
-=======
 import structures.basic.*;
-
 import java.util.ArrayList;
-
->>>>>>> dev/nipun
 import events.CardClicked;
 import events.CastCard;
 import events.TileClicked;

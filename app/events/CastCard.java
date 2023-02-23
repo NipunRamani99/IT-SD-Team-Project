@@ -102,7 +102,6 @@ public class CastCard implements EventProcessor,Runnable {
     	}
 
     	 unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id++, Unit.class);
-
     }
 
 
@@ -115,8 +114,8 @@ public class CastCard implements EventProcessor,Runnable {
     	//set the unit to the tile
     	tile.setUnit(unit);
     	//draw the unit
-		gameState.board.addUnit(unit);
     	BasicCommands.drawUnit(out, unit, tile);
+		gameState.board.addUnit(unit);
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
@@ -138,6 +137,7 @@ public class CastCard implements EventProcessor,Runnable {
 			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
 				Tile tile = gameState.board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
+				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 				tile.setTileState(TileState.None);
 			}
 		}
@@ -155,7 +155,7 @@ public class CastCard implements EventProcessor,Runnable {
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// TODO Auto-generated method stub
 
-		Card card=cardClicked.getCard();
+		this.card=cardClicked.getCard();
 		this.attack = card.getBigCard().getAttack();
 		this.health = card.getBigCard().getHealth();
 		tile=tileClicked.getClickedTile();
@@ -168,10 +168,11 @@ public class CastCard implements EventProcessor,Runnable {
 	public void run() {
 		if(gameState.cardIsClicked)
 		{
+			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		    //Play the card
 			transform(card.getCardname(), health, attack);
 			placeUnit();
-			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 			//delete the card when it is played
 			BasicCommands.deleteCard(out, cardClicked.getHandPosition());
 			//Stop the animation

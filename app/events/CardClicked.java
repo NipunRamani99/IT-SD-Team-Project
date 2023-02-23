@@ -42,17 +42,28 @@ public class CardClicked implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
 		//Highlight the card when click
-		if(gameState.cardIsClicked&&!gameState.isMove) {
-			resetCardSelection(out, gameState);
-			resetBoardSelection(out, gameState);
+		if(!gameState.isMove)
+		{
+			if(gameState.cardIsClicked) {
+				resetCardSelection(out, gameState);
+				resetBoardSelection(out, gameState);
+				gameState.cardIsClicked=false;
+			}
+			handPosition = message.get("position").asInt();
+			card=gameState.board.getCard(handPosition);
+			gameState.cardIsClicked = true;
+			gameState.card = card;
+			gameState.handPosition = handPosition;
+			BasicCommands.drawCard(out, card, handPosition, 1);
+			highlightCardSelection(out,gameState);
+			
 		}
-		handPosition = message.get("position").asInt();
-		card=gameState.board.getCard(handPosition);
-		gameState.cardIsClicked = true;
-		gameState.card = card;
-		gameState.handPosition = handPosition;
-		BasicCommands.drawCard(out, card, handPosition, 1);
-
+	}
+	
+	//Highlight the tiles when selecting the cards
+	private void highlightCardSelection(ActorRef out, GameState gameState)
+	{
+		BasicCommands.addPlayer1Notification(out, "Card hightlight ",1);
 		List<Unit> unitList = gameState.board.getUnits();
 		for(Unit unit : unitList) {
 			for (int i = -1; i <= 1; i++) {
@@ -65,24 +76,28 @@ public class CardClicked implements EventProcessor{
 						if (surroundingTile.getUnit() == null) {
 							surroundingTile.setTileState(TileState.Reachable);
 							BasicCommands.drawTile(out, surroundingTile, 1);
+							try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 						}
 					}
 				}
 			}
 		}
-
 	}
+	//reset the card selection
 	private void resetCardSelection(ActorRef out, GameState gameState) {
 		BasicCommands.drawCard(out, gameState.card, gameState.handPosition, 0);
 		gameState.card = null;
 		gameState.handPosition = -1;
 		gameState.cardIsClicked = false;
 	}
+	
+	//Reset the board selection
 	private void resetBoardSelection(ActorRef out, GameState gameState) {
 		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
 			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
 				Tile tile = gameState.board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
+				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 				tile.setTileState(TileState.None);
 			}
 		}

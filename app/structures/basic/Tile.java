@@ -105,7 +105,7 @@ public class Tile {
 		this.occupied=Occupied.none;
 	}
 
-	TileState tileState = TileState.None;
+	private TileState tileState = TileState.None;
 
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {

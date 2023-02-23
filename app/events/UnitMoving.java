@@ -46,38 +46,21 @@ public class UnitMoving implements EventProcessor, Runnable{
 			BasicCommands.moveUnitToTile(out, gameState.unit, gameState.secondClickedTile);
 			gameState.unit.setPositionByTile(gameState.secondClickedTile);
 
-			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			
-			//Clear the first tile status 
-			gameState.firstClickedTile.clearUnit();
-			
-			//set the second tile status with unit
-			gameState.secondClickedTile.setUnit(gameState.unit);
-			
-			//clear the unit and tiles in the gameState
-			gameState.unit=null;
-			gameState.firstClickedTile=null;
-			gameState.secondClickedTile=null;
+	
 		}
 		else //Ai turn
 		{	
 			BasicCommands.addPlayer1Notification(out, "AI Moving ",1);
+			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+			
 			//moving the unit
 			BasicCommands.moveUnitToTile(out, gameState.unit, gameState.secondClickedTile);
 			gameState.unit.setPositionByTile(gameState.secondClickedTile);
 
-			try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
-			
-			//Clear the first tile status 
-			gameState.firstClickedTile.clearUnit();
-			
-			//set the second tile status with unit
-			gameState.secondClickedTile.setAiUnit(gameState.unit);
-			
-			//clear the unit and tiles in the gameState
-			gameState.unit=null;
-			gameState.firstClickedTile=null;
-			gameState.secondClickedTile=null;
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
 		}
 			
 		

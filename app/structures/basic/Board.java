@@ -88,8 +88,6 @@ public class Board {
      * sending the appropriate draw commands.
      */
     public void drawBoard(ActorRef out,GameState gameState) {
-       //Draw the tiles 
-    	//Author: Jun Gao
 		//Great a board
     	
     	for(int h=0;h<height;h++)
@@ -101,9 +99,6 @@ public class Board {
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
     	}	
-//    	Tile tile = BasicObjectBuilders.loadTile(2,1);
-//		BasicCommands.drawTile(out, tile, 0);
-    	//gameState.tiles=tiles;
 
     	String[] deck1Cards = {
 				StaticConfFiles.c_azure_herald,
@@ -136,6 +131,7 @@ public class Board {
 		Tile tile=this.getTile(0, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
+		this.addUnit(unit);
 		tile.setUnit(unit);	
 		BasicCommands.drawUnit(out, unit, tile);
 		
@@ -164,6 +160,7 @@ public class Board {
     }
     public List<Card> getCards(){return cards;}
     public List<Unit> getUnits() {return units; }
+    
     public void addUnit(Unit unit) {
         units.add(unit);
     }

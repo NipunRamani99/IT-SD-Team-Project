@@ -127,18 +127,19 @@ public class Action implements Runnable{
 		unit.setPositionByTile(aiTile); 
 		//The tile set the unit
 		aiTile.setAiUnit(unit);
+		gameState.board.addUnit(unit);
 		//draw unit
 		BasicCommands.drawUnit(out, unit, aiTile);
-		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		try { Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
+		gameState.unit=unit;
 		Tile aiTile1 = board.getTile(7, 3);
 		BasicCommands.moveUnitToTile(out, unit, aiTile1);
+		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
 		aiTile1.setAiUnit(unit);
-		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out,unit,UnitAnimationType.attack);
-		//move unit to tile
-		
-		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		//move unit to tile		
+		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
 		
     }
     
@@ -191,6 +192,7 @@ public class Action implements Runnable{
 				if(gameState.endTurn&&!gameState.isMove)//ai turn
 				{
 	 				BasicCommands.addPlayer1Notification(out, "Ai attack user ",1);
+	 				 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     				//ai lunch an attack
         			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
         			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -202,6 +204,7 @@ public class Action implements Runnable{
 						//Choose this unit
 						aiUnit.setChosed(true);
 						BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
+						 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 	    				//ai lunch an attack
 						if(aiUnit.isChosed())
 						{
