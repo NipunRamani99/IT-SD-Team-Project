@@ -18,14 +18,13 @@ import java.util.List;
 
 public class CardSelectedState implements State{
     private int handPosition = 0;
-   // private Card cardSelected = null;
+    private Card cardSelected = null;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-        gameState.card =gameState.board.getCard(handPosition);
-//        gameState.card=cardSelected;
-        BasicCommands.drawCard(out, gameState.card, handPosition, 1);
+        cardSelected=gameState.board.getCard(handPosition);
+        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
         highlightCardSelection(out, gameState);
     }
     @Override
@@ -44,8 +43,7 @@ public class CardSelectedState implements State{
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
                 //assign the reachable tile to the gameState
-                gameState.tile=tile;
-                gameStateMachine.setState(new CardCastedState());
+                drawUnitOnBoard(out, gameState,cardSelected,tile);
             	//after the cast the unit, delete the card
             	BasicCommands.deleteCard(out, handPosition);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");
@@ -81,6 +79,56 @@ public class CardSelectedState implements State{
                 }
             }
         }
+    }
+    
+    //Draw the unit on the board
+    private void drawUnitOnBoard(ActorRef out,GameState gameState,Card card, Tile tile)
+    {
+    	String carName=card.getCardname();
+    	Unit unit =null;
+    	switch(carName)
+    	{
+    	  case "Azure Herald":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id++, Unit.class);
+	    	  break;
+    	  case "Azurite Lion":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id++, Unit.class);
+	    	  break;
+    	  case "Comodo Charger":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger,gameState.id++, Unit.class);
+	    	  break;
+    	  case "Fire Spitter":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter,gameState.id++, Unit.class);
+	    	  break;
+    	  case "Hailstone Golem":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id++, Unit.class);
+	    	  break;
+    	  case "Ironcliff Guardian":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian,gameState.id++, Unit.class);
+	    	  break;	  
+    	  case "Pureblade Enforcer":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer,gameState.id++, Unit.class);
+	    	  break;
+     	  case "Silverguard Knight":
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight,gameState.id++, Unit.class);
+	    	  break;
+	      default:
+	    	  break;
+	    
+    	}
+
+    
+    
+    	unit.setPositionByTile(tile); 
+    	BasicCommands.drawUnit(out, unit, tile);
+    	gameState.board.addUnit(unit);
+		tile.setUnit(unit);	
+    	
+    	try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+    
+    	
+    	BasicCommands.addPlayer1Notification(out, "Cast "+carName,1);
+    	
     }
     
 }
