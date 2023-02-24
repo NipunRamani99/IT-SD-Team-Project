@@ -34,8 +34,12 @@ public class Board {
    //List<Tile> tiles = Collections.emptyList();
     static  ArrayList<Tile> tiles= new ArrayList<Tile>();
     
-    //The card arrayList;
+    //The card arrayList;cards in hand
     static ArrayList<Card> cards=  new ArrayList<Card>();
+    
+    static Deck deck1 = new Deck(1);
+    
+    static Deck deck2 = new Deck(2);
 
     /**
      * Board constructor to create a board of given width and height.
@@ -100,24 +104,11 @@ public class Board {
 //		BasicCommands.drawTile(out, tile, 0);
     	//gameState.tiles=tiles;
 
-    	String[] deck1Cards = {
-				StaticConfFiles.c_azure_herald,
-				StaticConfFiles.c_azurite_lion,
-				StaticConfFiles.c_comodo_charger,
-				StaticConfFiles.c_fire_spitter,
-				StaticConfFiles.c_hailstone_golem,
-				StaticConfFiles.c_ironcliff_guardian,
-				StaticConfFiles.c_pureblade_enforcer,
-				StaticConfFiles.c_silverguard_knight,
-				StaticConfFiles.c_sundrop_elixir,
-				StaticConfFiles.c_truestrike
-		};
-
     	//Initialize 3 cards
 		for (int i=0;i<3;i++) {
 			// drawCard [1]
 			//BasicCommands.addPlayer1Notification(out, deck1CardFile, 2);
-			Card card = BasicObjectBuilders.loadCard(deck1Cards[i], i, Card.class);
+			Card card = deck1.getCard();
 			//Add the card in the arraylist
 			cards.add(i, card);
 			BasicCommands.drawCard(out, card, i+1, 0);
