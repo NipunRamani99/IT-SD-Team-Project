@@ -41,7 +41,9 @@ public class Board {
     
     static Deck deck2 = new Deck(2);
 
+
     static ArrayList<Unit> units = new ArrayList<>();
+
 
     /**
      * Board constructor to create a board of given width and height.
@@ -103,6 +105,7 @@ public class Board {
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
     	}	
+
 
     	//Initialize 3 cards
 		for (int i=0;i<3;i++) {
