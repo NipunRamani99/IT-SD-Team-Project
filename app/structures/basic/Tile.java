@@ -27,6 +27,7 @@ public class Tile {
 	int height;
 	int tilex;
 	int tiley;
+
 	
 	public enum Occupied
 	{
@@ -42,7 +43,7 @@ public class Tile {
 	private Occupied occupied;
 	
 	//The User unit
-	private Unit unit;
+	private Unit unit=null;
 	
 	//The ai unit
 	private Unit aiUnit;
@@ -55,11 +56,12 @@ public class Tile {
 //	//Define the tile is occupied or not
 //	private boolean occupied = false;
 	
-	public Unit getUnit() {
+	public synchronized Unit getUnit() {
+		if(null!=this.unit) unit.setChosed(true);
 		return unit;
 	}
 
-	public void setUnit(Unit unit) {
+	public synchronized void setUnit(Unit unit) {
 		this.unit = unit;
 		this.occupied=Occupied.userOccupied;
 	}
@@ -70,26 +72,30 @@ public class Tile {
 	
 	//Set the Ai unit
 	
-	public void setAiUnit(Unit unit)
+	public synchronized void setAiUnit(Unit unit)
 	{
 		this.aiUnit = unit;
+		//aiUnit.setChosed(false);
 		this.occupied=Occupied.aiOccupied;
 	}
 	
 	//Get the Ai unit
-	public Unit getAiUnit() {
+	public synchronized Unit getAiUnit() {
+		
+		if(null!=this.aiUnit) aiUnit.setChosed(true);
 		return aiUnit;
 	}
 
 	//return the tile status
-	public Occupied isOccupied() {
+	public synchronized Occupied isOccupied() {
 		return occupied;
 	}
 	
 	
 	//set the tile status
-	public void clearUnit()
+	public synchronized void clearUnit()
 	{
+		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
 	}
@@ -98,6 +104,9 @@ public class Tile {
 	{
 		this.occupied=Occupied.none;
 	}
+
+	private TileState tileState = TileState.None;
+
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {
 		super();
@@ -166,6 +175,15 @@ public class Tile {
 		this.tiley = tiley;
 	}
 	
+
+	public TileState getTileState() {
+		return tileState;
+	}
+
+	public void setTileState(TileState tileState) {
+		this.tileState = tileState;
+	}
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.

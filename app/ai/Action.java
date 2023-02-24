@@ -121,30 +121,32 @@ public class Action implements Runnable{
     	
     	//draw the avatar on the board
 		
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 0, Unit.class);	
+		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		//Get related tiles
 		Tile aiTile = board.getTile(8, 2);
 		unit.setPositionByTile(aiTile); 
 		//The tile set the unit
 		aiTile.setAiUnit(unit);
+		gameState.board.addUnit(unit);
 		//draw unit
 		BasicCommands.drawUnit(out, unit, aiTile);
-		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		try { Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
+		gameState.unit=unit;
 		Tile aiTile1 = board.getTile(7, 3);
 		BasicCommands.moveUnitToTile(out, unit, aiTile1);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		aiTile1.setAiUnit(unit);
 		BasicCommands.playUnitAnimation(out,unit,UnitAnimationType.attack);
-		//move unit to tile
-		
-		//try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		//move unit to tile		
+		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
 		
     }
     
     /**
      * User unit Attack the Ai unit
      */
-    private void unitAttack()
+    private synchronized void unitAttack()
     {
     	//Before the user unit attack, check if it is the user turn and if there is any unit is moving
     	if(!gameState.endTurn&&!gameState.isMove)
@@ -159,19 +161,22 @@ public class Action implements Runnable{
     			//Check both the units is not null
     			if(null!=userUnit&&null!=aiUnit)
     			{
+    				//Choose this unit
+    				userUnit.setChosed(true);
     				BasicCommands.addPlayer1Notification(out, "User attack AI ",1);
     				//user lunch an attack
-    				BasicCommands.playUnitAnimation(out,userUnit,UnitAnimationType.attack);
-    				
+    				if(userUnit.isChosed())
+    					BasicCommands.playUnitAnimation(out,userUnit,UnitAnimationType.attack);
+    				//function
     				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-    				
+    				 userUnit.setChosed(false);
     			}
     		}
    
     	}
     }
     
-    private void aiUnitAttack()
+    private synchronized void aiUnitAttack()
     {
   
 		//Check if the second clicked tile is the ai unit
@@ -187,7 +192,8 @@ public class Action implements Runnable{
 				if(gameState.endTurn&&!gameState.isMove)//ai turn
 				{
 	 				BasicCommands.addPlayer1Notification(out, "Ai attack user ",1);
-    				//user lunch an attack
+	 				 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    				//ai lunch an attack
         			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
         			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     			}
@@ -195,10 +201,17 @@ public class Action implements Runnable{
 				{
 					if(gameState.playerAi.getHealth()>0)
 					{
+						//Choose this unit
+						aiUnit.setChosed(true);
 						BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
-	    				//user lunch an attack
-	        			BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
-	        			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+						 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+	    				//ai lunch an attack
+						if(aiUnit.isChosed())
+						{
+							BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
+	        			    try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+						}
+	        			aiUnit.setChosed(false);
 					}
 					else
 					{

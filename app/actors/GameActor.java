@@ -23,6 +23,7 @@ import events.UnitStopped;
 import events.CastCard;
 import play.libs.Json;
 import structures.GameState;
+import structures.statemachine.GameStateMachine;
 import utils.ImageListForPreLoad;
 import play.libs.Json;
 
@@ -42,6 +43,8 @@ public class GameActor extends AbstractActor {
 	private ActorRef out; // The ActorRef can be used to send messages to the front-end UI
 	private Map<String,EventProcessor> eventProcessors; // Classes used to process each type of event
 	private GameState gameState; // A class that can be used to hold game state information
+
+	private GameStateMachine gameStateMachine;
     private static boolean gameStateInit=false;
 	/**
 	 * Constructor for the GameActor. This is called by the GameController when the websocket
@@ -55,10 +58,11 @@ public class GameActor extends AbstractActor {
 		
 		// create class instances to respond to the various events that we might recieve
 		eventProcessors = new HashMap<String,EventProcessor>();
-		if(false==gameStateInit)
+		if(!gameStateInit)
 		{
 			 gameState = new GameState();
-			 gameStateInit=true;
+			 gameStateMachine = new GameStateMachine();
+			 gameStateInit = true;
 			 eventProcessors.put("initalize", new Initalize());
 		}		
 		eventProcessors.put("heartbeat", new Heartbeat());
@@ -131,7 +135,7 @@ public class GameActor extends AbstractActor {
 			// Unknown event type received
 			System.err.println("GameActor: Recieved unknown event type "+messageType);
 		} else {
-			processor.processEvent(out, gameState, message); // process the event
+			processor.processEvent(out, gameState, message, gameStateMachine); // process the event
 		}
 	}
 	
