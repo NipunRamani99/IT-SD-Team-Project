@@ -10,6 +10,7 @@ import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
+import structures.statemachine.GameStateMachine;
 import utils.Constants;
 
 /**
@@ -26,7 +27,7 @@ import utils.Constants;
 public class OtherClicked implements EventProcessor{
 
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message,  GameStateMachine gameStateMachine) {
 		
 		//If click the other place, all the state will be reset
 		gameState.cardClick=null;

@@ -8,6 +8,7 @@ import demo.CommandDemo;
 import structures.GameState;
 import structures.basic.Board;
 import structures.basic.Player;
+import structures.statemachine.GameStateMachine;
 
 /**
  * Indicates that both the core game loop in the browser is starting, meaning
@@ -23,7 +24,7 @@ import structures.basic.Player;
 public class Initalize implements EventProcessor{
 
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message,  GameStateMachine gameStateMachine) {
 		// hello this is a change	
 		gameState.something = true;
 		

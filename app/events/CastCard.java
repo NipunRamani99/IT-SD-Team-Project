@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
+import structures.statemachine.GameStateMachine;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -152,15 +153,15 @@ public class CastCard implements EventProcessor,Runnable {
     }
 
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message,  GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-
-		this.card=cardClicked.getCard();
-		this.attack = card.getBigCard().getAttack();
-		this.health = card.getBigCard().getHealth();
-		tile=tileClicked.getClickedTile();
-		this.out=out;
-		this.gameState=gameState;
+		gameStateMachine.processInput(out, gameState, message,this);
+//		this.card=cardClicked.getCard();
+//		this.attack = card.getBigCard().getAttack();
+//		this.health = card.getBigCard().getHealth();
+//		tile=tileClicked.getClickedTile();
+//		this.out=out;
+//		this.gameState=gameState;
 			
 	}
 

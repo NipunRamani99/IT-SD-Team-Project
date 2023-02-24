@@ -13,6 +13,7 @@ import structures.GameState;
 import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import events.CastCard;
+import structures.statemachine.GameStateMachine;
 import utils.Constants;
 
 
@@ -69,73 +70,73 @@ public class TileClicked implements EventProcessor{
 //	}
 	
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-
-		if(!gameState.isMove&&gameState.gameInitalised)
-		{
-			tilex = message.get("tilex").asInt();
-			tiley = message.get("tiley").asInt();
-			
-//			int xpos = message.get("xpos").asInt();
-//			int ypos = message.get("ypos").asInt();
-			tile=gameState.board.getTile(tilex,tiley);
-			
-		
-		//	try {Thread.sleep(800);} catch (InterruptedException e) {e.printStackTrace();}
-			
-			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
-			{
-				gameState.firstClickedTile=tile;
-				
-				try {
-					hightTiles(out,gameState,message);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				try {
-					getUnitOnTile(out, gameState, message);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
-			{
-				BasicCommands.addPlayer1Notification(out, "second tile select ",1);
-				try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
-				gameState.secondClickedTile=tile;
-				
-				try {
-					unitMoving(out, gameState, message);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				resetBoardSelection(out, gameState);
-			
-			}
-			else
-			{
-				gameState.firstClickedTile=null;
-				gameState.secondClickedTile=null;
-			}
-				
-
-			//moving the unit
-			
-		
-			
-			//Attack the unit
-			if(null!=gameState.firstClickedTile&& null!=gameState.secondClickedTile)
-			{
-				unitAttack(out, gameState, message);
-			}
-			
-				
-		}		
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+		gameStateMachine.processInput(out, gameState, message,this);
+//		if(!gameState.isMove&&gameState.gameInitalised)
+//		{
+//			tilex = message.get("tilex").asInt();
+//			tiley = message.get("tiley").asInt();
+//
+////			int xpos = message.get("xpos").asInt();
+////			int ypos = message.get("ypos").asInt();
+//			tile=gameState.board.getTile(tilex,tiley);
+//
+//
+//		//	try {Thread.sleep(800);} catch (InterruptedException e) {e.printStackTrace();}
+//
+//			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
+//			{
+//				gameState.firstClickedTile=tile;
+//
+//				try {
+//					hightTiles(out,gameState,message);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//				try {
+//					getUnitOnTile(out, gameState, message);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
+//			{
+//				BasicCommands.addPlayer1Notification(out, "second tile select ",1);
+//				try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
+//				gameState.secondClickedTile=tile;
+//
+//				try {
+//					unitMoving(out, gameState, message);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//				resetBoardSelection(out, gameState);
+//
+//			}
+//			else
+//			{
+//				gameState.firstClickedTile=null;
+//				gameState.secondClickedTile=null;
+//			}
+//
+//
+//			//moving the unit
+//
+//
+//
+//			//Attack the unit
+//			if(null!=gameState.firstClickedTile&& null!=gameState.secondClickedTile)
+//			{
+//				unitAttack(out, gameState, message);
+//			}
+//
+//
+//		}
 
 	}
 
@@ -182,7 +183,7 @@ public class TileClicked implements EventProcessor{
 		{
 			if(tile.getUnit() == null&&true==gameState.cardIsClicked&& Occupied.none==tile.isOccupied())
 			{
-				castCard(out, gameState, message);    
+				//castCard(out, gameState, message);
 			}
 			else
 			{
@@ -200,7 +201,7 @@ public class TileClicked implements EventProcessor{
 					if(surroundingTile == tile)
 						continue;
 					if (surroundingTile != null) {
-						if(surroundingTile.getUnit() == null||surroundingTile.getAiUnit()==null) {
+						if(surroundingTile.getUnit() == null && surroundingTile.getAiUnit()==null) {
 							surroundingTile.setTileState(TileState.Reachable);				
 							BasicCommands.drawTile(out, surroundingTile, 1); 
 							try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
@@ -278,7 +279,7 @@ public class TileClicked implements EventProcessor{
 			{
 				//&&gameState.secondClickedTile.getTileState() == TileState.Reachable
 				UnitMoving move = new UnitMoving();
-				move.processEvent(out, gameState, message);
+				//move.processEvent(out, gameState, message, gameStateMachine);
 				//Create the thread for the event
 				Thread m= new Thread(move);
 				m.start();
@@ -303,20 +304,20 @@ public class TileClicked implements EventProcessor{
 	 * @param gameState
 	 * @param message
 	 */
-	private void castCard(ActorRef out,GameState gameState,JsonNode message)
-	{
-		//Create a thread for cast event 
-		gameState.castCard.processEvent(out, gameState, message);
-		Thread cast = new Thread(gameState.castCard);
-		cast.start();
-		//Only playing the card
-		try {
-			cast.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	private void castCard(ActorRef out,GameState gameState,JsonNode message)
+//	{
+//		//Create a thread for cast event
+//		gameState.castCard.processEvent(out, gameState, message);
+//		Thread cast = new Thread(gameState.castCard);
+//		cast.start();
+//		//Only playing the card
+//		try {
+//			cast.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	
 	
 	/**

@@ -50,6 +50,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -72,6 +73,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -93,6 +95,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -114,6 +117,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -135,6 +139,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -159,6 +164,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -184,6 +190,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	
@@ -203,6 +210,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -223,6 +231,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -243,6 +252,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -263,6 +273,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -283,6 +294,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -307,6 +319,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -324,6 +337,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -345,6 +359,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -356,6 +371,7 @@ public class BasicCommands {
 	 * @param displayTimeSeconds
 	 */
 	public static void addPlayer1Notification(ActorRef out, String text, int displayTimeSeconds) {
+
 		try {
 			ObjectNode returnMessage = Json.newObject();
 			returnMessage.put("messagetype", "addPlayer1Notification");
@@ -366,6 +382,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -390,6 +407,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 }

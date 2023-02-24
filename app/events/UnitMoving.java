@@ -7,6 +7,7 @@ import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.Tile.Occupied;
 import structures.basic.UnitAnimationType;
+import structures.statemachine.GameStateMachine;
 
 /**
  * Indicates that a unit instance has started a move. 
@@ -25,7 +26,7 @@ public class UnitMoving implements EventProcessor, Runnable{
 	private  GameState gameState;
 	private ActorRef out;
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 		
 		//int unitid = message.get("id").asInt();
 		this.gameState=gameState;

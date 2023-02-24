@@ -11,6 +11,7 @@ import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
+import structures.statemachine.GameStateMachine;
 import utils.Constants;
 
 import java.util.List;
@@ -39,25 +40,25 @@ public class CardClicked implements EventProcessor{
 	private Card card;
 	
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-
-		//Highlight the card when click
-		if(!gameState.isMove)
-		{
-			if(gameState.cardIsClicked) {
-				resetCardSelection(out, gameState);
-				resetBoardSelection(out, gameState);
-				gameState.cardIsClicked=false;
-			}
-			handPosition = message.get("position").asInt();
-			card=gameState.board.getCard(handPosition);
-			gameState.cardIsClicked = true;
-			gameState.card = card;
-			gameState.handPosition = handPosition;
-			BasicCommands.drawCard(out, card, handPosition, 1);
-			highlightCardSelection(out,gameState);
-			
-		}
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+		gameStateMachine.processInput(out, gameState, message,this);
+//		//Highlight the card when click
+//		if(!gameState.isMove)
+//		{
+//			if(gameState.cardIsClicked) {
+//				resetCardSelection(out, gameState);
+//				resetBoardSelection(out, gameState);
+//				gameState.cardIsClicked=false;
+//			}
+//			handPosition = message.get("position").asInt();
+//			card=gameState.board.getCard(handPosition);
+//			gameState.cardIsClicked = true;
+//			gameState.card = card;
+//			gameState.handPosition = handPosition;
+//			BasicCommands.drawCard(out, card, handPosition, 1);
+//			highlightCardSelection(out,gameState);
+//
+//		}
 	}
 	
 	//Highlight the tiles when selecting the cards

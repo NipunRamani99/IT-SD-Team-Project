@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import structures.GameState;
 import structures.basic.*;
+import structures.statemachine.GameStateMachine;
 
 /**
  * This class will define the action of the unit attack, player attack, and attack between unit and player
@@ -79,7 +80,7 @@ public class Attack implements  EventProcessor,Runnable  {
 	}
 
 	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
 		this.out=out;
 		this.gameState=gameState;
