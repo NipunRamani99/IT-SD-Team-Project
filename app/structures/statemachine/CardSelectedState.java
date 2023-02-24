@@ -67,6 +67,7 @@ public class CardSelectedState extends State{
                	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");         
+
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
