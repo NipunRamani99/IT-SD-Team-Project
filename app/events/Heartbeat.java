@@ -12,7 +12,7 @@ import structures.GameState;
  * Actor, which you can use to trigger game logic.
  * 
  * { 
- *   String messageType = "heartbeat"
+ *   String messageType = “heartbeat”
  * }
  * 
  * @author Dr. Richard McCreadie

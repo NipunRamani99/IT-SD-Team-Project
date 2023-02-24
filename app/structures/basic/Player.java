@@ -1,5 +1,5 @@
 package structures.basic;
-import utils.Constants;
+
 /**
  * A basic representation of of the Player. A player
  * has health and mana.
@@ -14,7 +14,7 @@ public class Player {
 	
 	public Player() {
 		super();
-		this.health = Constants.PLAYER_HEALTH;
+		this.health = 20;
 		this.mana = 0;
 	}
 	public Player(int health, int mana) {

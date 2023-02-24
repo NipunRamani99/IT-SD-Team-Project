@@ -10,8 +10,8 @@ import structures.GameState;
  * The event reports the unique id of the unit.
  * 
  * { 
- *   messageType = "unitMoving"
- *   id = unit id
+ *   messageType = “unitMoving”
+ *   id = <unit id>
  * }
  * 
  * @author Dr. Richard McCreadie

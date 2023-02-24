@@ -10,7 +10,7 @@ public interface DummyTell {
 	 * ActorRef is null
 	 * 
 	 * If writing a unit test you can add a class that implements this interface
-	 * and set BasicCommands.altTell = your class to avoid calling ActorRef.tell
+	 * and set BasicCommands.altTell = <your class> to avoid calling ActorRef.tell
 	 * and call altTell.tell instead.
 	 * @param message
 	 */
