@@ -11,26 +11,31 @@ import structures.basic.Card;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 import java.util.List;
 
 public class CardSelectedState implements State{
     private int handPosition = 0;
-    private Card cardSelcted = null;
+   // private Card cardSelected = null;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-        cardSelcted =gameState.board.getCard(handPosition);
-        BasicCommands.drawCard(out, cardSelcted, handPosition, 1);
+        gameState.card =gameState.board.getCard(handPosition);
+//        gameState.card=cardSelected;
+        BasicCommands.drawCard(out, gameState.card, handPosition, 1);
         highlightCardSelection(out, gameState);
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
         if(event instanceof TileClicked) {
-            int tilex = message.get("tilex").asInt();
-            int tiley = message.get("tiley").asInt();
+            int tilex = gameState.position.getTilex();
+            int tiley = gameState.position.getTiley();
             Tile tile = gameState.board.getTile(tilex, tiley);
+            System.out.println(String.format("tiles:%d,%d",tilex,tiley));
+            System.out.println("TileSelectedState: Tile Clicked");
             if(tile.getTileState() == TileState.None) {
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
@@ -38,9 +43,13 @@ public class CardSelectedState implements State{
                 gameStateMachine.setState(new NoSelectionState());
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
-                BasicCommands.drawUnit(out, null, tile); 
+                //assign the reachable tile to the gameState
+                gameState.tile=tile;
+                gameStateMachine.setState(new CardCastedState());
+            	//after the cast the unit, delete the card
+            	BasicCommands.deleteCard(out, handPosition);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");
-                gameStateMachine.setState(new NoSelectionState());
+//                gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
@@ -74,6 +83,4 @@ public class CardSelectedState implements State{
         }
     }
     
-    
-    private void getUnitFromCard
 }

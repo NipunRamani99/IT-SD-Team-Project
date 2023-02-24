@@ -13,6 +13,7 @@ import structures.GameState;
 import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import events.CastCard;
+import structures.statemachine.CardCastedState;
 import structures.statemachine.GameStateMachine;
 import utils.Constants;
 
@@ -71,7 +72,20 @@ public class TileClicked implements EventProcessor{
 	
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+		
+	
+		BasicCommands.addPlayer1Notification(out, "Tile Clicked ",1);
+		int tilex = message.get("tilex").asInt();
+		int tiley = message.get("tiley").asInt();
+		gameState.position = new Position(tilex, tiley);
 		gameStateMachine.processInput(out, gameState, message,this);
+		
+		if(gameStateMachine.getCurrState() instanceof  CardCastedState)
+		{
+			gameStateMachine.processInput(out, gameState, message,this);
+		}
+		
+		
 //		if(!gameState.isMove&&gameState.gameInitalised)
 //		{
 //			tilex = message.get("tilex").asInt();

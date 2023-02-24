@@ -32,6 +32,7 @@ public class GameState {
 	public boolean unitIsClicked = false;
 	public CastCard castCard=null;
 	public Board board = null;
+	public Tile tile=null;
 	public Tile firstClickedTile=null;
 	public Tile secondClickedTile=null;
 	public CardClicked cardClick=null;
