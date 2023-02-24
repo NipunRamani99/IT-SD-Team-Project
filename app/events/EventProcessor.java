@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import structures.GameState;
+import structures.statemachine.GameStateMachine;
 
 /**
  * A generic event processor interface, implemented by all classes that process events
@@ -22,6 +23,6 @@ public interface EventProcessor {
 	 * @param message
 	 * 
 	 */
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message);
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine);
 	
 }

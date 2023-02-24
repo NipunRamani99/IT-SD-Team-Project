@@ -27,8 +27,86 @@ public class Tile {
 	int height;
 	int tilex;
 	int tiley;
+
 	
-	public Tile() {}
+	public enum Occupied
+	{
+		//NO occupied
+		none,
+		//Occupied by the human unit
+		userOccupied,
+		//Occupied by the AI unit
+		aiOccupied;
+	}
+	
+	//The occupied status
+	private Occupied occupied;
+	
+	//The User unit
+	private Unit unit=null;
+	
+	//The ai unit
+	private Unit aiUnit;
+	
+	/**
+	 * for the human player
+	 * 
+	 */
+	
+//	//Define the tile is occupied or not
+//	private boolean occupied = false;
+	
+	public synchronized Unit getUnit() {
+		if(null!=this.unit) unit.setChosed(true);
+		return unit;
+	}
+
+	public synchronized void setUnit(Unit unit) {
+		this.unit = unit;
+		this.occupied=Occupied.userOccupied;
+	}
+	
+	/**
+	 * for the ai player
+	 */
+	
+	//Set the Ai unit
+	
+	public synchronized void setAiUnit(Unit unit)
+	{
+		this.aiUnit = unit;
+		//aiUnit.setChosed(false);
+		this.occupied=Occupied.aiOccupied;
+	}
+	
+	//Get the Ai unit
+	public synchronized Unit getAiUnit() {
+		
+		if(null!=this.aiUnit) aiUnit.setChosed(true);
+		return aiUnit;
+	}
+
+	//return the tile status
+	public synchronized Occupied isOccupied() {
+		return occupied;
+	}
+	
+	
+	//set the tile status
+	public synchronized void clearUnit()
+	{
+		if(null!=this.unit) this.unit.setChosed(false);
+		this.unit=null;
+		this.occupied=Occupied.none;
+	}
+	
+	public Tile()
+	{
+		this.occupied=Occupied.none;
+	}
+
+	private TileState tileState = TileState.None;
+
 	
 	public Tile(String tileTexture, int xpos, int ypos, int width, int height, int tilex, int tiley) {
 		super();
@@ -40,6 +118,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=Occupied.none;
 	}
 	
 	public Tile(List<String> tileTextures, int xpos, int ypos, int width, int height, int tilex, int tiley) {
@@ -51,6 +130,7 @@ public class Tile {
 		this.height = height;
 		this.tilex = tilex;
 		this.tiley = tiley;
+		this.occupied=Occupied.none;
 	}
 	public List<String> getTileTextures() {
 		return tileTextures;
@@ -95,6 +175,15 @@ public class Tile {
 		this.tiley = tiley;
 	}
 	
+
+	public TileState getTileState() {
+		return tileState;
+	}
+
+	public void setTileState(TileState tileState) {
+		this.tileState = tileState;
+	}
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.
