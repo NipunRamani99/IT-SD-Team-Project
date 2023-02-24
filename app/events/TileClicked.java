@@ -200,7 +200,7 @@ public class TileClicked implements EventProcessor{
 					if(surroundingTile == tile)
 						continue;
 					if (surroundingTile != null) {
-						if(surroundingTile.getUnit() == null||surroundingTile.getAiUnit()==null) {
+						if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
 							surroundingTile.setTileState(TileState.Reachable);				
 							BasicCommands.drawTile(out, surroundingTile, 1); 
 							try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
