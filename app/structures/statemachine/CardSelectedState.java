@@ -38,9 +38,7 @@ public class CardSelectedState implements State{
                 gameStateMachine.setState(new NoSelectionState());
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
-                //Cast card
-                //Delete card
-
+                BasicCommands.drawUnit(out, null, tile); 
                 System.out.println("CardSelectedState: Reachable Tile Clicked");
                 gameStateMachine.setState(new NoSelectionState());
             }
@@ -75,4 +73,7 @@ public class CardSelectedState implements State{
             }
         }
     }
+    
+    
+    private void getUnitFromCard
 }
