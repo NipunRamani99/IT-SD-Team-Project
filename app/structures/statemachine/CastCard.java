@@ -1,4 +1,4 @@
-package events;
+package structures.statemachine;
 
 import structures.basic.*;
 
@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import events.CardClicked;
+import events.EventProcessor;
+import events.TileClicked;
 import structures.GameState;
-import structures.statemachine.GameStateMachine;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -17,31 +19,9 @@ import utils.StaticConfFiles;
  * and on the target tile. If it is a unit card then this class will spawn the corresponding unit on the target tile.
  * If it is a spell card then this class will cast the spell on the unit which occupies the target tile.
  */
-public class CastCard implements EventProcessor,Runnable {
+public class CastCard {
     /**
-     * A reference to CardClicked event.
-     */
-    private CardClicked cardClicked;
-
-    /**
-     * A reference to TileCliked event.
-     */
-    private TileClicked tileClicked;
-    
-    /**
-     * A unit that casted
-     */
-    private Unit unit=null;
-    
-    
-    /**
-     * A tile to be placed 
-     */
-    private Tile tile=null;
-    
-    private String spellName = null;
-    
-    private Card card;
+ 
     
 
     /**
@@ -51,16 +31,17 @@ public class CastCard implements EventProcessor,Runnable {
      * @param tileclick A reference to a TileCliked event
      */
     public CastCard(CardClicked cardClick, TileClicked tileClick){
-        this.cardClicked=cardClick;
-        this.tileClicked=tileClick;
+
     }
 
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public void transform(String cardName){  	
+    public static void transform(ActorRef out, String cardName, GameState gameState, Tile tile){  	
     	//Transform the card into units
-    	
+    	Unit unit = null;
+    	Card card = null;
+    	String spellName = null;
     	switch(cardName)
     	{
     	  case "Azure Herald":
@@ -116,7 +97,6 @@ public class CastCard implements EventProcessor,Runnable {
      		  break;
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
-    		  break;
      	  case "Staff of Y’Kir":
    		      spellName = StaticConfFiles.f1_buff;
    		      break;
@@ -127,15 +107,37 @@ public class CastCard implements EventProcessor,Runnable {
 	    	  break;
 	    
     	}
+    	System.out.println("unitselected:"+unit);
+    	System.out.println("spellname:"+spellName);
 
-    	 unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id++, Unit.class);
+    	if(unit != null) {
+    	 placeUnit(gameState, unit, tile, out);
+		    BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+			//delete the card when it is played
+		
+			//add attack and health to the unit
+			BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+			BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+			//Stop the animation
+			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
+			unit = null;
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+    	} else if(spellName != null){
+    		placeSpell(out, gameState, spellName, tile);
+			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+			//delete the card when it is played
+
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			}
     }
 
 
 	/**
      * The function will place the unit on the tile
+	 * @param gameState 
+	 * @param out 
      */
-    public void placeUnit(){
+    private static void placeUnit(GameState gameState, Unit unit, Tile tile, ActorRef out){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
@@ -146,81 +148,22 @@ public class CastCard implements EventProcessor,Runnable {
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
-
-        resetBoardSelection(out, gameState);
-		resetCardSelection(out, gameState);
-		gameState.cardIsClicked=false;
-
-        try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
-	private void resetCardSelection(ActorRef out, GameState gameState) {
-		BasicCommands.drawCard(out, gameState.card, gameState.handPosition, 0);
-		gameState.card = null;
-		gameState.handPosition = -1;
-		gameState.cardIsClicked = false;
-	}
-	private void resetBoardSelection(ActorRef out, GameState gameState) {
-		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
-			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
-				Tile tile = gameState.board.getTile(i, j);
-				BasicCommands.drawTile(out, tile, 0);
-				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-				tile.setTileState(TileState.None);
-			}
-		}
-	}
+	
 
     /**
      * The function will place the spell on a unit, and perform an action on that unit
      * @param unit The unit is the destination unit that the spell card will cast to
      */
-    public void placeSpell(ActorRef out, GameState gameState, String spellName){
+    private static void placeSpell(ActorRef out, GameState gameState, String spellName, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
-		gameState.cardIsClicked=false;
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
 
-	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message,  GameStateMachine gameStateMachine) {
-		// TODO Auto-generated method stub
-		gameStateMachine.processInput(out, gameState, message,this);
-//		this.card=cardClicked.getCard();
-//		this.attack = card.getBigCard().getAttack();
-//		this.health = card.getBigCard().getHealth();
-//		tile=tileClicked.getClickedTile();
-//		this.out=out;
-//		this.gameState=gameState;
-			
-	}
-
-	@Override
-	public void run() {
-		if(gameState.cardIsClicked)
-		{
+	public static void castCard(ActorRef out, Card card, Tile tile, GameState gameState) {
 		    //Play the card
-			transform(card.getCardname());
-			if(unit != null) {
-			    placeUnit(out, gameState);
-			    BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-				//delete the card when it is played
-				BasicCommands.deleteCard(out, cardClicked.getHandPosition());
-				//add attack and health to the unit
-				BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-				BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-				//Stop the animation
-				BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-				unit = null;
-				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			}else if(spellName != null) {
-				placeSpell(out, gameState, spellName);
-				BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-				//delete the card when it is played
-				BasicCommands.deleteCard(out, cardClicked.getHandPosition());
-				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			}
+			transform(out, card.getCardname(), gameState, tile);
 			
-		}	
-		
 	}
 }

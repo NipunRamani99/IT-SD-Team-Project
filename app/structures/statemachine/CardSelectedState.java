@@ -39,6 +39,7 @@ public class CardSelectedState implements State{
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
                 //Cast card
+                
                 //Delete card
 
                 System.out.println("CardSelectedState: Reachable Tile Clicked");

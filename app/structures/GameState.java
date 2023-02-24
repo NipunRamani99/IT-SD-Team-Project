@@ -8,12 +8,12 @@ import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Position;
+import structures.statemachine.CastCard;
 import structures.basic.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import events.CardClicked;
-import events.CastCard;
 import events.TileClicked;
 import utils.Constants;
 
