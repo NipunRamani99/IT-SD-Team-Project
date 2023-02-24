@@ -25,7 +25,9 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
-
+	//health and attcak for a unit
+	private int health;
+	private int attack;
 	
 	private boolean isChosed=false;
 	
@@ -112,6 +114,22 @@ public class Unit {
 
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	public int getAttack() {
+		return attack;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public void setAttack(int attack) {
+		this.attack = attack;
 	}
 	
 	/**
