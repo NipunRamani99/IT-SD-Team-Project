@@ -26,10 +26,10 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 
-	private int attack;
-
+	//health and attack for a unit
 	private int health;
-
+	private int attack;
+	
 	private boolean isChosed=false;
 	
 	//Choose the unit
@@ -135,6 +135,22 @@ public class Unit {
 
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	public int getAttack() {
+		return attack;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public void setAttack(int attack) {
+		this.attack = attack;
 	}
 	
 	/**

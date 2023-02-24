@@ -1,5 +1,7 @@
 package commands;
 
+import akka.actor.ActorRef;
+import structures.basic.Card;
 import structures.basic.Unit;
 
 /**
@@ -31,8 +33,10 @@ public class AbilityCommands {
     /**
      * Truestrike ability
      */
-    public static void truestrikeAbility(){
-
+    public static void truestrikeAbility(ActorRef out, Unit unit){
+    	int health = unit.getHealth();
+    	health = health - 2;
+    	BasicCommands.setUnitHealth(out, unit, health);
     }
 
     /**
