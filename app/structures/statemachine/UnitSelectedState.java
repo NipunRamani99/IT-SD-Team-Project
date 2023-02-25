@@ -11,6 +11,7 @@ import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
+import structures.basic.UnitAnimationType;
 import utils.Constants;
 
 public class UnitSelectedState implements State{
@@ -38,7 +39,18 @@ public class UnitSelectedState implements State{
                 gameState.resetBoardSelection(out);
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
                 gameStateMachine.setState(new UnitMovingState(out, unitClicked, tileClicked, tile, gameState));
+
+                // unit attacking enemy
+            } else if (tile.getTileState() == TileState.Occupied) {
+                if (tile.getAiUnit() != null) {
+                    AttackState.processEvent(out, gameState, message, gameStateMachine);
+                    gameState.resetBoardSelection(out);
+                    gameStateMachine.setState(new NoSelectionState());
+                }
             }
+
+
+
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
             System.out.println("UnitSelectedState: Card Clicked");
