@@ -57,8 +57,6 @@ public class UnitMovingState implements State {
         	{
         		//do not move
         		this.targetTile=startTile;
-
-//        		startTile.setUnit(null);
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile);  
         		System.out.println("Do not move");
         	}
