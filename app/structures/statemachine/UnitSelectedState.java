@@ -37,7 +37,7 @@ public class UnitSelectedState implements State{
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
-                gameStateMachine.setState(new UnitMovingState(out, unitClicked, tileClicked, tile, gameState));
+                gameStateMachine.setState(new UnitMovingState(out, unitClicked, tileClicked, tile, gameState,gameStateMachine));
             }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);

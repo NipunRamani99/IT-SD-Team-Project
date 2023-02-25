@@ -103,6 +103,7 @@ public class Board {
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
     	}	
+    	
 
     	//Initialize 6 cards
 		for (int i=0;i<6;i++) {
