@@ -14,15 +14,15 @@ import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import utils.Constants;
 
-public class AttackState {
+public class CastSpell implements EventProcessor {
 
-    public static void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine)
+    @Override
+    public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine)
     {
 
-        // BasicCommands.playUnitAnimation(out,playerUnit, UnitAnimationType.attack); // player attack ani
-        // enemyUnit.setHealth(-1);
-        // BasicCommands.playUnitAnimation(out,enemyUnit, UnitAnimationType.attack); // enemy attack ani
-        // playerUnit.setHealth(-1);
+        // player.setMana(-1);
+        // BasicCommands.playUnitAnimation(out,playerUnit, UnitAnimationType.castSpell); // spell cast ani
+        // enemyUnit.setHealth((playerUnit.getSpellDamage * -1));
     }
 
 }
