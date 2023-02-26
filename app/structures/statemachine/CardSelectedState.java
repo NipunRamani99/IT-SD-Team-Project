@@ -25,8 +25,9 @@ public class CardSelectedState implements State{
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-        highlightCardSelection(out, gameState);
+        try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+        if(gameState.humanMana>=cardSelected.getManacost())
+        	highlightCardSelection(out, gameState);
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
@@ -43,15 +44,15 @@ public class CardSelectedState implements State{
                 gameStateMachine.setState(new NoSelectionState());
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
-                //assign the reachable tile to the gameState
-                drawUnitOnBoard(out, gameState,cardSelected,tile);
-            	//after the cast the unit, delete the card
-            	BasicCommands.deleteCard(out, handPosition);
-            	//Select the mana cost
+                //assign the reachable tile to the gameState    
+            	drawUnitOnBoard(out, gameState,cardSelected,tile);
+               	//after the cast the unit, delete the card
+               	BasicCommands.deleteCard(out, handPosition);
+               	//Select the mana cost
                 //Need to judge the whose turn
-            	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-            	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                System.out.println("CardSelectedState: Reachable Tile Clicked");
+               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                System.out.println("CardSelectedState: Reachable Tile Clicked");         
 //                gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
