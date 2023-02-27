@@ -14,6 +14,8 @@ import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import events.CastCard;
 import structures.statemachine.GameStateMachine;
+import structures.statemachine.HumanAttackState;
+import structures.statemachine.NoSelectionState;
 import utils.Constants;
 
 
@@ -92,46 +94,27 @@ public class TileClicked implements EventProcessor{
 //
 //		//	try {Thread.sleep(800);} catch (InterruptedException e) {e.printStackTrace();}
 //
-//			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
-//			{
-//				gameState.firstClickedTile=tile;
-//
-//				try {
-//					hightTiles(out,gameState,message);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//
-//				try {
-//					getUnitOnTile(out, gameState, message);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
-//			{
-//				BasicCommands.addPlayer1Notification(out, "second tile select ",1);
-//				try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
-//				gameState.secondClickedTile=tile;
-//
-//				try {
-//					unitMoving(out, gameState, message);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//
-//				resetBoardSelection(out, gameState);
-//
-//			}
-//			else
-//			{
-//				gameState.firstClickedTile=null;
-//				gameState.secondClickedTile=null;
-//			}
-//
+			if(null==gameState.firstClickedTile&&null==gameState.secondClickedTile)
+			{
+				gameState.firstClickedTile=tile;
+			}
+			else if(null!=gameState.firstClickedTile&&null==gameState.secondClickedTile)
+			{
+				if(null!=tile.getAiUnit())
+				{
+		
+				}
+				else
+				{
+					gameStateMachine.setState(new NoSelectionState());
+				}
+			}
+			else
+			{
+				gameState.firstClickedTile=null;
+				gameState.secondClickedTile=null;
+			}
+
 //
 //			//moving the unit
 //

@@ -39,6 +39,16 @@ public class UnitSelectedState implements State{
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
                 gameStateMachine.setState(new UnitMovingState(out, unitClicked, tileClicked, tile, gameState,gameStateMachine));
             }
+            else if(tile.getTileState()==TileState.Occupied)
+            {
+            	if(null!=tile.getAiUnit())
+            	{
+            		gameState.resetBoardSelection(out);
+            		System.out.println("Get the Ai unit");
+            		gameStateMachine.setState(new HumanAttackState(out, unitClicked, tileClicked, tile, gameState, gameStateMachine));
+            	}
+            	  
+            }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
             System.out.println("UnitSelectedState: Card Clicked");

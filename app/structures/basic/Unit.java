@@ -26,7 +26,10 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 
-	
+	private int attack;
+
+	private int health;
+
 	private boolean isChosed=false;
 	
 	//Choose the unit
@@ -43,6 +46,26 @@ public class Unit {
 	private Tile tile;
 
 	public Unit() {}
+	
+	//get attack
+	public int getAttack() {
+		return attack;
+	}
+    //set attack
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
+	
+	
+	//get the health
+	public int getHealth() {
+		return health;
+	}
+	//set the health
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();

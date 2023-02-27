@@ -87,6 +87,8 @@ public class BasicCommands {
 	public static void setUnitAttack(ActorRef out, Unit unit, int attack) {
 		try {
 			ObjectNode returnMessage = Json.newObject();
+			//set unit attack
+			unit.setAttack(attack);
 			returnMessage.put("messagetype", "setUnitAttack");
 			returnMessage.put("unit", mapper.readTree(mapper.writeValueAsString(unit)));
 			returnMessage.put("attack", attack);
@@ -109,6 +111,8 @@ public class BasicCommands {
 	public static void setUnitHealth(ActorRef out, Unit unit, int health) {
 		try {
 			ObjectNode returnMessage = Json.newObject();
+			//set unit health
+			unit.setHealth(health);
 			returnMessage.put("messagetype", "setUnitHealth");
 			returnMessage.put("unit", mapper.readTree(mapper.writeValueAsString(unit)));
 			returnMessage.put("health", health);

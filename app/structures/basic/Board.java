@@ -134,10 +134,32 @@ public class Board {
 		
 		
 		//Create an AI player
-		AIPlayer ai = new AIPlayer(gameState.board, cards);
 		//Initialize the AI part
-		ai.processEvent(out,gameState,ActionType.Init);
-		gameState.ai=ai;
+	    
+	    //draw the avatar on the board
+		
+		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
+		//Get related tiles
+		Tile aiTile = getTile(8, 2);
+		aiUnit.setPositionByTile(aiTile); 
+		//The tile set the unit
+		aiTile.setAiUnit(aiUnit);
+	    addUnit(aiUnit);
+		//draw unit
+		BasicCommands.drawUnit(out, aiUnit, aiTile);
+		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		//unit attack and health	
+		BasicCommands.setUnitAttack(out, aiUnit, 2);
+		BasicCommands.setUnitHealth(out, aiUnit,20);
+		
+		//gameState.unit=aiUnit;
+		Tile aiTile1 = getTile(7, 3);
+		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		aiTile1.setAiUnit(aiUnit);
+		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
+		//move unit to tile		
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
 
 		

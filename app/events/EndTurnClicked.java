@@ -40,6 +40,7 @@ public class EndTurnClicked implements EventProcessor{
 			 }
 			 else
 			 {
+				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
 			

@@ -49,11 +49,10 @@ public class CardSelectedState implements State{
                	//after the cast the unit, delete the card
                	BasicCommands.deleteCard(out, handPosition);
                	//Select the mana cost
-                //Need to judge the whose turn
                	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");         
-//                gameStateMachine.setState(new NoSelectionState());
+                gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);

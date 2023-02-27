@@ -63,8 +63,10 @@ public class UnitMovingState implements State {
         }
         else
         {
-        	startTile.setUnit(null);
-            BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
+        	startTile.setUnit(null);  
+        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
+        	
+         
         }
 //        startTile.setUnit(null);
 //        BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
