@@ -19,4 +19,9 @@ public class GameStateMachine {
     public void processInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor eventProcessor) {
         currentState.handleInput(out, gameState, message, eventProcessor,this);
     }
+    
+    public State getCurrState()
+    {
+    	return this.currentState;
+    }
 }

@@ -32,6 +32,7 @@ public class GameState {
 	public boolean unitIsClicked = false;
 	public CastCard castCard=null;
 	public Board board = null;
+	public Tile tile=null;
 	public Tile firstClickedTile=null;
 	public Tile secondClickedTile=null;
 	public CardClicked cardClick=null;
@@ -44,11 +45,15 @@ public class GameState {
 	
 	public int id=0;
 	//public ActionType type;
+	//The mana for human player
+	public int humanMana=2;
+	//The mana for Ai player
+	public int AiMana=2;
 	
 	public AIPlayer ai;
 	
-	public Player playerAi;
-	public Player user;
+	public Player AiPlayer;
+	public Player humanPlayer;
 
 	public int handPosition = -1;
 	public Card card = null;
@@ -70,4 +75,5 @@ public class GameState {
 			BasicCommands.drawCard(out, cards.get(i),i+1,0);
 		}
 	}
+	
 }

@@ -71,7 +71,15 @@ public class TileClicked implements EventProcessor{
 	
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+		
+	
+		BasicCommands.addPlayer1Notification(out, "Tile Clicked ",1);
+		int tilex = message.get("tilex").asInt();
+		int tiley = message.get("tiley").asInt();
+		gameState.position = new Position(tilex, tiley);
 		gameStateMachine.processInput(out, gameState, message,this);
+		
+		
 //		if(!gameState.isMove&&gameState.gameInitalised)
 //		{
 //			tilex = message.get("tilex").asInt();
@@ -201,7 +209,8 @@ public class TileClicked implements EventProcessor{
 					if(surroundingTile == tile)
 						continue;
 					if (surroundingTile != null) {
-						if(surroundingTile.getUnit() == null && surroundingTile.getAiUnit()==null) {
+
+						if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
 							surroundingTile.setTileState(TileState.Reachable);				
 							BasicCommands.drawTile(out, surroundingTile, 1); 
 							try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}

@@ -103,6 +103,7 @@ public class Board {
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
     	}	
+    	
 
     	//Initialize 3 cards
 		for (int i=0;i<3;i++) {
@@ -117,14 +118,19 @@ public class Board {
 		
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		//Get related tiles
-
 		Tile tile=this.getTile(0, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
 		this.addUnit(unit);
 		tile.setUnit(unit);	
 		BasicCommands.drawUnit(out, unit, tile);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		//unit attack and health	
+		BasicCommands.setUnitAttack(out, unit, 2);
+		BasicCommands.setUnitHealth(out, unit,20);
 		
 		
 		//Create an AI player

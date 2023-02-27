@@ -68,7 +68,7 @@ public class Action implements Runnable{
     	
     	//initialize the board, player and action type
     	this.board=gameState.board;
-    	this.playerAI=gameState.playerAi;
+    	this.playerAI=gameState.AiPlayer;
     }
 
     /**
@@ -199,7 +199,7 @@ public class Action implements Runnable{
     			}
 				else if(!gameState.endTurn&&!gameState.isMove)//user turn
 				{
-					if(gameState.playerAi.getHealth()>0)
+					if(gameState.AiPlayer.getHealth()>0)
 					{
 						//Choose this unit
 						aiUnit.setChosed(true);

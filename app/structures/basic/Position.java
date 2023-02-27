@@ -47,13 +47,13 @@ public class Position {
 		this.ypos = ypos;
 	}
 	public int getTilex() {
-		return tilex;
+		return this.tilex;
 	}
 	public void setTilex(int tilex) {
 		this.tilex = tilex;
 	}
 	public int getTiley() {
-		return tiley;
+		return this.tiley;
 	}
 	public void setTiley(int tilexy) {
 		this.tiley = tilexy;
