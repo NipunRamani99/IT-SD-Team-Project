@@ -19,7 +19,7 @@ public class Card {
 	
 	MiniCard miniCard;
 	BigCard bigCard;
-	
+
 	public Card() {};
 	
 	public Card(int id, String cardname, int manacost, MiniCard miniCard, BigCard bigCard) {
@@ -61,6 +61,4 @@ public class Card {
 	public void setBigCard(BigCard bigCard) {
 		this.bigCard = bigCard;
 	}
-
-	
 }

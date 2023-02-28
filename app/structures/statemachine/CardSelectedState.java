@@ -7,27 +7,40 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
-import structures.basic.Card;
-import structures.basic.Tile;
-import structures.basic.TileState;
-import structures.basic.Unit;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
 import java.util.List;
 
+enum CardType {
+    UNIT,
+    SPELL
+}
+
 public class CardSelectedState implements State{
     private int handPosition = 0;
     private Card cardSelected = null;
+
+    private CardType cardType;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-        try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+        if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
         if(gameState.humanMana>=cardSelected.getManacost())
-        	highlightCardSelection(out, gameState);
+            if(cardType == CardType.UNIT)
+        	    highlightUnitCardSelection(out, gameState);
+            else if(cardType == CardType.SPELL)
+                highlightSpellCardSelection(out, gameState);
+
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
@@ -64,7 +77,7 @@ public class CardSelectedState implements State{
         }
     }
 
-    private void highlightCardSelection(ActorRef out, GameState gameState)
+    private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
@@ -86,7 +99,18 @@ public class CardSelectedState implements State{
             }
         }
     }
-    
+
+    private void highlightSpellCardSelection(ActorRef out, GameState gameState)
+    {
+        BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
+        List<Unit> unitList = gameState.board.getUnits();
+        for(Unit unit : unitList) {
+            Position tilePos = unit.getPosition();
+            Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+            BasicCommands.drawTile(out, tile, 2);
+        }
+    }
+
     //Draw the unit on the board
     private void drawUnitOnBoard(ActorRef out,GameState gameState,Card card, Tile tile)
     {
@@ -148,11 +172,6 @@ public class CardSelectedState implements State{
 	    
     	}
 
-    
-    
-    
-    
-    	
     	BasicCommands.addPlayer1Notification(out, "Cast "+carName,1);
     	
     }
@@ -160,13 +179,12 @@ public class CardSelectedState implements State{
     //Set the unit on tile
     private void setUnitOnTile(ActorRef out,GameState gameState, Unit unit, Tile tile)
     {
-    	unit.setPositionByTile(tile); 
+    	unit.setPositionByTile(tile);
     	BasicCommands.drawUnit(out, unit, tile);
     	gameState.board.addUnit(unit);
 		tile.setUnit(unit);	
     	
-    	try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-    }
+     }
     
     ///Set unit attack and healthy
     private void setUnitHealthAndAttack(ActorRef out, Unit unit,int health, int attack)

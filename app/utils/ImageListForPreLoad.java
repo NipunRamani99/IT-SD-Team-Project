@@ -101,8 +101,7 @@ public class ImageListForPreLoad {
 		
 		return images;
 	}
-	
-	
+
 	public static List<String> getCardImagesForPreload(String configFile) {
 		Card card = BasicObjectBuilders.loadCard(configFile, 0, Card.class);
 		List<String> images = new ArrayList<String>(card.getMiniCard().getAnimationFrames().length+card.getMiniCard().getCardTextures().length+card.getBigCard().getCardTextures().length);
@@ -111,5 +110,4 @@ public class ImageListForPreLoad {
 		for (String image :card.getBigCard().getCardTextures()) images.add(image);
 		return images;
 	}
-	
 }
