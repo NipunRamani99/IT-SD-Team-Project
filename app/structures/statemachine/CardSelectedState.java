@@ -9,6 +9,7 @@ import events.TileClicked;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
+import structures.basic.Tile.Occupied;
 import structures.basic.TileState;
 import structures.basic.Unit;
 import utils.BasicObjectBuilders;
@@ -42,8 +43,26 @@ public class CardSelectedState implements State{
                 gameState.resetCardSelection(out);
                 System.out.println("CardSelectedState: None Tile Clicked");
                 gameStateMachine.setState(new NoSelectionState());
-            } else if (tile.getTileState() == TileState.Reachable) {
+            } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
+                //if the tile is reachable and card is a unit card
+                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
+                    //Cast card
+                    CastCard.castUnitCard(out, cardSelected, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);
+                    gameState.board.deleteCard(handPosition);
+                    System.out.println("CardSelectedState: Reachable Tile Clicked");                    
+                //if the tile is occupied and card is a spell card(spell needs unit to use)
+                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
+                	//Cast card
+                    CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);          
+                    gameState.board.deleteCard(handPosition);
+                    System.out.println("CardSelectedState: Occupied Tile Clicked");
+                }
                 gameState.resetBoardSelection(out);
+
                 //assign the reachable tile to the gameState    
             	drawUnitOnBoard(out, gameState,cardSelected,tile);
                	//after the cast the unit, delete the card
@@ -52,6 +71,7 @@ public class CardSelectedState implements State{
                	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");         
+
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {

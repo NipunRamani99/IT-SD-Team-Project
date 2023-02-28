@@ -12,7 +12,7 @@ import org.checkerframework.checker.signedness.qual.Constant;
 import structures.GameState;
 import structures.basic.*;
 import structures.basic.Tile.Occupied;
-import events.CastCard;
+import structures.statemachine.CastCard;
 import structures.statemachine.GameStateMachine;
 import structures.statemachine.HumanAttackState;
 import structures.statemachine.NoSelectionState;

@@ -8,12 +8,12 @@ import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Position;
+import structures.statemachine.CastCard;
 import structures.basic.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import events.CardClicked;
-import events.CastCard;
 import events.TileClicked;
 import utils.Constants;
 
@@ -72,7 +72,9 @@ public class GameState {
 				Tile tile = board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
 				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-				tile.setTileState(TileState.None);
+				if(tile.getTileState() != TileState.Occupied) {
+					tile.setTileState(TileState.None);
+				}
 			}
 		}
 	}
