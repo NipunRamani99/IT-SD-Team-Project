@@ -139,6 +139,7 @@ public class Board {
 	    //draw the avatar on the board
 		
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
+		aiUnit.setAi(true);
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
 		aiUnit.setPositionByTile(aiTile); 
@@ -154,9 +155,10 @@ public class Board {
 		
 		//gameState.unit=aiUnit;
 		Tile aiTile1 = getTile(7, 3);
+		aiUnit.setPositionByTile(aiTile1);
+		aiTile.clearAiUnit();
 		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		aiTile1.setAiUnit(aiUnit);
 		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
 		//move unit to tile		
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}

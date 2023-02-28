@@ -45,6 +45,7 @@ public class UnitSelectedState implements State{
             	{
             		gameState.resetBoardSelection(out);
             		System.out.println("Get the Ai unit");
+            		gameState.targetTile=tile;
             		gameStateMachine.setState(new HumanAttackState(out, unitClicked, tileClicked, tile, gameState, gameStateMachine));
             	}
             	  
@@ -81,6 +82,20 @@ public class UnitSelectedState implements State{
                     }
                 }
             }
+        }
+        
+        //highlight the Ai occupied tiles
+        for(int i=0;i<Constants.BOARD_WIDTH;i++)
+        {
+        	for(int j=0;j<Constants.BOARD_HEIGHT;j++)
+        	{
+        		Tile aiTile=gameState.board.getTile(i, j);
+        		if(null!=aiTile.getAiUnit())
+        		{
+        			   aiTile.setTileState(TileState.Occupied);;
+                       BasicCommands.drawTile(out, aiTile, 2);
+        		}
+        	}
         }
     }
 }

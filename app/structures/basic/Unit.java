@@ -25,6 +25,8 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+	
+	private boolean isAi=false;
 
 	private int attack;
 
@@ -41,7 +43,14 @@ public class Unit {
 	public void setChosed(boolean isChosed) {
 		this.isChosed = isChosed;
 	}
+	//set the type of the unit
+	public boolean isAi() {
+		return isAi;
+	}
 
+	public void setAi(boolean isAi) {
+		this.isAi = isAi;
+	}
 
 	private Tile tile;
 

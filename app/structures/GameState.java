@@ -43,6 +43,14 @@ public class GameState {
 	public boolean isMove = false;
 	public boolean endTurn =false;
 	
+	public boolean isAttacking=false;
+	
+	public boolean moved=false;
+	
+	public Tile chooseTile=null;
+	
+	public Tile targetTile=null;
+	
 	public int id=0;
 	//public ActionType type;
 	//The mana for human player
