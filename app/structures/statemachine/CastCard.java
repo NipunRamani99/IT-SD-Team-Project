@@ -5,6 +5,7 @@ import structures.basic.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
@@ -30,18 +31,15 @@ public class CastCard {
      * @param cardclick A reference to a CardClicked event
      * @param tileclick A reference to a TileCliked event
      */
-    public CastCard(CardClicked cardClick, TileClicked tileClick){
-
-    }
+    public CastCard(CardClicked cardclick,TileClicked tileclick){}
 
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public static void transform(ActorRef out, String cardName, GameState gameState, Tile tile){  	
+    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState){  	
     	//Transform the card into units
     	Unit unit = null;
-    	Card card = null;
-    	String spellName = null;
+    	String cardName = card.getCardname();
     	switch(cardName)
     	{
     	  case "Azure Herald":
@@ -92,44 +90,62 @@ public class CastCard {
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
+	      default:
+	    	  break;	    
+    	}
+
+    	placeUnit(gameState, unit, tile, out);
+    	//set the unit to the tile
+    	tile.setAiUnit(unit);
+    	tile.setTileState(TileState.Occupied);
+    	
+		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+	    //add attack and health to the unit
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+		//Stop the animation
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+    }
+    
+    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+    	//Transform the card into units
+    	String spellName = null;
+    	String cardName = card.getCardname();
+    	switch(cardName)
+    	{
      	  case "Truestrike":
      		  spellName = StaticConfFiles.f1_inmolation;
+     		  placeSpell(out, gameState, spellName, tile);
+     		  AbilityCommands.truestrikeAbility(out, tile.getUnit());
      		  break;
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
+    		  placeSpell(out, gameState, spellName, tile);
+    		  AbilityCommands.sundropElixir(out, tile.getUnit());    		  
+    		  break;
      	  case "Staff of Y’Kir":
    		      spellName = StaticConfFiles.f1_buff;
+   		      placeSpell(out, gameState, spellName, tile);
+   		      AbilityCommands.yKirAbility(out, tile.getUnit());
    		      break;
      	  case "Entropic Decay":
   		      spellName = StaticConfFiles.f1_martyrdom;
+  		      placeSpell(out, gameState, spellName, tile);
+  		      AbilityCommands.entropicDecay(out, tile.getUnit());
   		      break;
 	      default:
 	    	  break;
 	    
-    	}
-    	System.out.println("unitselected:"+unit);
-    	System.out.println("spellname:"+spellName);
+    	} 	
+    	
+		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+		//delete the card when it is played
 
-    	if(unit != null) {
-    	 placeUnit(gameState, unit, tile, out);
-		    BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-			//delete the card when it is played
-		
-			//add attack and health to the unit
-			BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-			BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-			//Stop the animation
-			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-			unit = null;
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-    	} else if(spellName != null){
-    		placeSpell(out, gameState, spellName, tile);
-			BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-			//delete the card when it is played
-
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			}
-    }
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			
+}
 
 
 	/**
@@ -160,10 +176,41 @@ public class CastCard {
 		BasicCommands.playEffectAnimation(out, ef, tile);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
+    
+    //this method will check if this card is a unit card
+    public static boolean isUnitCard(Card card) {
+    	boolean isUnitCard = false;
+    	String cardName = card.getCardname();
+    	switch(cardName)
+    	{
+    	  case "Azure Herald":
+	    	  isUnitCard = true;
+	    	  break;
+    	  case "Azurite Lion":
+    		  isUnitCard = true;
+	    	  break;
+    	  case "Comodo Charger":
+    		  isUnitCard = true;
+	    	  break;
+    	  case "Fire Spitter":
+    		  isUnitCard = true;
+	    	  break;
+    	  case "Hailstone Golem":
+    		  isUnitCard = true;
+	    	  break;
+    	  case "Ironcliff Guardian":
+    		  isUnitCard = true;
+	    	  break;	  
+    	  case "Pureblade Enforcer":
+    		  isUnitCard = true;
+	    	  break;
+     	  case "Silverguard Knight":
+     		  isUnitCard = true;
+	    	  break;
+	      default:
+	    	  break;	    
+    	}
+    	return isUnitCard;
+    }
 
-	public static void castCard(ActorRef out, Card card, Tile tile, GameState gameState) {
-		    //Play the card
-			transform(out, card.getCardname(), gameState, tile);
-			
-	}
 }

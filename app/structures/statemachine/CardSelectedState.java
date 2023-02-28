@@ -9,6 +9,7 @@ import events.TileClicked;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
+import structures.basic.Tile.Occupied;
 import structures.basic.TileState;
 import structures.basic.Unit;
 
@@ -36,13 +37,25 @@ public class CardSelectedState implements State{
                 gameState.resetCardSelection(out);
                 System.out.println("CardSelectedState: None Tile Clicked");
                 gameStateMachine.setState(new NoSelectionState());
-            } else if (tile.getTileState() == TileState.Reachable) {
+            } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
+                //if the tile is reachable and card is a unit card
+                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelcted)) {
+                    //Cast card
+                    CastCard.castUnitCard(out, cardSelcted, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);
+                    gameState.board.deleteCard(handPosition);
+                    System.out.println("CardSelectedState: Reachable Tile Clicked");                    
+                //if the tile is occupied and card is a spell card(spell needs unit to use)
+                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelcted)) {
+                	//Cast card
+                    CastCard.castSpellCard(out, cardSelcted, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);          
+                    gameState.board.deleteCard(handPosition);
+                    System.out.println("CardSelectedState: Occupied Tile Clicked");
+                }
                 gameState.resetBoardSelection(out);
-                //Cast card
-                
-                //Delete card
-
-                System.out.println("CardSelectedState: Reachable Tile Clicked");
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {

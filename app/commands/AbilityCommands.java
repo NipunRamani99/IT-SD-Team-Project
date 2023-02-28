@@ -31,12 +31,29 @@ public class AbilityCommands {
     }
 
     /**
-     * Truestrike ability
+     * Truestrike spell
      */
     public static void truestrikeAbility(ActorRef out, Unit unit){
     	int health = unit.getHealth();
     	health = health - 2;
+    	unit.setHealth(health);
     	BasicCommands.setUnitHealth(out, unit, health);
+    }
+    
+    /**
+     * Sundrop Elixir spell
+     */
+    public static void sundropElixir(ActorRef out, Unit unit){
+    	int health = unit.getHealth();
+    	health = health + 5;
+    	int originalHealth = unit.gethpFromCard();
+    	if(originalHealth < health) {
+    		unit.setHealth(originalHealth);
+    		BasicCommands.setUnitHealth(out, unit, originalHealth);
+    	}else {
+    		unit.setHealth(health);
+    		BasicCommands.setUnitHealth(out, unit, health);
+    	}
     }
 
     /**
@@ -59,9 +76,19 @@ public class AbilityCommands {
 
     }
     /**
-     * Staff of Y'Kir
+     * Staff of Y'Kir spell
      */
-    public static void yKirAbility(){
-
+    public static void yKirAbility(ActorRef out, Unit unit){
+    	int attack = unit.getAttack();
+    	attack = attack + 2;
+    	unit.setAttack(attack);
+    	BasicCommands.setUnitAttack(out, unit, attack);
+    }
+    /**
+     * Entropic Decay spell
+     */
+    public static void entropicDecay(ActorRef out, Unit unit) {
+    	unit.setHealth(0);
+    	BasicCommands.setUnitHealth(out, unit, 0);
     }
 }
