@@ -179,5 +179,9 @@ public class Board {
     public void addUnit(Unit unit) {
         units.add(unit);
     }
+    
+    public void deleteCard(int position) {
+    	cards.set(position-1, new Card());
+    }
 
 }

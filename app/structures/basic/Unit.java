@@ -28,6 +28,7 @@ public class Unit {
 
 	//health and attack for a unit
 	private int health;
+	private int hpFromCard = 0;
 	private int attack;
 	
 	private boolean isChosed=false;
@@ -141,12 +142,19 @@ public class Unit {
 		return health;
 	}
 	
+	public int gethpFromCard() {
+		return hpFromCard;
+	}
+	
 	public int getAttack() {
 		return attack;
 	}
 	
 	public void setHealth(int health) {
 		this.health = health;
+		if(hpFromCard == 0) {
+			this.hpFromCard = health;
+		}
 	}
 	
 	public void setAttack(int attack) {
