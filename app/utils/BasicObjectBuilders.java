@@ -5,10 +5,7 @@ import java.io.File;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import structures.basic.Card;
-import structures.basic.EffectAnimation;
-import structures.basic.Tile;
-import structures.basic.Unit;
+import structures.basic.*;
 
 /**
  * This class contains methods for producing basic objects from configuration files

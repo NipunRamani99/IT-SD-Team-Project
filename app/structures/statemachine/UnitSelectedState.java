@@ -82,5 +82,49 @@ public class UnitSelectedState implements State{
                 }
             }
         }
+        int x = tilex - 2;
+        if(x >= 0) {
+            boolean occupied = gameState.board.getTile(x + 1, tiley).getUnit() != null;
+            if(!occupied) {
+                TileState tileState = TileState.Reachable;
+                if(gameState.board.getTile(x, tiley).getUnit() != null)
+                    tileState = TileState.Occupied;
+                gameState.board.getTile(x, tiley).setTileState(tileState);
+                BasicCommands.drawTile(out, gameState.board.getTile(x,tiley), tileState.ordinal());
+            }
+        }
+        x = tilex + 2;
+        if(x < Constants.BOARD_WIDTH) {
+            boolean occupied = gameState.board.getTile(x - 1, tiley).getUnit() != null;
+            if(!occupied) {
+                TileState tileState = TileState.Reachable;
+                if(gameState.board.getTile(x, tiley).getUnit() != null)
+                    tileState = TileState.Occupied;
+                gameState.board.getTile(x, tiley).setTileState(tileState);
+                BasicCommands.drawTile(out, gameState.board.getTile(x,tiley),tileState.ordinal());
+            }
+        }
+        int y = tiley - 2;
+        if(y >= 0) {
+            boolean occupied = gameState.board.getTile(tilex, y + 1).getUnit() != null;
+            if(!occupied) {
+                TileState tileState = TileState.Reachable;
+                if(gameState.board.getTile(tilex, y).getUnit() != null)
+                    tileState = TileState.Occupied;
+                gameState.board.getTile(tilex, y).setTileState(tileState);
+                BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
+            }
+        }
+        y = tiley + 2;
+        if(y < Constants.BOARD_HEIGHT) {
+            boolean occupied = gameState.board.getTile(tilex, y - 1).getUnit() != null;
+            if(!occupied) {
+                TileState tileState = TileState.Reachable;
+                if(gameState.board.getTile(tilex, y).getUnit() != null)
+                    tileState = TileState.Occupied;
+                gameState.board.getTile(tilex, y).setTileState(tileState);
+                BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
+            }
+        }
     }
 }
