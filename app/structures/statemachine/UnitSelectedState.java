@@ -8,7 +8,6 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.Heartbeat;
 import events.TileClicked;
-import scala.concurrent.impl.FutureConvertersImpl;
 import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;

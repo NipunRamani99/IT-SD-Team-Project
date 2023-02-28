@@ -46,7 +46,7 @@ public class Tile {
 	private Unit unit=null;
 	
 	//The ai unit
-	private Unit aiUnit;
+	private Unit aiUnit=null;
 	
 	/**
 	 * for the human player
@@ -56,12 +56,12 @@ public class Tile {
 //	//Define the tile is occupied or not
 //	private boolean occupied = false;
 	
-	public synchronized Unit getUnit() {
+	public Unit getUnit() {
 		if(null!=this.unit) unit.setChosed(true);
 		return unit;
 	}
 
-	public synchronized void setUnit(Unit unit) {
+	public void setUnit(Unit unit) {
 		this.unit = unit;
 		this.occupied=Occupied.userOccupied;
 	}
@@ -72,7 +72,7 @@ public class Tile {
 	
 	//Set the Ai unit
 	
-	public synchronized void setAiUnit(Unit unit)
+	public void setAiUnit(Unit unit)
 	{
 		this.aiUnit = unit;
 		//aiUnit.setChosed(false);
@@ -80,26 +80,32 @@ public class Tile {
 	}
 	
 	//Get the Ai unit
-	public synchronized Unit getAiUnit() {
+	public Unit getAiUnit() {
 		
 		if(null!=this.aiUnit) aiUnit.setChosed(true);
 		return aiUnit;
 	}
 
 	//return the tile status
-	public synchronized Occupied isOccupied() {
+	public Occupied isOccupied() {
 		return occupied;
 	}
 	
 	
 	//set the tile status
-	public synchronized void clearUnit()
+	public void clearUnit()
 	{
 		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
 	}
 	
+	public void clearAiUnit()
+	{
+		if(null!=this.aiUnit) this.aiUnit.setChosed(false);
+		this.aiUnit=null;
+		this.occupied=Occupied.none;
+	}
 	public Tile()
 	{
 		this.occupied=Occupied.none;
@@ -177,7 +183,7 @@ public class Tile {
 	
 
 	public TileState getTileState() {
-		return tileState;
+		return this.tileState;
 	}
 
 	public void setTileState(TileState tileState) {

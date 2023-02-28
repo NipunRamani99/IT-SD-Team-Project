@@ -135,6 +135,18 @@ public class BasicCommands {
 	public static void moveUnitToTile(ActorRef out, Unit unit, Tile tile) {
 		try {
 			ObjectNode returnMessage = Json.newObject();
+			//if it is the ai unit, set the unit to the tile
+			if(unit.isAi())
+			{
+				tile.setAiUnit(unit);
+			}
+			//If it is the  unit, set the unit to the tile
+			else
+			{
+				tile.setUnit(unit);
+			}
+			
+			//if it  is the ai unit, set the unit to the Ai
 			returnMessage.put("messagetype", "moveUnitToTile");
 			returnMessage.put("unit", mapper.readTree(mapper.writeValueAsString(unit)));
 			returnMessage.put("tile", mapper.readTree(mapper.writeValueAsString(tile)));
