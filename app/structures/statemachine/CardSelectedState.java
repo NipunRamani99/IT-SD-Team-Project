@@ -7,15 +7,8 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
-<<<<<<< HEAD
-import structures.basic.Card;
-import structures.basic.Tile;
-import structures.basic.Tile.Occupied;
-import structures.basic.TileState;
-import structures.basic.Unit;
-=======
 import structures.basic.*;
->>>>>>> origin/dev/nipun
+
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -79,18 +72,22 @@ public class CardSelectedState implements State{
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);          
                     gameState.board.deleteCard(handPosition);
+                    
+                    gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+                 	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                 	
                     System.out.println("CardSelectedState: Occupied Tile Clicked");
                 }
                 gameState.resetBoardSelection(out);
 
-                //assign the reachable tile to the gameState    
-            	drawUnitOnBoard(out, gameState,cardSelected,tile);
-               	//after the cast the unit, delete the card
-               	BasicCommands.deleteCard(out, handPosition);
-               	//Select the mana cost
-               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                System.out.println("CardSelectedState: Reachable Tile Clicked");         
+//                //assign the reachable tile to the gameState    
+//            	drawUnitOnBoard(out, gameState,cardSelected,tile);
+//               	//after the cast the unit, delete the card
+//               	BasicCommands.deleteCard(out, handPosition);
+//               	//Select the mana cost
+//               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+//               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+//                System.out.println("CardSelectedState: Reachable Tile Clicked");         
 
                 gameStateMachine.setState(new NoSelectionState());
             }
