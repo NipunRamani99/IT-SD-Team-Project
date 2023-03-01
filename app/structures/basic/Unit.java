@@ -74,6 +74,10 @@ public class Unit {
 	//set the health
 	public void setHealth(int health) {
 		this.health = health;
+		if(hpFromCard==0)
+		{
+			this.hpFromCard=health;
+		}
 	}
 
 	

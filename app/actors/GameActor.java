@@ -83,8 +83,8 @@ public class GameActor extends AbstractActor {
 		eventProcessors.put("tileclicked", tileClick);
 		
 		//Card cast event	
-		CastCard castCard = new CastCard();
-		gameState.castCard=castCard;
+		//CastCard castCard = new CastCard(cardClick,tileClick);
+		//gameState.castCard=castCard;
 		//eventProcessors.put("tileclicked", castCard);
 			
 		eventProcessors.put("endturnclicked", new EndTurnClicked());
