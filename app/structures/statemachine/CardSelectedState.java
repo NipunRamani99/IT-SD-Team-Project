@@ -26,7 +26,7 @@ public class CardSelectedState implements State{
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
         try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-        if(gameState.humanMana>=cardSelected.getManacost())
+        if(gameState.humanMana>=cardSelected.getManaCost())
         	highlightCardSelection(out, gameState);
     }
     @Override
@@ -50,7 +50,7 @@ public class CardSelectedState implements State{
                	BasicCommands.deleteCard(out, handPosition);
                	//Select the mana cost
                 //Need to judge the whose turn
-               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManaCost());
                	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
                 System.out.println("CardSelectedState: Reachable Tile Clicked");         
 //                gameStateMachine.setState(new NoSelectionState());
@@ -90,55 +90,55 @@ public class CardSelectedState implements State{
     //Draw the unit on the board
     private void drawUnitOnBoard(ActorRef out,GameState gameState,Card card, Tile tile)
     {
-    	String carName=card.getCardname();
+    	String carName=card.getCardName();
     	Unit unit =null;
     	switch(carName)
     	{
     	  case "Azure Herald":
-    		  card.setManacost(2);
+    		  card.setManaCost(2);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,4,1 );
 	    	  //
 	    	  break;
     	  case "Azurite Lion":
-    		  card.setManacost(3);
+    		  card.setManaCost(3);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,3,2);
 	    	  break;
     	  case "Comodo Charger":
-    		  card.setManacost(1);
+    		  card.setManaCost(1);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger,gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,3,1 );
 	    	  break;
     	  case "Fire Spitter":
-    		  card.setManacost(4);
+    		  card.setManaCost(4);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter,gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,2,3 );
 	    	  break;
     	  case "Hailstone Golem":
-    		  card.setManacost(4);
+    		  card.setManaCost(4);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,6,4 );
 	    	  break;
     	  case "Ironcliff Guardian":
-    		  card.setManacost(5);
+    		  card.setManaCost(5);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian,gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,10,3 );
 	    	  break;	  
     	  case "Pureblade Enforcer":
-    		  card.setManacost(2);
+    		  card.setManaCost(2);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer,gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,4,1 );
 	    	  break;
      	  case "Silverguard Knight":
-     		 card.setManacost(3);
+     		 card.setManaCost(3);
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight,gameState.id++, Unit.class);
 	    	  setUnitOnTile(out, gameState, unit, tile);
 	    	  setUnitHealthAndAttack(out,unit,5,1 );
@@ -168,7 +168,7 @@ public class CardSelectedState implements State{
     	try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
     
-    ///Set unit attack and healthy
+    ///Set unit attack and health
     private void setUnitHealthAndAttack(ActorRef out, Unit unit,int health, int attack)
     {
 		//unit attack and health	
