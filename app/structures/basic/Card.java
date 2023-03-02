@@ -14,8 +14,8 @@ public class Card {
 	
 	private int id;
 	
-	private String cardName;
-	private int manaCost;
+	private String cardname;
+	private int manacost;
 	
 	private MiniCard miniCard;
 	private BigCard bigCard;
@@ -24,11 +24,11 @@ public class Card {
 
 	public Card() {};
 	
-	public Card(int id, String cardName, int manaCost, MiniCard miniCard, BigCard bigCard, boolean isUnit) {
+	public Card(int id, String cardname, int manaCost, MiniCard miniCard, BigCard bigCard, boolean isUnit) {
 		super();
 		this.id = id;
-		this.cardName = cardName;
-		this.manaCost = manaCost;
+		this.cardname = cardname;
+		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
 
@@ -41,17 +41,17 @@ public class Card {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getCardName() {
-		return cardName;
+	public String getCardname() {
+		return cardname;
 	}
-	public void setCardName(String cardName) {
-		this.cardName = cardName;
+	public void setCardname(String cardName) {
+		this.cardname = cardname;
 	}
-	public int getManaCost() {
-		return manaCost;
+	public int getManacost() {
+		return manacost;
 	}
-	public void setManaCost(int manaCost) {
-		this.manaCost = manaCost;
+	public void setManacost(int manacost) {
+		this.manacost = manacost;
 	}
 	public MiniCard getMiniCard() {
 		return miniCard;

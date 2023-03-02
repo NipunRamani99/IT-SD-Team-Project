@@ -27,16 +27,16 @@ public class Unit {
 	ImageCorrection correction;
 
 	
-	private boolean isChosed=false;
+	private boolean isChosen=false;
 	
 	//Choose the unit
-	public boolean isChosed() {
-		return isChosed;
+	public boolean isChosen() {
+		return isChosen;
 	}
 
 	//set the status to the unit
-	public void setChosed(boolean isChosed) {
-		this.isChosed = isChosed;
+	public void setChosen(boolean isChosen) {
+		this.isChosen = isChosen;
 	}
 
 

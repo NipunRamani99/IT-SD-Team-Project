@@ -57,7 +57,7 @@ public class Tile {
 //	private boolean occupied = false;
 	
 	public synchronized Unit getUnit() {
-		if(null!=this.unit) unit.setChosed(true);
+		if(null!=this.unit) unit.setChosen(true);
 		return unit;
 	}
 
@@ -82,7 +82,7 @@ public class Tile {
 	//Get the Ai unit
 	public synchronized Unit getAiUnit() {
 		
-		if(null!=this.aiUnit) aiUnit.setChosed(true);
+		if(null!=this.aiUnit) aiUnit.setChosen(true);
 		return aiUnit;
 	}
 
@@ -95,7 +95,7 @@ public class Tile {
 	//set the tile status
 	public synchronized void clearUnit()
 	{
-		if(null!=this.unit) this.unit.setChosed(false);
+		if(null!=this.unit) this.unit.setChosen(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
 	}

@@ -162,14 +162,14 @@ public class Action implements Runnable{
     			if(null!=userUnit&&null!=aiUnit)
     			{
     				//Choose this unit
-    				userUnit.setChosed(true);
+    				userUnit.setChosen(true);
     				BasicCommands.addPlayer1Notification(out, "User attack AI ",1);
     				//user lunch an attack
-    				if(userUnit.isChosed())
+    				if(userUnit.isChosen())
     					BasicCommands.playUnitAnimation(out,userUnit,UnitAnimationType.attack);
     				//function
     				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-    				 userUnit.setChosed(false);
+    				 userUnit.setChosen(false);
     			}
     		}
    
@@ -202,16 +202,16 @@ public class Action implements Runnable{
 					if(gameState.AiPlayer.getHealth()>0)
 					{
 						//Choose this unit
-						aiUnit.setChosed(true);
+						aiUnit.setChosen(true);
 						BasicCommands.addPlayer1Notification(out, "Ai attack back ",1);
 						 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 	    				//ai lunch an attack
-						if(aiUnit.isChosed())
+						if(aiUnit.isChosen())
 						{
 							BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
 	        			    try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 						}
-	        			aiUnit.setChosed(false);
+	        			aiUnit.setChosen(false);
 					}
 					else
 					{

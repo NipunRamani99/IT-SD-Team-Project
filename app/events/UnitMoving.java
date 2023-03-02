@@ -40,7 +40,7 @@ public class UnitMoving implements EventProcessor, Runnable{
 	public void run() {
 
 		//Check if is the user turn
-		if(!gameState.endTurn&&true==gameState.unit.isChosed())  //User turn
+		if(!gameState.endTurn&&true==gameState.unit.isChosen())  //User turn
 		{
 			BasicCommands.addPlayer1Notification(out, "Moving ",1);
 			//moving the unit

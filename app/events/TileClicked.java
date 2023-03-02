@@ -250,7 +250,7 @@ public class TileClicked implements EventProcessor{
 			{
 				//get the unit from the tile
 				gameState.unit = gameState.firstClickedTile.getUnit();
-				gameState.unit.setChosed(true);
+				gameState.unit.setChosen(true);
 				BasicCommands.addPlayer1Notification(out, "get the unit ",1);
 				try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 				//gameState.isMove=false;
@@ -260,7 +260,7 @@ public class TileClicked implements EventProcessor{
 			{
 				//get the unit from the tile
 				gameState.unit = gameState.firstClickedTile.getAiUnit();
-				gameState.unit.setChosed(true);
+				gameState.unit.setChosen(true);
 				BasicCommands.addPlayer1Notification(out, "Ai get the unit ",1);
 				try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
 				//gameState.isMove=false;
