@@ -20,29 +20,69 @@ public class Unit {
 	@JsonIgnore
 	protected static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
 	
-	private int id;
+	int id;
 	UnitAnimationType animation;
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 
+	//health and attcak for a unit
 	
-	private boolean isChosen=false;
+	private boolean isAi=false;
+
+	private int attack;
+
+	private int health;
+
+	private int hpFromCard = 0;
+
+	private boolean isChosed=false;
 	
 	//Choose the unit
-	public boolean isChosen() {
-		return isChosen;
+	public boolean isChosed() {
+		return isChosed;
 	}
 
 	//set the status to the unit
-	public void setChosen(boolean isChosen) {
-		this.isChosen = isChosen;
+	public void setChosed(boolean isChosed) {
+		this.isChosed = isChosed;
+	}
+	//set the type of the unit
+	public boolean isAi() {
+		return isAi;
 	}
 
+	public void setAi(boolean isAi) {
+		this.isAi = isAi;
+	}
 
 	private Tile tile;
 
 	public Unit() {}
+	
+	//get attack
+	public int getAttack() {
+		return attack;
+	}
+    //set attack
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
+	
+	
+	//get the health
+	public int getHealth() {
+		return health;
+	}
+	//set the health
+	public void setHealth(int health) {
+		this.health = health;
+		if(hpFromCard==0)
+		{
+			this.hpFromCard=health;
+		}
+	}
+
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();
@@ -113,6 +153,13 @@ public class Unit {
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
 	}
+	
+
+	
+	public int gethpFromCard() {
+		return hpFromCard;
+	}
+	
 	
 	/**
 	 * This command sets the position of the Unit to a specified

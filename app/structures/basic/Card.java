@@ -12,27 +12,23 @@ package structures.basic;
  */
 public class Card {
 	
-	private int id;
+	int id;
 	
-	private String cardname;
-	private int manacost;
+	String cardname;
+	int manacost;
 	
-	private MiniCard miniCard;
-	private BigCard bigCard;
-
-	private boolean isUnit;
+	MiniCard miniCard;
+	BigCard bigCard;
 
 	public Card() {};
 	
-	public Card(int id, String cardname, int manaCost, MiniCard miniCard, BigCard bigCard, boolean isUnit) {
+	public Card(int id, String cardname, int manacost, MiniCard miniCard, BigCard bigCard) {
 		super();
 		this.id = id;
 		this.cardname = cardname;
 		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
-
-		this.isUnit = isUnit;
 	}
 	
 	public int getId() {
@@ -44,7 +40,7 @@ public class Card {
 	public String getCardname() {
 		return cardname;
 	}
-	public void setCardname(String cardName) {
+	public void setCardname(String cardname) {
 		this.cardname = cardname;
 	}
 	public int getManacost() {
@@ -65,6 +61,4 @@ public class Card {
 	public void setBigCard(BigCard bigCard) {
 		this.bigCard = bigCard;
 	}
-
-	
 }

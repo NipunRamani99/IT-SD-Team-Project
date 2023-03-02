@@ -7,27 +7,41 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
-import structures.basic.Card;
-import structures.basic.Tile;
-import structures.basic.TileState;
-import structures.basic.Unit;
+import structures.basic.*;
+
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
 import java.util.List;
 
+enum CardType {
+    UNIT,
+    SPELL
+}
+
 public class CardSelectedState implements State{
     private int handPosition = 0;
     private Card cardSelected = null;
+
+    private CardType cardType;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-        try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+        if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
         if(gameState.humanMana>=cardSelected.getManacost())
-        	highlightCardSelection(out, gameState);
+            if(cardType == CardType.UNIT)
+        	    highlightUnitCardSelection(out, gameState);
+            else if(cardType == CardType.SPELL)
+                highlightSpellCardSelection(out, gameState);
+
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
@@ -42,18 +56,40 @@ public class CardSelectedState implements State{
                 gameState.resetCardSelection(out);
                 System.out.println("CardSelectedState: None Tile Clicked");
                 gameStateMachine.setState(new NoSelectionState());
-            } else if (tile.getTileState() == TileState.Reachable) {
+            } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
+                //if the tile is reachable and card is a unit card
+                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
+                    //Cast card
+                    CastCard.castUnitCard(out, cardSelected, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);
+                    gameState.board.deleteCard(handPosition);
+                    System.out.println("CardSelectedState: Reachable Tile Clicked");                    
+                //if the tile is occupied and card is a spell card(spell needs unit to use)
+                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
+                	//Cast card
+                    CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                    //Delete card
+                    BasicCommands.deleteCard(out, handPosition);          
+                    gameState.board.deleteCard(handPosition);
+                    
+                    gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+                 	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                 	
+                    System.out.println("CardSelectedState: Occupied Tile Clicked");
+                }
                 gameState.resetBoardSelection(out);
-                //assign the reachable tile to the gameState    
-            	drawUnitOnBoard(out, gameState,cardSelected,tile);
-               	//after the cast the unit, delete the card
-               	BasicCommands.deleteCard(out, handPosition);
-               	//Select the mana cost
-                //Need to judge the whose turn
-               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                System.out.println("CardSelectedState: Reachable Tile Clicked");         
-//                gameStateMachine.setState(new NoSelectionState());
+
+//                //assign the reachable tile to the gameState    
+//            	drawUnitOnBoard(out, gameState,cardSelected,tile);
+//               	//after the cast the unit, delete the card
+//               	BasicCommands.deleteCard(out, handPosition);
+//               	//Select the mana cost
+//               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+//               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+//                System.out.println("CardSelectedState: Reachable Tile Clicked");         
+
+                gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
@@ -64,7 +100,7 @@ public class CardSelectedState implements State{
         }
     }
 
-    private void highlightCardSelection(ActorRef out, GameState gameState)
+    private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
@@ -86,7 +122,18 @@ public class CardSelectedState implements State{
             }
         }
     }
-    
+
+    private void highlightSpellCardSelection(ActorRef out, GameState gameState)
+    {
+        BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
+        List<Unit> unitList = gameState.board.getUnits();
+        for(Unit unit : unitList) {
+            Position tilePos = unit.getPosition();
+            Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+            BasicCommands.drawTile(out, tile, 2);
+        }
+    }
+
     //Draw the unit on the board
     private void drawUnitOnBoard(ActorRef out,GameState gameState,Card card, Tile tile)
     {
@@ -148,11 +195,6 @@ public class CardSelectedState implements State{
 	    
     	}
 
-    
-    
-    
-    
-    	
     	BasicCommands.addPlayer1Notification(out, "Cast "+carName,1);
     	
     }
@@ -160,13 +202,12 @@ public class CardSelectedState implements State{
     //Set the unit on tile
     private void setUnitOnTile(ActorRef out,GameState gameState, Unit unit, Tile tile)
     {
-    	unit.setPositionByTile(tile); 
+    	unit.setPositionByTile(tile);
     	BasicCommands.drawUnit(out, unit, tile);
     	gameState.board.addUnit(unit);
 		tile.setUnit(unit);	
     	
-    	try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-    }
+     }
     
     ///Set unit attack and health
     private void setUnitHealthAndAttack(ActorRef out, Unit unit,int health, int attack)

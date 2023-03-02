@@ -20,9 +20,9 @@ import events.OtherClicked;
 import events.TileClicked;
 import events.UnitMoving;
 import events.UnitStopped;
-import events.CastCard;
 import play.libs.Json;
 import structures.GameState;
+import structures.statemachine.CastCard;
 import structures.statemachine.GameStateMachine;
 import utils.ImageListForPreLoad;
 import play.libs.Json;
@@ -83,8 +83,8 @@ public class GameActor extends AbstractActor {
 		eventProcessors.put("tileclicked", tileClick);
 		
 		//Card cast event	
-		CastCard castCard = new CastCard(cardClick,tileClick);
-		gameState.castCard=castCard;
+		//CastCard castCard = new CastCard(cardClick,tileClick);
+		//gameState.castCard=castCard;
 		//eventProcessors.put("tileclicked", castCard);
 			
 		eventProcessors.put("endturnclicked", new EndTurnClicked());
