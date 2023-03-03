@@ -190,6 +190,7 @@ public class Tile {
 		this.tileState = tileState;
 	}
 
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.
@@ -197,18 +198,15 @@ public class Tile {
 	 * @return
 	 */
 	public static Tile constructTile(String configFile) {
-		
-		try {
-			Tile tile = mapper.readValue(new File(configFile), Tile.class);
-			return tile;
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-		}
-		return null;
-		
+
+		List<String> tileTextures = new ArrayList<>();
+		tileTextures.add("assets/game/extra/ui/tile_board.png");
+		tileTextures.add("assets/game/extra/ui/tile_grid.png");
+		tileTextures.add("assets/game/extra/ui/tile_grid_red.png");
+		return new Tile(tileTextures,0, 0, 115, 115, 0, 0);
 	}
-	
-	
-	
+
+	public static int distance(Tile A, Tile B) {
+		return Math.abs(A.tilex - B.tilex) + Math.abs(A.tiley - B.tiley);
+	}
 }

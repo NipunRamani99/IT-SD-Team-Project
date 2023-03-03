@@ -4,11 +4,12 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import events.CardClicked;
 import events.EventProcessor;
+import events.Heartbeat;
 import events.TileClicked;
 import structures.GameState;
 import structures.basic.Tile;
 
-public class NoSelectionState implements State{
+public class NoSelectionState extends State{
 
     public NoSelectionState() {
 
@@ -26,8 +27,20 @@ public class NoSelectionState implements State{
         } else if (event instanceof CardClicked) {
             System.out.println("NoSelectionState: Card clicked");
             gameStateMachine.setState(new CardSelectedState(out, message, gameState));
+        } else if (event instanceof Heartbeat) {
+
         } else {
             System.out.println("NoSelectionState: Invalid input");
         }
+    }
+
+    @Override
+    public void enter(ActorRef out, GameState gameState) {
+
+    }
+
+    @Override
+    public void exit(ActorRef out, GameState gameState) {
+
     }
 }

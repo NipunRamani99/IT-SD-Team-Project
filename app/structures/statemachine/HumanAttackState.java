@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
+import events.Heartbeat;
 import structures.GameState;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
@@ -12,56 +13,77 @@ import utils.Constants;
 import structures.basic.Tile;
 import structures.basic.Tile.Occupied;
 import structures.basic.TileState;
+import utils.BasicObjectBuilders;
 
-public class HumanAttackState implements State{
+public class HumanAttackState extends State{
 
 
-	HumanAttackState(ActorRef out, Unit selectedUnit, Tile startTile, Tile targetTile, GameState gameState,GameStateMachine gameStateMachine)
+	private Unit selectedUnit = null;
+
+	private Unit enemyUnit = null;
+
+	HumanAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
 	{
-		System.out.println("Unit attack"); 
-		if(!gameState.moved)
-		{
-			//If it does not moved, go to search again
-			moveAndAttack(out, startTile, targetTile, gameState, gameStateMachine);		
-			if(!gameState.isAttacking) {}
-			//If does not find a suitable tile to move and attack
-			//getUnitOnTileAttack(out, startTile,targetTile);
-		}
+		this.selectedUnit = selectedUnit;
+		if(isPlayer)
+			this.enemyUnit = targetTile.getAiUnit();
 		else
-		{
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			getUnitOnTileAttack(out, gameState.chooseTile, gameState.targetTile);
+			this.enemyUnit = targetTile.getUnit();
+	}
+
+	HumanAttackState(Unit selectedUnit, Unit enemyUnit)
+	{
+		this.selectedUnit = selectedUnit;
+		this.enemyUnit = enemyUnit;
+	}
+
+	HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
+	{
+		this.selectedUnit = selectedUnit;
+
+		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
+		if(!reactAttack) {
+			State reactState = new HumanAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
+			if (nextState != null) {
+				reactState.setNextState(nextState);
+			}
+			this.nextState = reactState;
 		}
-		
 	}
 	
 	@Override
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// Try to get the unit and attack
-		gameStateMachine.setState(new NoSelectionState());
-		gameState.moved=false;
-		gameState.isAttacking=false;
-		gameState.chooseTile=null;
-		gameState.targetTile=null;
-		
+		if(event instanceof  Heartbeat)
+			gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 	}
 
-	
-	private void getUnitOnTileAttack(ActorRef out,Tile startTile,Tile targetTile)
+	@Override
+	public void enter(ActorRef out, GameState gameState) {
+		try {
+			System.out.println("Unit attack");
+			getUnitOnTileAttack(out, gameState);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void exit(ActorRef out, GameState gameState) {
+
+	}
+
+
+	private void getUnitOnTileAttack(ActorRef out, GameState gameState)throws InterruptedException
 	{
-		//get the unit from the first tile
-		Unit unit =startTile.getUnit();
-		//get ai unit from the second tile
-		Unit enemyUnit= targetTile.getAiUnit();
 		//Attack animation
-		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		//Set the animation to be idle
-		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		int attackHealth=enemyUnit.getHealth()-unit.getAttack();
-		unitAttackBack(out, startTile, targetTile,unit, enemyUnit, attackHealth);		
+
+		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
+		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
+		unitAttack(out, enemyUnit, attackHealth, gameState);
+
 	}
 	
 	/**
@@ -93,7 +115,7 @@ public class HumanAttackState implements State{
 	            	  {
 	            		  gameState.chooseTile=surroundingTile;
 	            		  gameState.isAttacking=true;
-	            		  gameStateMachine.setState(new UnitMovingState(out, unit, startTile, surroundingTile, gameState,gameStateMachine));
+	            		  gameStateMachine.setState(new UnitMovingState(unit, startTile, surroundingTile));
 	            		  if(gameState.moved)
 	            		  {
 	            			  return;
@@ -121,7 +143,7 @@ public class HumanAttackState implements State{
 	            	  {
 	            		  gameState.chooseTile=surroundingTile;
 	            		  gameState.isAttacking=true;
-	            		  gameStateMachine.setState(new UnitMovingState(out, unit, startTile, surroundingTile, gameState,gameStateMachine));
+	            		  gameStateMachine.setState(new UnitMovingState(unit, startTile, surroundingTile));
 	            		  if(gameState.moved)
 	            		  {
 	            			  return;
@@ -153,7 +175,7 @@ public class HumanAttackState implements State{
 	            	  {
 	            		  gameState.chooseTile=surroundingTile;
 	            		  gameState.isAttacking=true;
-	            		  gameStateMachine.setState(new UnitMovingState(out, unit, startTile, surroundingTile, gameState,gameStateMachine));
+	            		  gameStateMachine.setState(new UnitMovingState(unit, startTile, surroundingTile));
 	            		  if(gameState.moved)
 	            		  {
 	            			  return;
@@ -202,7 +224,12 @@ public class HumanAttackState implements State{
                 	   //if the target tile within the range of the surroundings, attack
                 	   if(surroundingTile==targetTile)
                 	   {
-                		   getUnitOnTileAttack(out, startTile, targetTile);	
+                		   try {
+							getUnitOnTileAttack(out, gameState);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
                 		   return true;
 					   }
                 	   surroundingTile.setTileState(TileState.Occupied);
@@ -219,43 +246,22 @@ public class HumanAttackState implements State{
     /**
      * User unit Attack the Ai unit
      */
-    private void unitAttackBack(ActorRef out,Tile startTile,Tile targetTile, Unit unit,Unit enemyUnit, int health)
+
+    private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
-    	
-    	if(health>0)
-		{
-    		BasicCommands.setUnitHealth(out, enemyUnit,health );
-			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.attack);			
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			//Set the animation to be idle
-			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.idle);
-			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-			//The human unit will be attacked
-			int attackBackHealth=unit.getHealth()-enemyUnit.getAttack();
-			if(attackBackHealth>0)
-			{
-				setUnitHealth(out, unit, attackBackHealth);
-			}
-			else //the human unit dead
-			{
-				setUnitHealth(out, unit, 0);
-				BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);		
-				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-				BasicCommands.deleteUnit(out, enemyUnit);
-				startTile.clearUnit();
-				
-			}
-		
-		}
-		else
+		BasicCommands.setUnitHealth(out, enemyUnit, health);
+    	if(health == 0)
+
 		{
 			setUnitHealth(out, enemyUnit, 0);
 			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			BasicCommands.deleteUnit(out, enemyUnit);
-			targetTile.clearUnit();
-		}	   	
-    	
+
+			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
+			nextState = nextState.getNextState();
+		}
+
     }
     
     private void setUnitHealth(ActorRef out, Unit unit,int health)

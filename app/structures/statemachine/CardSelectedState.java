@@ -19,11 +19,13 @@ enum CardType {
     SPELL
 }
 
-public class CardSelectedState implements State{
+public class CardSelectedState extends State{
     private int handPosition = 0;
     private Card cardSelected = null;
 
     private CardType cardType;
+
+    private State nextState;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
@@ -98,6 +100,16 @@ public class CardSelectedState implements State{
         } else {
             System.out.println("CardSelectedState: Invalid Event");
         }
+    }
+
+    @Override
+    public void enter(ActorRef out, GameState gameState) {
+
+    }
+
+    @Override
+    public void exit(ActorRef out, GameState gameState) {
+
     }
 
     private void highlightUnitCardSelection(ActorRef out, GameState gameState)

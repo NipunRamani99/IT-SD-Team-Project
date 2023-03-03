@@ -122,16 +122,14 @@ public class Board {
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		//Get related tiles
-		Tile tile=this.getTile(0, 2);
+		Tile tile=this.getTile(5, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
 		this.addUnit(unit);
 		tile.setUnit(unit);	
 		BasicCommands.drawUnit(out, unit, tile);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		//unit attack and health	
+		//unit attack and health
 		BasicCommands.setUnitAttack(out, unit, 2);
 		BasicCommands.setUnitHealth(out, unit,20);
 		
@@ -151,8 +149,7 @@ public class Board {
 	    addUnit(aiUnit);
 		//draw unit
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
-		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		//unit attack and health	
+		//unit attack and health
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		BasicCommands.setUnitHealth(out, aiUnit,20);
 		
@@ -162,10 +159,12 @@ public class Board {
 		aiTile.clearAiUnit();
 		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+		aiTile1.setAiUnit(aiUnit);
+
 		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
 		//move unit to tile		
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		
+
 
 		
 //		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);

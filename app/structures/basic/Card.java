@@ -13,7 +13,6 @@ package structures.basic;
 public class Card {
 	
 	int id;
-	
 	String cardname;
 	int manacost;
 	

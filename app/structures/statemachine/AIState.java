@@ -19,7 +19,7 @@ public class AIState implements State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		gameStateMachine.setState(new EndTurnState(out, gameState,null, gameStateMachine));
+		gameStateMachine.setState(new EndTurnState(out, gameState,null, gameStateMachine), out, gameState);
 		
 	}
 

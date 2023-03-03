@@ -14,8 +14,6 @@ import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import structures.statemachine.CastCard;
 import structures.statemachine.GameStateMachine;
-import structures.statemachine.HumanAttackState;
-import structures.statemachine.NoSelectionState;
 import utils.Constants;
 
 
@@ -73,8 +71,6 @@ public class TileClicked implements EventProcessor{
 		int tiley = message.get("tiley").asInt();
 		gameState.position = new Position(tilex, tiley);
 		gameStateMachine.processInput(out, gameState, message,this);
-
-
 
 	}
 

@@ -28,7 +28,7 @@ public class EndTurnState implements State{
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-			 gameStateMachine.setState(new AIState(out, gameState, gameStateMachine));
+			 gameStateMachine.setState(new AIState(out, gameState, gameStateMachine), out, gameState);
 		 }
 		 else
 		 {
