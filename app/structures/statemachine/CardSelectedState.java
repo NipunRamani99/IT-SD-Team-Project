@@ -65,7 +65,7 @@ public class CardSelectedState extends State{
                     CastCard.castUnitCard(out, cardSelected, tile, gameState);
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);
-                    gameState.board.deleteCard(handPosition);
+//s                    gameState.board.deleteCard(handPosition);
                     System.out.println("CardSelectedState: Reachable Tile Clicked");                    
                 //if the tile is occupied and card is a spell card(spell needs unit to use)
                 }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
@@ -73,7 +73,7 @@ public class CardSelectedState extends State{
                     CastCard.castSpellCard(out, cardSelected, tile, gameState);
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);          
-                    gameState.board.deleteCard(handPosition);
+                 //s   gameState.board.deleteCard(handPosition);
                     
                     gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                  	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
