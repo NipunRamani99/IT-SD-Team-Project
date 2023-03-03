@@ -106,14 +106,19 @@ public class Board {
     	
 
     	//Initialize 3 cards
+    	for (int i=0;i<6;i++) {
+    		if(cards.size()<6) {
+    			cards.add(new Card());
+    		}
+    	}
 		for (int i=0;i<3;i++) {
 			// drawCard [1]
 			//BasicCommands.addPlayer1Notification(out, deck1CardFile, 2);
-			Card card = deck1.getCard();
+			drawCard();
 			//Add the card in the arraylist
-			cards.add(i, card);
-			BasicCommands.drawCard(out, card, i+1, 0);
-
+		}
+		for(int i = 0; i < cards.size(); i++) {
+			BasicCommands.drawCard(out, cards.get(i),i+1,0);
 		}
 		
 		// Draw a unit
@@ -155,12 +160,7 @@ public class Board {
 		aiUnit.setPositionByTile(aiTile1);
 		aiTile.clearAiUnit();
 		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
-<<<<<<< HEAD
 		aiTile1.setAiUnit(aiUnit);
-
-=======
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
->>>>>>> 48660d5 (update the moving and attack function)
 		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
 		//move unit to tile		
 
@@ -189,6 +189,18 @@ public class Board {
     
     public void deleteCard(int position) {
     	cards.set(position-1, new Card());
+    }
+    
+  //draw a card from deck
+    public void drawCard() {
+    	Card c = deck1.getCard();
+    	for(int i = 0;i < cards.size();i++) {
+    		Card card = cards.get(i);
+    		if(card.getBigCard() == null) {
+    			cards.set(i, c);
+    			break;
+    		}
+    	}
     }
 
 }
