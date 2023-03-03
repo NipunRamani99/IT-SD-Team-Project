@@ -69,7 +69,7 @@ public class EndTurnClicked implements EventProcessor{
 
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
 			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-
+			 
 			 BasicCommands.addPlayer1Notification(out, "endturn", 1);
 		}
 		gameStateMachine.processInput(out, gameState, message, this);

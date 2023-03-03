@@ -88,7 +88,7 @@ public class HumanAttackState extends State{
     private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
 		BasicCommands.setUnitHealth(out, enemyUnit, health);
-    	if(health <= 0)
+    	if(health == 0)
 		{
 			BasicCommands.setUnitHealth(out, enemyUnit,0 );
 			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);

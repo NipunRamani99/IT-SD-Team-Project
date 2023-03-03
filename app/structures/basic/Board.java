@@ -41,7 +41,9 @@ public class Board {
     
     static Deck deck2 = new Deck(2);
 
+
     static ArrayList<Unit> units = new ArrayList<>();
+
 
     /**
      * Board constructor to create a board of given width and height.
@@ -104,7 +106,6 @@ public class Board {
 			}
     	}	
     	
-
     	//Initialize 3 cards
     	for (int i=0;i<6;i++) {
     		if(cards.size()<6) {
@@ -161,6 +162,7 @@ public class Board {
 		aiTile.clearAiUnit();
 		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
 		aiTile1.setAiUnit(aiUnit);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
 		//move unit to tile		
 
@@ -191,10 +193,10 @@ public class Board {
     	cards.set(position-1, new Card());
     }
     
-  //draw a card from deck
+    //draw a card from deck
     public void drawCard() {
     	Card c = deck1.getCard();
-    	for(int i = 0;i < cards.size();i++) {
+    	for(int i = 0;i < 6;i++) {
     		Card card = cards.get(i);
     		if(card.getBigCard() == null) {
     			cards.set(i, c);

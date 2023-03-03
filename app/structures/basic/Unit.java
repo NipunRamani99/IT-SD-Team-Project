@@ -26,13 +26,16 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 	
+	//health and attcak for a unit
+	
 	private boolean isAi=false;
 
-	//health and attack for a unit
-	private int health;
-	private int hpFromCard = 0;
 	private int attack;
-	
+
+	private int health;
+
+	private int hpFromCard = 0;
+
 	private boolean isChosed=false;
 	
 	//Choose the unit
@@ -150,7 +153,7 @@ public class Unit {
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
 	}
-	
+
 	public int gethpFromCard() {
 		return hpFromCard;
 	}
