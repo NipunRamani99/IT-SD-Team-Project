@@ -105,6 +105,7 @@ public class Board {
 	    		BasicCommands.drawTile(out, tile, 0);
 			}
     	}	
+    	
 
 
     	//Initialize 3 cards
@@ -120,21 +121,50 @@ public class Board {
 		
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		//Get related tiles
-
 		Tile tile=this.getTile(0, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
 		this.addUnit(unit);
 		tile.setUnit(unit);	
 		BasicCommands.drawUnit(out, unit, tile);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		//unit attack and health	
+		BasicCommands.setUnitAttack(out, unit, 2);
+		BasicCommands.setUnitHealth(out, unit,20);
 		
 		
 		//Create an AI player
-		AIPlayer ai = new AIPlayer(gameState.board, cards);
 		//Initialize the AI part
-		ai.processEvent(out,gameState,ActionType.Init);
-		gameState.ai=ai;
+	    
+	    //draw the avatar on the board
+		
+		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
+		aiUnit.setAi(true);
+		//Get related tiles
+		Tile aiTile = getTile(8, 2);
+		aiUnit.setPositionByTile(aiTile); 
+		//The tile set the unit
+		aiTile.setAiUnit(aiUnit);
+	    addUnit(aiUnit);
+		//draw unit
+		BasicCommands.drawUnit(out, aiUnit, aiTile);
+		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		//unit attack and health	
+		BasicCommands.setUnitAttack(out, aiUnit, 2);
+		BasicCommands.setUnitHealth(out, aiUnit,20);
+		
+		//gameState.unit=aiUnit;
+		Tile aiTile1 = getTile(7, 3);
+		aiUnit.setPositionByTile(aiTile1);
+		aiTile.clearAiUnit();
+		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
+		//move unit to tile		
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
 
 		
@@ -161,6 +191,18 @@ public class Board {
     
     public void deleteCard(int position) {
     	cards.set(position-1, new Card());
+    }
+    
+    //draw a card from deck
+    public void drawCard() {
+    	Card c = deck1.getCard();
+    	for(int i = 0;i < 6;i++) {
+    		Card card = cards.get(i);
+    		if(card.getBigCard() == null) {
+    			cards.set(i, c);
+    			break;
+    		}
+    	}
     }
 
 }

@@ -1,10 +1,13 @@
 package events;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
+import structures.basic.Card;
 import structures.statemachine.GameStateMachine;
 
 /**
@@ -30,8 +33,47 @@ public class EndTurnClicked implements EventProcessor{
 		{
 			 checkWinner(gameState);
 			 gameState.endTurn = true;
+			 
+			//draw a card
+			gameState.board.drawCard();
+			List<Card> cards = gameState.board.getCards();
+			for(int i = 0; i < cards.size(); i++) {
+				BasicCommands.drawCard(out, cards.get(i),i+1,0);
+			}
+			
+			 //Ai
+			 //add mana+1 each turn
+			 if(gameState.AiMana<9)
+			 {
+				 gameState.AiMana++;
+				 gameState.AiPlayer.setMana( gameState.AiMana);
+			 }
+			 else
+			 {
+				 //Max mana is 9
+				 gameState.AiMana=9;
+			 }
+
+			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+
+			 //Human
+			 if(gameState.humanMana<9)
+			 {
+				 gameState.humanMana++;
+				 gameState.humanPlayer.setMana( gameState.humanMana);
+			 }
+			 else
+			 {
+				 gameState.humanMana=9;
+			 }
+
+			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+			 
 			 BasicCommands.addPlayer1Notification(out, "endturn", 1);
-		}		
+		}
+		gameStateMachine.processInput(out, gameState, message, this);
 	}
 
 }

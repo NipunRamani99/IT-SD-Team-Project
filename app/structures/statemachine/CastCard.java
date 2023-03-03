@@ -43,50 +43,50 @@ public class CastCard {
     	switch(cardName)
     	{
     	  case "Azure Herald":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Azurite Lion":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion,gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Comodo Charger":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger,gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Fire Spitter":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter,gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter,gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Hailstone Golem":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Ironcliff Guardian":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;	  
     	  case "Pureblade Enforcer":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
      	  case "Silverguard Knight":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 0, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, 0, Card.class);
+	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
@@ -94,15 +94,17 @@ public class CastCard {
 	    	  break;	    
     	}
 
+
     	placeUnit(gameState, unit, tile, out);
-    	//set the unit to the tile
-    	tile.setUnit(unit);
     	tile.setTileState(TileState.Occupied);
+   	    //add attack and health to the unit
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+	 	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+    	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
-	    //add attack and health to the unit
-		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -157,9 +159,10 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
-    	tile.setUnit(unit);
+    	tile.setUnit(unit); 	
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
+    	try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		gameState.board.addUnit(unit);
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);

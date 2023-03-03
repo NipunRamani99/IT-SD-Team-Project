@@ -25,11 +25,17 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+
 	//health and attcak for a unit
-	private int health;
-	private int hpFromCard = 0;
-	private int attack;
 	
+	private boolean isAi=false;
+
+	private int attack;
+
+	private int health;
+
+	private int hpFromCard = 0;
+
 	private boolean isChosed=false;
 	
 	//Choose the unit
@@ -41,11 +47,42 @@ public class Unit {
 	public void setChosed(boolean isChosed) {
 		this.isChosed = isChosed;
 	}
+	//set the type of the unit
+	public boolean isAi() {
+		return isAi;
+	}
 
+	public void setAi(boolean isAi) {
+		this.isAi = isAi;
+	}
 
 	private Tile tile;
 
 	public Unit() {}
+	
+	//get attack
+	public int getAttack() {
+		return attack;
+	}
+    //set attack
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
+	
+	
+	//get the health
+	public int getHealth() {
+		return health;
+	}
+	//set the health
+	public void setHealth(int health) {
+		this.health = health;
+		if(hpFromCard==0)
+		{
+			this.hpFromCard=health;
+		}
+	}
+
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();
@@ -117,28 +154,12 @@ public class Unit {
 		this.animations = animations;
 	}
 	
-	public int getHealth() {
-		return health;
-	}
+
 	
 	public int gethpFromCard() {
 		return hpFromCard;
 	}
 	
-	public int getAttack() {
-		return attack;
-	}
-	
-	public void setHealth(int health) {
-		this.health = health;
-		if(hpFromCard == 0) {
-			this.hpFromCard = health;
-		}
-	}
-	
-	public void setAttack(int attack) {
-		this.attack = attack;
-	}
 	
 	/**
 	 * This command sets the position of the Unit to a specified

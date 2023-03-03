@@ -68,7 +68,7 @@ public class Action implements Runnable{
     	
     	//initialize the board, player and action type
     	this.board=gameState.board;
-    	this.playerAI=gameState.playerAi;
+    	this.playerAI=gameState.AiPlayer;
     }
 
     /**
@@ -130,16 +130,16 @@ public class Action implements Runnable{
 		gameState.board.addUnit(unit);
 		//draw unit
 		BasicCommands.drawUnit(out, unit, aiTile);
-		try { Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		try { Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		gameState.unit=unit;
 		Tile aiTile1 = board.getTile(7, 3);
 		BasicCommands.moveUnitToTile(out, unit, aiTile1);
-		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		aiTile1.setAiUnit(unit);
 		BasicCommands.playUnitAnimation(out,unit,UnitAnimationType.attack);
 		//move unit to tile		
-		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
     }
     
@@ -199,7 +199,7 @@ public class Action implements Runnable{
     			}
 				else if(!gameState.endTurn&&!gameState.isMove)//user turn
 				{
-					if(gameState.playerAi.getHealth()>0)
+					if(gameState.AiPlayer.getHealth()>0)
 					{
 						//Choose this unit
 						aiUnit.setChosed(true);

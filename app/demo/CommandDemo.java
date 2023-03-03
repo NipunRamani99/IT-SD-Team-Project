@@ -2,12 +2,7 @@ package demo;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
-import structures.basic.Card;
-import structures.basic.EffectAnimation;
-import structures.basic.Player;
-import structures.basic.Tile;
-import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -234,7 +229,7 @@ public class CommandDemo {
 
 		// drawCard [1]
 		BasicCommands.addPlayer1Notification(out, "drawCard [1u]", 2);
-		Card hailstone_golem = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, 0, Card.class);
+		Card hailstone_golem = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, 0,Card.class);
 		BasicCommands.drawCard(out, hailstone_golem, 1, 0);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 

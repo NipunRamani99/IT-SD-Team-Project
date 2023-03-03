@@ -7,31 +7,50 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
-import structures.basic.Card;
-import structures.basic.Tile;
-import structures.basic.Tile.Occupied;
-import structures.basic.TileState;
-import structures.basic.Unit;
+import structures.basic.*;
+
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 import java.util.List;
 
+enum CardType {
+    UNIT,
+    SPELL
+}
+
 public class CardSelectedState implements State{
     private int handPosition = 0;
-    private Card cardSelcted = null;
+    private Card cardSelected = null;
+
+    private CardType cardType;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-        cardSelcted =gameState.board.getCard(handPosition);
-        BasicCommands.drawCard(out, cardSelcted, handPosition, 1);
-        highlightCardSelection(out, gameState);
+        cardSelected=gameState.board.getCard(handPosition);
+        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
+
+        if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
+        if(gameState.humanMana>=cardSelected.getManacost())
+            if(cardType == CardType.UNIT)
+        	    highlightUnitCardSelection(out, gameState);
+            else if(cardType == CardType.SPELL)
+                highlightSpellCardSelection(out, gameState);
+
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
         if(event instanceof TileClicked) {
-            int tilex = message.get("tilex").asInt();
-            int tiley = message.get("tiley").asInt();
+            int tilex = gameState.position.getTilex();
+            int tiley = gameState.position.getTiley();
             Tile tile = gameState.board.getTile(tilex, tiley);
+            System.out.println(String.format("tiles:%d,%d",tilex,tiley));
+            System.out.println("TileSelectedState: Tile Clicked");
             if(tile.getTileState() == TileState.None) {
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
@@ -39,23 +58,37 @@ public class CardSelectedState implements State{
                 gameStateMachine.setState(new NoSelectionState());
             } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
                 //if the tile is reachable and card is a unit card
-                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelcted)) {
+                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
                     //Cast card
-                    CastCard.castUnitCard(out, cardSelcted, tile, gameState);
+                    CastCard.castUnitCard(out, cardSelected, tile, gameState);
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);
                     gameState.board.deleteCard(handPosition);
                     System.out.println("CardSelectedState: Reachable Tile Clicked");                    
                 //if the tile is occupied and card is a spell card(spell needs unit to use)
-                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelcted)) {
+                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
                 	//Cast card
-                    CastCard.castSpellCard(out, cardSelcted, tile, gameState);
+                    CastCard.castSpellCard(out, cardSelected, tile, gameState);
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);          
                     gameState.board.deleteCard(handPosition);
+                    
+                    gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+                 	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                 	
                     System.out.println("CardSelectedState: Occupied Tile Clicked");
                 }
                 gameState.resetBoardSelection(out);
+
+//                //assign the reachable tile to the gameState    
+//            	drawUnitOnBoard(out, gameState,cardSelected,tile);
+//               	//after the cast the unit, delete the card
+//               	BasicCommands.deleteCard(out, handPosition);
+//               	//Select the mana cost
+//               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
+//               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+//                System.out.println("CardSelectedState: Reachable Tile Clicked");         
+
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
@@ -67,7 +100,7 @@ public class CardSelectedState implements State{
         }
     }
 
-    private void highlightCardSelection(ActorRef out, GameState gameState)
+    private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
@@ -87,6 +120,17 @@ public class CardSelectedState implements State{
                     }
                 }
             }
+        }
+    }
+
+    private void highlightSpellCardSelection(ActorRef out, GameState gameState)
+    {
+        BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
+        List<Unit> unitList = gameState.board.getUnits();
+        for(Unit unit : unitList) {
+            Position tilePos = unit.getPosition();
+            Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+            BasicCommands.drawTile(out, tile, 2);
         }
     }
 }
