@@ -96,7 +96,7 @@ public class CastCard {
 
     	placeUnit(gameState, unit, tile, out);
     	//set the unit to the tile
-    	tile.setAiUnit(unit);
+    	tile.setUnit(unit);
     	tile.setTileState(TileState.Occupied);
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
