@@ -25,8 +25,6 @@ import utils.Constants;
  *
  */
 public class GameState {
-
-	
 	public boolean gameInitalised = false;
 	public boolean cardIsClicked =false;
 	public boolean unitIsClicked = false;

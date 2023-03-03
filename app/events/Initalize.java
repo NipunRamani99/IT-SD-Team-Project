@@ -42,14 +42,12 @@ public class Initalize implements EventProcessor{
 		BasicCommands.setPlayer1Health(out, humanPlayer);
 		BasicCommands.setPlayer1Mana(out, humanPlayer);
 		gameState.humanPlayer=humanPlayer;
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
 		// setPlayer2Health
 		Player aiPlayer = new Player(20, 2);
 		BasicCommands.setPlayer2Health(out, aiPlayer);
 		BasicCommands.setPlayer2Mana(out, aiPlayer);
 		gameState.AiPlayer=aiPlayer;
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		//Board.drawBoard(out);
 		// User 1 makes a change
 		//CommandDemo.executeDemo(out); // this executes the command demo, comment out this when implementing your solution
