@@ -77,6 +77,17 @@ public class UnitMovingState extends State {
              	targetTile.setUnit(selectedUnit);
                 selectedUnit.setPositionByTile(targetTile);
                 gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
+				selectedUnit.setProvoked(false);
+				for (int i = -1; i <= 1; i++) {
+					for (int j = -1; j <= 1; j++) {
+						if(i == 0 && j == 0) continue;;
+						int x = selectedUnit.getPosition().getTilex() + i;
+						int y = selectedUnit.getPosition().getTiley() + j;
+						Tile surroundingTile = gameState.board.getTile(x, y);
+						if (surroundingTile.getAiUnit() != null && surroundingTile.getAiUnit().getHasProvoke()) {
+							selectedUnit.setProvoked(true);
+							}
+
             }
     }
 

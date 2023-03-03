@@ -26,6 +26,9 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 
+	private boolean isProvoked = false;
+	private boolean hasProvoke = false;
+
 	//health and attcak for a unit
 	
 	private boolean isAi=false;
@@ -177,5 +180,21 @@ public class Unit {
 
 	public void setTile(Tile tile) {
 		this.tile = tile;
+	}
+
+	public boolean isProvoked() {
+		return isProvoked;
+	}
+
+	public void setProvoked(boolean provoked) {
+		isProvoked = provoked;
+	}
+
+	public boolean getHasProvoke() {
+		return hasProvoke;
+	}
+
+	public void setHasProvoke(boolean hasProvoke) {
+		this.hasProvoke = hasProvoke;
 	}
 }

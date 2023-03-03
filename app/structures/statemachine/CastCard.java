@@ -77,6 +77,7 @@ public class CastCard {
 	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
+			  unit.setHasProvoke(true);
 	    	  break;	  
     	  case "Pureblade Enforcer":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, gameState.id, Unit.class);
@@ -89,6 +90,7 @@ public class CastCard {
 	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
+			  unit.setHasProvoke(true);
 	    	  break;
 	      default:
 	    	  break;	    
