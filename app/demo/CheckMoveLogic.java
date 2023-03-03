@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Card;
 import structures.basic.Tile;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 

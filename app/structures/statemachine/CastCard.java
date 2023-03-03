@@ -2,17 +2,14 @@ package structures.statemachine;
 
 import structures.basic.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import akka.actor.ActorRef;
 import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
-import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
-import utils.Constants;
 import utils.StaticConfFiles;
 
 /**
@@ -47,6 +44,7 @@ public class CastCard {
 	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
+
 	    	  break;
     	  case "Azurite Lion":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id, Unit.class);

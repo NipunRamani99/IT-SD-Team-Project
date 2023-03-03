@@ -8,7 +8,7 @@ import structures.basic.Board;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Tile.Occupied;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 import structures.basic.UnitAnimationType;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
@@ -261,6 +261,5 @@ public class Action implements Runnable{
 		}
 			
 	}
-    
-    
+
 }

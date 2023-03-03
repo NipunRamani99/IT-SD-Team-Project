@@ -3,6 +3,7 @@ package demo;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.*;
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 

@@ -1,8 +1,7 @@
 package commands;
 
 import akka.actor.ActorRef;
-import structures.basic.Card;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 
 /**
  * This class is for the special abilities of different units and spells
@@ -12,9 +11,11 @@ public class AbilityCommands {
     /**
      * Pureblade Enforce ability
      */
-    public static void enforceAbility(){
-
-    }
+//    public static void enforceAbility(Unit unit){
+//        unit.setHealth(unit.getHealth() + 1);
+//        unit.setAttack(unit.getAttack() + 1);
+//
+//    }
 
     /**
      * Silverguard Knight ability
@@ -50,7 +51,7 @@ public class AbilityCommands {
     	if(originalHealth < health) {
     		unit.setHealth(originalHealth);
     		BasicCommands.setUnitHealth(out, unit, originalHealth);
-    	}else {
+    	} else {
     		unit.setHealth(health);
     		BasicCommands.setUnitHealth(out, unit, health);
     	}

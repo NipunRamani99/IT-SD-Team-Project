@@ -9,6 +9,7 @@ import events.TileClicked;
 import structures.GameState;
 import structures.basic.*;
 
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 

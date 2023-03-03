@@ -4,17 +4,16 @@ package structures;
 import java.util.ArrayList;
 
 import ai.AIPlayer;
-import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Position;
+import structures.basic.Units.Unit;
 import structures.statemachine.CastCard;
 import structures.basic.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import events.CardClicked;
-import events.TileClicked;
 import utils.Constants;
 
 /**

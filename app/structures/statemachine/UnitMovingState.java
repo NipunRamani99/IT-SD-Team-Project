@@ -4,12 +4,10 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.EventProcessor;
-import events.UnitMoving;
 import events.UnitStopped;
 import structures.GameState;
 import structures.basic.Tile;
-import structures.basic.TileState;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 import java.lang.Math;
 
 public class UnitMovingState extends State {
@@ -76,7 +74,6 @@ public class UnitMovingState extends State {
             	//Check the unit is moved or not
              	targetTile.setUnit(selectedUnit);
                 selectedUnit.setPositionByTile(targetTile);
-                gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
 				selectedUnit.setProvoked(false);
 				for (int i = -1; i <= 1; i++)
 				{
@@ -91,6 +88,8 @@ public class UnitMovingState extends State {
 						}
 					}
 				}
+
+				gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
 
             }
     }

@@ -1,18 +1,15 @@
 package structures.statemachine;
 
-import akka.actor.Actor;
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
-import events.Heartbeat;
 import events.TileClicked;
-import scala.concurrent.impl.FutureConvertersImpl;
 import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 import utils.Constants;
 
 public class UnitSelectedState extends State{

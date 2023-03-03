@@ -7,11 +7,9 @@ import commands.BasicCommands;
 import events.EventProcessor;
 import events.Heartbeat;
 import structures.GameState;
-import structures.basic.Unit;
+import structures.basic.Units.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
-import structures.basic.Tile.Occupied;
-import utils.BasicObjectBuilders;
 
 public class HumanAttackState extends State{
 

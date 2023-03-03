@@ -1,7 +1,8 @@
-package structures.basic;
+package structures.basic.Units;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import structures.basic.*;
 
 /**
  * This is a representation of a Unit on the game board.
@@ -20,16 +21,16 @@ public class Unit {
 	@JsonIgnore
 	protected static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
 	
-	int id;
-	UnitAnimationType animation;
-	Position position;
-	UnitAnimationSet animations;
-	ImageCorrection correction;
+	private int id;
+	private UnitAnimationType animation;
+	private Position position;
+	private UnitAnimationSet animations;
+	private ImageCorrection correction;
 
 	private boolean isProvoked = false;
 	private boolean hasProvoke = false;
 
-	//health and attcak for a unit
+	//health and attack for a unit
 	
 	private boolean isAi=false;
 

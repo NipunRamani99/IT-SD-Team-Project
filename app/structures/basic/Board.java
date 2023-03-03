@@ -1,4 +1,5 @@
 package structures.basic;
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -7,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ai.AIPlayer;
-import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
