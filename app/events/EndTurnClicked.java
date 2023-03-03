@@ -40,11 +40,11 @@ public class EndTurnClicked implements EventProcessor{
 			 }
 			 else
 			 {
-				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 
 			 //Human
 			 if(gameState.humanMana<9)
@@ -58,6 +58,7 @@ public class EndTurnClicked implements EventProcessor{
 			 }
 
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 
 			 BasicCommands.addPlayer1Notification(out, "endturn", 1);
 		}
