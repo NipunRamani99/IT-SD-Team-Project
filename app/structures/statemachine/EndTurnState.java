@@ -8,7 +8,7 @@ import events.EndTurnClicked;
 import events.EventProcessor;
 import structures.*;
 
-public class EndTurnState implements State{
+public class EndTurnState extends State{
 	 public EndTurnState(ActorRef out, GameState gameState,EventProcessor event, GameStateMachine gameStateMachine)
 	 {
 		 if(event instanceof EndTurnClicked )
@@ -28,7 +28,7 @@ public class EndTurnState implements State{
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-			 gameStateMachine.setState(new AIState(out, gameState, gameStateMachine), out, gameState);
+			 gameStateMachine.setState(new AIState(out, gameState, gameStateMachine));
 		 }
 		 else
 		 {
@@ -55,5 +55,10 @@ public class EndTurnState implements State{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void enter(ActorRef out, GameState gameState) {}
+
+    public void exit(ActorRef out, GameState gameState){}
+
 
 }

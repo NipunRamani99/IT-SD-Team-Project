@@ -7,7 +7,7 @@ import commands.BasicCommands;
 import events.EventProcessor;
 import structures.GameState;
 
-public class AIState implements State{
+public class AIState extends State{
 	
 	public AIState(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
 	{
@@ -19,8 +19,16 @@ public class AIState implements State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		gameStateMachine.setState(new EndTurnState(out, gameState,null, gameStateMachine), out, gameState);
+		gameStateMachine.setState(new EndTurnState(out, gameState,null, gameStateMachine));
 		
 	}
+	
+	public void enter(ActorRef out, GameState gameState) {}
+
+    public void exit(ActorRef out, GameState gameState){}
+
+    public void setNextState(State nextState) {
+        
+    }
 
 }
