@@ -48,10 +48,4 @@ public class UnitAnimation {
 	public void setLoop(boolean loop) {
 		this.loop = loop;
 	};
-	
-	
-	
-	
-	
-	
 }
