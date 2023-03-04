@@ -68,36 +68,21 @@ public class UnitMovingState extends State {
         System.out.println("Start to move");
         if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
-        	System.out.println(gameState.board.getTile(startX,targetY).getUnit());
-        	System.out.println(gameState.board.getTile(startX,targetY).getUnit());
-        	if(null!=gameState.board.getTile(startX,targetY).getUnit()
-        		&&null==gameState.board.getTile(targetX, startY).getUnit())
+        	Unit unit1=gameState.board.getTile(startX,targetY).getAiUnit();
+        	Unit unit2=gameState.board.getTile(targetX,startY).getAiUnit();
+        	if(null==unit1&&null!=unit2)
         	{
         		//Move horizontally first
-//<<<<<<< HEAD
-//        		 startTile.clearUnit();
-//        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
-//        	     gameState.moved=true;
-//=======
         		 startTile.clearUnit();
-        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
-//>>>>>>> origin/dev/nipun
+        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
         	}
-        	else if(null==gameState.board.getTile(startX,targetY).getUnit()
-            		&&null!=gameState.board.getTile(targetX, startY).getUnit())
+        	else if(null!=unit1&&null==unit2)
         	{
         		//Move vertically first
-//<<<<<<< HEAD
-//        		startTile.clearUnit();
-//        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true); 
-//        		gameState.moved=true;	
-//=======
         		startTile.clearUnit();
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
-//>>>>>>> origin/dev/nipun
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
         	}
-        	else if(null==gameState.board.getTile(startX,targetY).getUnit()
-            		&&null==gameState.board.getTile(targetX, startY).getUnit())
+        	else if(null==unit1&&null==unit2)
         	{
         		startTile.clearUnit();
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
@@ -108,11 +93,7 @@ public class UnitMovingState extends State {
         		//do not move
         		this.targetTile=startTile;
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile);
-//<<<<<<< HEAD
-//        		//set move to false
         		gameState.moved=false;
-//=======
-//>>>>>>> origin/dev/nipun
         		System.out.println("Do not move");
         	}
         }
@@ -123,8 +104,6 @@ public class UnitMovingState extends State {
         	gameState.moved=true;
 
         }
-//        startTile.setUnit(null);
-//        BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {

@@ -123,8 +123,8 @@ public class CardSelectedState extends State{
                     int x = unit.getPosition().getTilex() + i;
                     int y = unit.getPosition().getTiley() + j;
                     Tile surroundingTile = gameState.board.getTile(x, y);
-                    if (surroundingTile != null) {
-                        if (surroundingTile.getUnit() == null) {
+                    if (surroundingTile != null && !unit.isAi()) {
+                        if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
                             surroundingTile.setTileState(TileState.Reachable);
                             BasicCommands.drawTile(out, surroundingTile, 1);
                             try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}

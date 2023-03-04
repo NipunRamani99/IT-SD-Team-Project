@@ -45,14 +45,9 @@ public class UnitSelectedState extends State{
             {
             	if(null!=tile.getAiUnit())
             	{
-//<<<<<<< HEAD
-//            		gameState.resetBoardSelection(out);
-//            		System.out.println("Get the Ai unit");
-//            		gameState.targetTile=tile;
-//            		gameStateMachine.setState(new HumanAttackState(out, unitClicked, tileClicked, tile, gameState, gameStateMachine));
-//=======
                     int distance = Tile.distance(tile, tileClicked);
                     if(distance == 2) {
+                    	//X axis moving
                         if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2) {
                             int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
@@ -62,12 +57,116 @@ public class UnitSelectedState extends State{
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
                         }
-                    } else {
+                        //Y axis moving
+                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                        {
+                        	int diffY = tile.getTiley() - tileClicked.getTiley();
+                            diffY = diffY/2;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        else
+                        {
+                        	//Only attack without moving
+                        	State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            gameStateMachine.setState(attackState, out, gameState);
+                        }                      
+                    } 
+                    else if(distance == 3)
+                    {
+                    	//X axis moving
+                        if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
+                            int diffX = tile.getTilex() - tileClicked.getTilex();
+                            diffX = diffX/2+1;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        //Y axis moving
+                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
+                        {
+                        	int diffY = tile.getTiley() - tileClicked.getTiley();
+                            diffY = diffY/2+1;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 1)
+                        {
+                        	int diffX = tile.getTilex() - tileClicked.getTilex();
+                            diffX = diffX/2;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex()+ diffX , tileClicked.getTiley());
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 1&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                        {
+                        	int diffY = tile.getTiley() - tileClicked.getTiley();
+                            diffY = diffY/2;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        else
+                        {
+                        	//do nothing
+                        	State noSelectionState = new NoSelectionState();
+                        	gameStateMachine.setState(noSelectionState, out, gameState);
+                        }
+                    }
+                    
+                    else if(distance==4)
+                    {
+                     	//X axis moving
+                        if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
+                            int diffX = tile.getTilex() - tileClicked.getTilex();
+                            diffX = diffX/2+1;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        //Y axis moving
+                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
+                        {
+                        	int diffY = tile.getTiley() - tileClicked.getTiley();
+                            diffY = diffY/2+1;
+                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            moveState.setNextState(attackState);
+                            gameStateMachine.setState(moveState, out, gameState);
+                        }
+                        else
+                        {
+                        	//do nothing
+                        	State noSelectionState = new NoSelectionState();
+                        	gameStateMachine.setState(noSelectionState, out, gameState);
+                        }
+                    }
+                    else if(distance>4)
+                    {
+                    	//do nothing
+                    	State noSelectionState = new NoSelectionState();
+                    	gameStateMachine.setState(noSelectionState, out, gameState);
+                    }
+                    else {
                         System.out.println("Get the Ai unit");
                         gameStateMachine.setState(new HumanAttackState(unitClicked, tile, false, true), out, gameState);
                     }
                     gameState.resetBoardSelection(out);
-//>>>>>>> origin/dev/nipun
             	}
 
             }
