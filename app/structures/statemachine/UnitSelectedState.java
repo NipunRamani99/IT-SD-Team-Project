@@ -8,7 +8,6 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.Heartbeat;
 import events.TileClicked;
-import scala.concurrent.impl.FutureConvertersImpl;
 import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
@@ -213,6 +212,7 @@ public class UnitSelectedState extends State{
                 }
             }
         }
+<<<<<<< HEAD
 //<<<<<<< HEAD
         
         //highlight the Ai occupied tiles
@@ -273,6 +273,8 @@ public class UnitSelectedState extends State{
 //            }
 
 //=======
+=======
+>>>>>>> origin/Jingtong
         int x = tilex - 2;
         if(x >= 0) {
             boolean occupied = gameState.board.getTile(x + 1, tiley).getAiUnit() != null;
@@ -316,7 +318,10 @@ public class UnitSelectedState extends State{
                 gameState.board.getTile(tilex, y).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
             }
+<<<<<<< HEAD
 //>>>>>>> origin/dev/nipun
+=======
+>>>>>>> origin/Jingtong
         }
     }
   }

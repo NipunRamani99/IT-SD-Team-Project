@@ -25,7 +25,7 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
-
+	
 	//health and attcak for a unit
 	
 	private boolean isAi=false;
@@ -153,13 +153,10 @@ public class Unit {
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
 	}
-	
 
-	
 	public int gethpFromCard() {
 		return hpFromCard;
 	}
-	
 	
 	/**
 	 * This command sets the position of the Unit to a specified
