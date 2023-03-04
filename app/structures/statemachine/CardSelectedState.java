@@ -29,18 +29,7 @@ public class CardSelectedState extends State{
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
-        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
 
-        if(cardSelected.getBigCard().getHealth() < 0) {
-            cardType = CardType.SPELL;
-        } else {
-            cardType = CardType.UNIT;
-        }
-        if(gameState.humanMana>=cardSelected.getManacost())
-            if(cardType == CardType.UNIT)
-        	    highlightUnitCardSelection(out, gameState);
-            else if(cardType == CardType.SPELL)
-                highlightSpellCardSelection(out, gameState);
 
     }
     @Override
@@ -98,6 +87,27 @@ public class CardSelectedState extends State{
         } else {
             System.out.println("CardSelectedState: Invalid Event");
         }
+    }
+
+    @Override
+    public void enter(ActorRef out, GameState gameState) {
+        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
+
+        if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
+        if(gameState.humanMana>=cardSelected.getManacost())
+            if(cardType == CardType.UNIT)
+                highlightUnitCardSelection(out, gameState);
+            else if(cardType == CardType.SPELL)
+                highlightSpellCardSelection(out, gameState);
+    }
+
+    @Override
+    public void exit(ActorRef out, GameState gameState) {
+
     }
 
     private void highlightUnitCardSelection(ActorRef out, GameState gameState)

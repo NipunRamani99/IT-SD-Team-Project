@@ -204,6 +204,7 @@ public class Tile {
 		tileTextures.add("assets/game/extra/ui/tile_grid.png");
 		tileTextures.add("assets/game/extra/ui/tile_grid_red.png");
 		return new Tile(tileTextures,0, 0, 115, 115, 0, 0);
+
 	}
 
 	public static int distance(Tile A, Tile B) {

@@ -51,8 +51,8 @@ public class UnitSelectedState extends State{
                             int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
                         }
