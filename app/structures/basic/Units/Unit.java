@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import structures.basic.*;
 
+import java.io.File;
+
 /**
  * This is a representation of a Unit on the game board.
  * A unit has a unique id (this is used by the front-end.
@@ -28,7 +30,6 @@ public class Unit {
 	private ImageCorrection correction;
 
 	private boolean isProvoked = false;
-	private boolean hasProvoke = false;
 
 	//health and attack for a unit
 	
@@ -191,11 +192,18 @@ public class Unit {
 		isProvoked = provoked;
 	}
 
-	public boolean getHasProvoke() {
-		return hasProvoke;
+	public static Unit loadUnit(String configFile, int id, Class<? extends Unit> classType) {
+
+		try {
+			Unit unit = mapper.readValue(new File(configFile), classType);
+			unit.setId(id);
+			return unit;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return null;
+
 	}
 
-	public void setHasProvoke(boolean hasProvoke) {
-		this.hasProvoke = hasProvoke;
-	}
 }
