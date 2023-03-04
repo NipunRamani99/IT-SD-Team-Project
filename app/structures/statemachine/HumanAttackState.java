@@ -11,10 +11,7 @@ import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
 import structures.basic.Tile.Occupied;
-<<<<<<< HEAD
 import structures.basic.TileState;
-=======
->>>>>>> origin/Jingtong
 import utils.BasicObjectBuilders;
 
 public class HumanAttackState extends State{
@@ -95,7 +92,7 @@ public class HumanAttackState extends State{
     private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
 		BasicCommands.setUnitHealth(out, enemyUnit, health);
-    	if(health == 0)
+    	if(health <= 0)
 
 		{
 			BasicCommands.setUnitHealth(out, enemyUnit,0 );

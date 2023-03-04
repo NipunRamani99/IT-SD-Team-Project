@@ -7,11 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
-<<<<<<< HEAD
-import structures.statemachine.EndTurnState;
-=======
 import structures.basic.Card;
->>>>>>> origin/Jingtong
 import structures.statemachine.GameStateMachine;
 
 /**
