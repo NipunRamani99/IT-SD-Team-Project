@@ -37,8 +37,6 @@ public class CastCard {
     	//Transform the card into units
 //    	Unit unit = null;
 
-		ArrayList<Unit> initialiseUnits = new ArrayList<Unit>();
-
     	String cardName = card.getCardname();
     	switch(cardName)
     	{
@@ -49,7 +47,7 @@ public class CastCard {
 			  azureHerald.setHealth(card.getBigCard().getHealth());
 			  azureHerald.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(azureHerald);
+			  placeUnit(out, card, tile, azureHerald, gameState);
 
 	    	  break;
     	  case "Azurite Lion":
@@ -59,7 +57,7 @@ public class CastCard {
 			  azuriteLion.setHealth(card.getBigCard().getHealth());
 			  azuriteLion.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(azuriteLion);
+			  placeUnit(out, card, tile, azuriteLion, gameState);
 
 	    	  break;
     	  case "Comodo Charger":
@@ -69,7 +67,7 @@ public class CastCard {
 			  comodoCharger.setHealth(card.getBigCard().getHealth());
 			  comodoCharger.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(comodoCharger);
+			  placeUnit(out, card, tile, comodoCharger, gameState);
 
 	    	  break;
     	  case "Fire Spitter":
@@ -79,7 +77,7 @@ public class CastCard {
 	    	  fireSpitter.setHealth(card.getBigCard().getHealth());
 	    	  fireSpitter.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(fireSpitter);
+			  placeUnit(out, card, tile, fireSpitter, gameState);
 
 	    	  break;
     	  case "Hailstone Golem":
@@ -89,7 +87,7 @@ public class CastCard {
 			  hailstoneGolem.setHealth(card.getBigCard().getHealth());
 			  hailstoneGolem.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(hailstoneGolem);
+			  placeUnit(out, card, tile, hailstoneGolem, gameState);
 
 	    	  break;
     	  case "Ironcliff Guardian":
@@ -99,7 +97,7 @@ public class CastCard {
 			  ironcliffGuardian.setHealth(card.getBigCard().getHealth());
 			  ironcliffGuardian.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(ironcliffGuardian);
+			  placeUnit(out, card, tile, ironcliffGuardian, gameState);
 
 	    	  break;	  
     	  case "Pureblade Enforcer":
@@ -109,7 +107,7 @@ public class CastCard {
 			  purebladeEnforcer.setHealth(card.getBigCard().getHealth());
 			  purebladeEnforcer.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(purebladeEnforcer);
+			  placeUnit(out, card, tile, purebladeEnforcer, gameState);
 
 	    	  break;
      	  case "Silverguard Knight":
@@ -119,44 +117,45 @@ public class CastCard {
 			  silverguardKnight.setHealth(card.getBigCard().getHealth());
 			  silverguardKnight.setAttack(card.getBigCard().getAttack());
 
-			  initialiseUnits.add(silverguardKnight);
+			  placeUnit(out, card, tile, silverguardKnight, gameState);
 
 	    	  break;
 	      default:
 	    	  break;	    
     	}
 
-		for(Unit unit : initialiseUnits) {
 
-			placeUnit(gameState, unit, tile, out);
-			tile.setTileState(TileState.Occupied);
-			//add attack and health to the unit
-			BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 
-			BasicCommands.addPlayer1Notification(out, "Cast the " + card.getCardname(), 1);
+	}
+    private static void placeUnit(ActorRef out, Card card, Tile tile, Unit unit, GameState gameState) {
 
-			//Stop the animation
-			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		placeUnit(gameState, unit, tile, out);
+		tile.setTileState(TileState.Occupied);
+		//add attack and health to the unit
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
-    }
-    
+		BasicCommands.addPlayer1Notification(out, "Cast the " + card.getCardname(), 1);
+
+		//Stop the animation
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
     public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
     	//Transform the card into units
     	String spellName = null;
