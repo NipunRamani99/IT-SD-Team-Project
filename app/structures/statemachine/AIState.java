@@ -9,9 +9,8 @@ import structures.GameState;
 
 public class AIState extends State{
 	
-	public AIState(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
+	public AIState()
 	{
-		BasicCommands.addPlayer1Notification(out, "AI turn", 1);
 		//BasicCommands.drawUnit(out, null, null);
 	}
 
@@ -19,16 +18,26 @@ public class AIState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		gameStateMachine.setState(new EndTurnState(out, gameState,null, gameStateMachine));
-		
+		gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
 	}
 	
-	public void enter(ActorRef out, GameState gameState) {}
+	public void enter(ActorRef out, GameState gameState) {
+		boolean turnComplete = gameState.ai.searchAction(gameState);
+		State aiMove = gameState.ai.getNextAiMove();
+		if(!turnComplete) {
+			appendState(aiMove, new AIState());
+			nextState = aiMove;
+		} else {
+			nextState = new EndTurnState();
+		}
 
+	}
+	public void appendState(State head, State state) {
+		State currentState = head;
+		while(currentState.nextState != null) {
+			currentState = currentState.nextState;
+		}
+		currentState.setNextState(state);
+	}
     public void exit(ActorRef out, GameState gameState){}
-
-    public void setNextState(State nextState) {
-        
-    }
-
 }

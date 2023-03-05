@@ -1,5 +1,6 @@
 package events;
 
+import ai.AIPlayer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -7,6 +8,7 @@ import commands.BasicCommands;
 import demo.CheckMoveLogic;
 import demo.CommandDemo;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.Board;
 import structures.basic.Player;
 import structures.statemachine.GameStateMachine;
@@ -48,11 +50,14 @@ public class Initalize implements EventProcessor{
 		BasicCommands.setPlayer2Health(out, aiPlayer);
 		BasicCommands.setPlayer2Mana(out, aiPlayer);
 		gameState.AiPlayer=aiPlayer;
+		gameState.ai = new AIPlayer();
+		gameState.currentTurn = Turn.PLAYER;
 		//Board.drawBoard(out);
 		// User 1 makes a change
 		//CommandDemo.executeDemo(out); // this executes the command demo, comment out this when implementing your solution
 		//CheckMoveLogic.executeDemo(out);
 		gameState.gameInitalised = true;
+
 	}
 
 }

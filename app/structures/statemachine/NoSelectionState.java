@@ -2,10 +2,7 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
-import events.CardClicked;
-import events.EventProcessor;
-import events.Heartbeat;
-import events.TileClicked;
+import events.*;
 import structures.GameState;
 import structures.basic.Tile;
 
@@ -28,8 +25,11 @@ public class NoSelectionState extends State{
             System.out.println("NoSelectionState: Card clicked");
             gameStateMachine.setState(new CardSelectedState(out, message, gameState));
         } else if (event instanceof Heartbeat) {
-
-        } else {
+            System.out.println("Heartbeat");
+        } else if (event instanceof EndTurnClicked) {
+            gameStateMachine.setState(new EndTurnState(), out, gameState);
+        }
+        else {
             System.out.println("NoSelectionState: Invalid input");
         }
     }

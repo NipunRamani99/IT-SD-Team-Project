@@ -9,10 +9,17 @@ import events.EventProcessor;
 import structures.*;
 
 public class EndTurnState extends State{
-	 public EndTurnState(ActorRef out, GameState gameState,EventProcessor event, GameStateMachine gameStateMachine)
+
+	public EndTurnState() {
+
+	}
+
+	 public void endTurn(ActorRef out, GameState gameState)
 	 {
-		 if(event instanceof EndTurnClicked )
+		 if(gameState.currentTurn == Turn.PLAYER)
 		 {
+			 gameState.currentTurn = Turn.AI;
+			 BasicCommands.addPlayer1Notification(out, "AI turn", 1);
 			 //Ai
 			 //add mana+1 each turn
 			 if(gameState.AiMana<9)
@@ -27,11 +34,12 @@ public class EndTurnState extends State{
 			 }
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
-			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-			 gameStateMachine.setState(new AIState(out, gameState, gameStateMachine));
+			 nextState = new AIState();
 		 }
 		 else
 		 {
+			 gameState.currentTurn = Turn.PLAYER;
+			 BasicCommands.addPlayer1Notification(out, "Player turn", 1);
 			 //Human
 			 if(gameState.humanMana<9)
 			 {
@@ -44,8 +52,7 @@ public class EndTurnState extends State{
 			 }
 
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-			 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-			 gameStateMachine.setState(new NoSelectionState());
+ 			 nextState = new NoSelectionState();
 		 }
 	 }
 
@@ -53,10 +60,12 @@ public class EndTurnState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		
+		gameStateMachine.setState(nextState, out, gameState);
 	}
 	
-	public void enter(ActorRef out, GameState gameState) {}
+	public void enter(ActorRef out, GameState gameState) {
+		endTurn(out, gameState);
+	}
 
     public void exit(ActorRef out, GameState gameState){}
 

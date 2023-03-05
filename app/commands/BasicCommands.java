@@ -97,7 +97,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(20);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class BasicCommands {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {Thread.sleep(5);} catch(InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(20);} catch(InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**

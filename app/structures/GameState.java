@@ -63,6 +63,8 @@ public class GameState {
 
 	public int handPosition = -1;
 	public Card card = null;
+	public Unit aiUnit = null;
+	public Turn currentTurn = Turn.PLAYER;
 
 	public void resetBoardSelection(ActorRef out) {
 		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {

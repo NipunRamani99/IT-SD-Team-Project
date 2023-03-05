@@ -155,26 +155,7 @@ public class Board {
 		//unit attack and health
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		BasicCommands.setUnitHealth(out, aiUnit,20);
-		
-		//gameState.unit=aiUnit;
-		Tile aiTile1 = getTile(7, 3);
-		aiUnit.setPositionByTile(aiTile1);
-		aiTile.clearAiUnit();
-		BasicCommands.moveUnitToTile(out, aiUnit, aiTile1);
-		aiTile1.setAiUnit(aiUnit);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-
-		BasicCommands.playUnitAnimation(out,aiUnit,UnitAnimationType.attack);
-		//move unit to tile		
-
-
-		
-//		Unit unit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, 0, Unit.class);
-//		unit2.setPositionByTile(getTile(1,2)); 	
-//		BasicCommands.drawUnit(out, unit2, getTile(1,2));
-		// Move unit, default, horizontal then vertical		
-//		BasicCommands.moveUnitToTile(out, unit, tile2);	
-//		unit.setPositionByTile(tile2); 
+        gameState.aiUnit = aiUnit;
     }
     
     

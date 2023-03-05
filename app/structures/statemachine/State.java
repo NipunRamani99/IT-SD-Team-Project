@@ -15,6 +15,7 @@ public abstract class State {
 
     public void exit(ActorRef out, GameState gameState){}
 
+
     public void setNextState(State nextState) {
         this.nextState = nextState;
     }

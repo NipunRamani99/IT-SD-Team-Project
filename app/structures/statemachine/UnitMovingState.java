@@ -7,6 +7,7 @@ import events.EventProcessor;
 import events.UnitMoving;
 import events.UnitStopped;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
@@ -65,10 +66,11 @@ public class UnitMovingState extends State {
         }
         else
         {
-        	startTile.setUnit(null);  
+			if(gameState.currentTurn == Turn.PLAYER)
+        		startTile.setUnit(null);
+			else
+				startTile.setAiUnit(null);
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
-        	gameState.moved=true;
-
         }
 
     }
@@ -76,7 +78,11 @@ public class UnitMovingState extends State {
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
             if(event instanceof UnitStopped) {
             	//Check the unit is moved or not
-             	targetTile.setUnit(selectedUnit);
+				if(gameState.currentTurn == Turn.PLAYER) {
+					targetTile.setUnit(selectedUnit);
+				} else {
+					targetTile.setAiUnit(selectedUnit);
+				}
                 selectedUnit.setPositionByTile(targetTile);
                 gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
             }
