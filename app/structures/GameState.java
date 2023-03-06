@@ -49,6 +49,9 @@ public class GameState {
 	
 	public Tile targetTile=null;
 	
+	public int numPosition=3;
+	public int aiNumPosition=3;
+	
 	public int id=0;
 	//public ActionType type;
 	//The mana for human player

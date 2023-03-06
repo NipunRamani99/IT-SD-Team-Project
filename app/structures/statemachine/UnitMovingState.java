@@ -24,35 +24,91 @@ public class UnitMovingState extends State {
 		this.targetTile = targetTile;
 	}
 	
-    private void initiateMove(ActorRef out, GameState gameState) {
-        //Get the target tile x, y position
+    private void initiateMove(ActorRef out, GameState gameState ) {
+     
+        //Check the startTile has surrounding occupied tiles or not
+        System.out.println("Start to move");
+        if(!selectedUnit.isAi()&&gameState.currentTurn == Turn.PLAYER)
+        {
+        	unitMove(out, gameState);	
+        }
+        else if(selectedUnit.isAi())
+        {
+        	if(null==targetTile.getUnit()&&null==targetTile.getAiUnit())
+        	{
+        		aiUnitMove(out, gameState);
+    		   // State attackState = new HumanAttackState(unit, startTile, false, true);
+                //State moveState = new UnitMovingState(unit, tileClicked, adjacentTile);
+    		  //  attackState.setNextState(attackState);
+               // gameStateMachine.setState(attackState, out, gameState);
+        	}
+        	else if(null!=targetTile.getUnit())
+        	{
+//        		 Unit unit = targetTile.getUnit();
+//        		 State attackState = new HumanAttackState(unit, startTile, false, true);
+        	}
+        	
+        }
+        else
+        {
+        	//do nothing
+        }
+    }
+    
+    private void unitMove(ActorRef out,GameState gameState)
+    {
+    	//Get the target tile x, y position
         int targetX = this.targetTile.getTilex();
         int targetY = this.targetTile.getTiley();
         //Get the start tile x, y position
         int startX = startTile.getTilex();
         int startY = startTile.getTiley();
-        //Check the startTile has surrounding occupied tiles or not
-        System.out.println("Start to move");
-        if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
+    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getAiUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getAiUnit();
         	if(null==unit1&&null!=unit2)
         	{
-        		//Move horizontally first
-        		 startTile.clearUnit();
-        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
+            	//Depend on the unit is ai or not
+            	if(selectedUnit.isAi())
+            	{
+            		startTile.clearAiUnit();
+            	}
+            	else
+            	{
+            		startTile.clearUnit();
+            	}
+            	//Move horizontally first
+        	    BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
 
         	}
         	else if(null!=unit1&&null==unit2)
         	{
-        		//Move vertically first
-        		startTile.clearUnit();
+            	//Depend on the unit is ai or not
+            	if(selectedUnit.isAi())
+            	{
+            		startTile.clearAiUnit();
+            	}
+            	else
+            	{
+            		startTile.clearUnit();
+            	}
+            	//Move vertically first
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
         	}
         	else if(null==unit1&&null==unit2)
         	{
-        		startTile.setUnit(null);
+
+            	//Depend on the unit is ai or not
+            	if(selectedUnit.isAi())
+            	{
+            		startTile.clearAiUnit();
+            	}
+            	else
+            	{
+            		startTile.clearUnit();
+            	}
+            	
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
         	}
         	else
@@ -66,13 +122,65 @@ public class UnitMovingState extends State {
         }
         else
         {
-			if(gameState.currentTurn == Turn.PLAYER)
-        		startTile.setUnit(null);
-			else
-				startTile.setAiUnit(null);
+
+        	//Depend on the unit is ai or not
+        	if(selectedUnit.isAi())
+        	{
+        		startTile.clearAiUnit();
+        	}
+        	else
+        	{
+        		startTile.clearUnit();
+        	}
+        	
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
         }
+    }
+    
+    private void aiUnitMove(ActorRef out,GameState gameState)
+    {
+       	//Get the target tile x, y position
+        int targetX = this.targetTile.getTilex();
+        int targetY = this.targetTile.getTiley();
+        //Get the start tile x, y position
+        int startX = startTile.getTilex();
+        int startY = startTile.getTiley();
+    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
+        {
+        	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
+        	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
+        	if(null==unit1&&null!=unit2)
+        	{
+        		//Move horizontally first
+        		 startTile.clearAiUnit();
+        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
 
+        	}
+        	else if(null!=unit1&&null==unit2)
+        	{
+        		//Move vertically first
+        		startTile.clearAiUnit();
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
+        	}
+        	else if(null==unit1&&null==unit2)
+        	{
+        		startTile.clearAiUnit();
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
+        	}
+        	else
+        	{
+        		//do not move
+        		this.targetTile=startTile;
+        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile);
+        		gameState.moved=false;
+        		System.out.println("Do not move");
+        	}
+        }
+        else
+        {
+        	startTile.clearAiUnit();
+        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
+        }
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {

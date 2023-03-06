@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
+import events.Heartbeat;
 import events.TileClicked;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.*;
 
 import utils.BasicObjectBuilders;
@@ -22,15 +24,39 @@ enum CardType {
 public class CardSelectedState extends State{
     private int handPosition = 0;
     private Card cardSelected = null;
-
+    private Tile aiTile =null;
     private CardType cardType;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
+        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
 
+        if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
+        if(gameState.humanMana>=cardSelected.getManacost())
+            if(cardType == CardType.UNIT)
+        	    highlightUnitCardSelection(out, gameState);
+            else if(cardType == CardType.SPELL)
+                highlightSpellCardSelection(out, gameState);
 
+    }
+    
+    public CardSelectedState(ActorRef out,int position, Tile tile, GameState gameState)
+    {
+    	cardSelected=gameState.board.AIgetCard(position);
+    	aiTile=tile;
+    	handPosition= position;
+    	if(cardSelected.getBigCard().getHealth() < 0) {
+            cardType = CardType.SPELL;
+        } else {
+            cardType = CardType.UNIT;
+        }
+    	
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
@@ -50,6 +76,7 @@ public class CardSelectedState extends State{
                 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
                 	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                    	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                     //Cast card
                     CastCard.castUnitCard(out, cardSelected, tile, gameState);
                     //Delete card
@@ -60,6 +87,7 @@ public class CardSelectedState extends State{
                 }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
                 	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
                    	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                 	//Cast card
                     CastCard.castSpellCard(out, cardSelected, tile, gameState);
                     //Delete card
@@ -84,7 +112,36 @@ public class CardSelectedState extends State{
             gameState.resetBoardSelection(out);
             System.out.println("CardSelectedState: Card Clicked");
             gameStateMachine.setState(new CardSelectedState(out, message, gameState));
-        } else {
+        }else if(gameState.currentTurn==Turn.AI) 
+        {
+       	    //Cast unit
+        	if(cardType==CardType.UNIT)
+        	{
+        		 CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
+        		 //cost the ai mana
+        		 gameState.AiPlayer.setMana( gameState.AiMana-cardSelected.getManacost());
+        		 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+        		 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                 //Delete card
+                 BasicCommands.deleteCard(out, handPosition);
+                 gameState.board.deleteCard(handPosition);
+        	}
+        	else  //cast spell
+        	{
+        		CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
+          		 //cost the ai mana
+       		    gameState.AiPlayer.setMana( gameState.AiMana-cardSelected.getManacost());
+       		    BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+       		    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+        		 //Delete card
+                BasicCommands.deleteCard(out, handPosition);
+                //gameState.board.deleteCard(handPosition);
+        	}
+        	gameState.resetBoardSelection(out);
+        	gameStateMachine.setState(nextState,out, gameState);
+           
+        } 
+        else {
             System.out.println("CardSelectedState: Invalid Event");
         }
     }

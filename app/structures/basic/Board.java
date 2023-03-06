@@ -37,6 +37,9 @@ public class Board {
     //The card arrayList;cards in hand
     static ArrayList<Card> cards=  new ArrayList<Card>();
     
+    //The Ai card arrayList; 
+    static ArrayList<Card> aiCards = new ArrayList<Card>();
+    
     static Deck deck1 = new Deck(1);
     
     static Deck deck2 = new Deck(2);
@@ -106,10 +109,19 @@ public class Board {
 			}
     	}	
     	
-    	//Initialize 3 cards
+    	//Initialize  cards
     	for (int i=0;i<6;i++) {
     		if(cards.size()<6) {
     			cards.add(new Card());
+    		}
+    	}
+    	
+    	//Initialize Ai cards
+    	for(int i=0;i<6;i++)
+    	{
+    		if(aiCards.size()<6)
+    		{
+    			aiCards.add(new Card());
     		}
     	}
 		for (int i=0;i<3;i++) {
@@ -118,12 +130,19 @@ public class Board {
 			drawCard();
 			//Add the card in the arraylist
 		}
+		
+		//Ai draw cards
+		for(int i=0;i<3;i++)
+		{
+			aiDrawCard();
+		}
 		for(int i = 0; i < cards.size(); i++) {
 			BasicCommands.drawCard(out, cards.get(i),i+1,0);
 		}
 		
 		// Draw a unit
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.id++, Unit.class);	
+		unit.setAvatar(true);
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
 		//Get related tiles
 		Tile tile=this.getTile(5, 2);
@@ -134,7 +153,9 @@ public class Board {
 		BasicCommands.drawUnit(out, unit, tile);
 		//unit attack and health
 		BasicCommands.setUnitAttack(out, unit, 2);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit,20);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		
 		//Create an AI player
@@ -144,6 +165,7 @@ public class Board {
 		
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
+		aiUnit.setAvatar(true);
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
 		aiUnit.setPositionByTile(aiTile); 
@@ -154,7 +176,9 @@ public class Board {
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
 		//unit attack and health
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
         gameState.aiUnit = aiUnit;
     }
     
@@ -164,7 +188,15 @@ public class Board {
     {
     	return cards.get(pos-1);
     }
+    
+    //Ai get the card on the board with the handposition
+    public Card AIgetCard(int pos)
+    {
+    	return aiCards.get(pos-1);
+    }
+    
     public List<Card> getCards(){return cards;}
+    public List<Card> getAiCards(){return aiCards;}
     public List<Unit> getUnits() {return units; }
     
     public void addUnit(Unit unit) {
@@ -182,6 +214,21 @@ public class Board {
     		Card card = cards.get(i);
     		if(card.getBigCard() == null) {
     			cards.set(i, c);
+    			break;
+    		}
+    	}
+    }
+    
+    //Ai draw a card from deck
+    public void aiDrawCard()
+    {
+    	Card c = deck2.getCard();
+    	for(int i=0;i<6;i++)
+    	{
+    		Card card = aiCards.get(i);
+    		if(card.getBigCard()== null)
+    		{
+    			aiCards.set(i, c);
     			break;
     		}
     	}

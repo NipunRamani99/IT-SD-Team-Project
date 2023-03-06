@@ -7,6 +7,7 @@ import commands.BasicCommands;
 import events.EventProcessor;
 import events.Heartbeat;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
@@ -35,7 +36,7 @@ public class HumanAttackState extends State{
 		this.enemyUnit = enemyUnit;
 	}
 
-	HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
+	public HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
 	{
 		this.selectedUnit = selectedUnit;
 
@@ -70,6 +71,7 @@ public class HumanAttackState extends State{
 
 	@Override
 	public void exit(ActorRef out, GameState gameState) {
+		
 
 	}
 
@@ -78,8 +80,9 @@ public class HumanAttackState extends State{
 	{
 		//Attack animation
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
-		unitAttack(out, enemyUnit, attackHealth, gameState);
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
 	
@@ -91,20 +94,37 @@ public class HumanAttackState extends State{
 
     private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
-		BasicCommands.setUnitHealth(out, enemyUnit, health);
     	if(health <= 0)
-
 		{
 			BasicCommands.setUnitHealth(out, enemyUnit,0 );
 			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
+			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+			
 			BasicCommands.deleteUnit(out, enemyUnit);
-			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-			nextState = nextState.getNextState();
+			if(enemyUnit.isAi())
+			{
+				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
+			}
+			else
+			{
+				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
+			}
+			
+			
 		}
+    	else
+    	{
+    		BasicCommands.setUnitHealth(out, enemyUnit,health );
+    	}
+    	
+    	if(gameState.currentTurn==Turn.AI)
+    	{
+    		//nextState=nextState.getNextState();
+    	}
 
     }
     
-    private void setUnitHealth(ActorRef out, Unit unit,int health)
+    private void setAvatarHealth(ActorRef out, Unit unit,int health)
     {
     	BasicCommands.setUnitHealth(out,unit,health );
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}

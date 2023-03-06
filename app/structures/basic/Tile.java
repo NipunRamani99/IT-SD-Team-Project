@@ -47,7 +47,7 @@ public class Tile {
 	
 	//The ai unit
 	private Unit aiUnit=null;
-	
+
 	/**
 	 * for the human player
 	 * 
@@ -98,6 +98,7 @@ public class Tile {
 		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
+		tileState = TileState.None;
 	}
 	
 	public void clearAiUnit()
@@ -105,6 +106,7 @@ public class Tile {
 		if(null!=this.aiUnit) this.aiUnit.setChosed(false);
 		this.aiUnit=null;
 		this.occupied=Occupied.none;
+		tileState = TileState.None;
 	}
 	public Tile()
 	{

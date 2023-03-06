@@ -11,6 +11,7 @@ import events.CardClicked;
 import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
+import structures.Turn;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -90,6 +91,48 @@ public class CastCard {
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
+     	  case "Blaze Hound":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_blaze_hound, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "Bloodshard Golem":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_bloodshard_golem, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "Planar Scout":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_planar_scout, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_planar_scout, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "Pyromancer":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pyromancer, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "Rock Pulveriser":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_rock_pulveriser, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "Serpenti":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_serpenti, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_serpenti, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
+     	  case "WindShrike":
+     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, gameState.id, Unit.class);
+	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, gameState.id++, Card.class);
+	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setAttack(card.getBigCard().getAttack());
+     		  break;
 	      default:
 	    	  break;	    
     	}
@@ -119,23 +162,61 @@ public class CastCard {
     	{
      	  case "Truestrike":
      		  spellName = StaticConfFiles.f1_inmolation;
-     		  placeSpell(out, gameState, spellName, tile);
-     		  AbilityCommands.truestrikeAbility(out, tile.getUnit());
+     		  //Only works on enemy unit
+     		  if(null!=tile.getAiUnit())
+     		  {
+     			 placeSpell(out, gameState, spellName, tile);
+        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit()); 
+     		  }
+     		  else
+     		  {
+     			 gameState.resetBoardSelection(out);
+    			 gameState.resetCardSelection(out);
+     		  }
      		  break;
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState, spellName, tile);
     		  AbilityCommands.sundropElixir(out, tile.getUnit());    		  
     		  break;
-     	  case "Staff of Y’Kir":
+     	  case "Staff of Y'Kir'":
    		      spellName = StaticConfFiles.f1_buff;
-   		      placeSpell(out, gameState, spellName, tile);
-   		      AbilityCommands.yKirAbility(out, tile.getUnit());
+   		      //works on your avatar
+   		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar())
+     		  {
+     			 placeSpell(out, gameState, spellName, tile);
+        		 AbilityCommands.yKirAbility(out, tile.getUnit()); 
+     		  }
+   		      else if(null != tile.getAiUnit()&&tile.getAiUnit().isAvatar())
+   		      {
+   		    	 placeSpell(out, gameState, spellName, tile);
+        		 AbilityCommands.yKirAbility(out, tile.getAiUnit()); 
+   		      }
+   		      else
+   		      {
+   		    	 gameState.resetBoardSelection(out);
+    			 gameState.resetCardSelection(out); 
+   		      }
    		      break;
      	  case "Entropic Decay":
   		      spellName = StaticConfFiles.f1_martyrdom;
-  		      placeSpell(out, gameState, spellName, tile);
-  		      AbilityCommands.entropicDecay(out, tile.getUnit());
+  		      //Reduce a non-avatar unit to 0 health
+  		      if(null!=tile.getUnit()&&!tile.getUnit().isAvatar())
+  		      {
+  	  		      placeSpell(out, gameState, spellName, tile);
+  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());  
+  		      }
+  		      else if(null!=tile.getAiUnit()&&!tile.getAiUnit().isAvatar())
+  		      {
+  			      placeSpell(out, gameState, spellName, tile);
+  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());  
+  		      }
+  		      else
+  		      {
+  		    	  gameState.resetBoardSelection(out);
+  		    	  gameState.resetCardSelection(out);
+  		      }
+
   		      break;
 	      default:
 	    	  break;
@@ -144,7 +225,15 @@ public class CastCard {
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
-
+		if(gameState.currentTurn==Turn.PLAYER)
+		{
+			gameState.numPosition--;
+		}
+		else
+		{
+			gameState.aiNumPosition--;
+		}
+        
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			
 }
@@ -164,6 +253,15 @@ public class CastCard {
     	BasicCommands.drawUnit(out, unit, tile);
     	try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		gameState.board.addUnit(unit);
+		//number of cards --
+		if(gameState.currentTurn==Turn.PLAYER)
+		{
+			gameState.numPosition--;
+		}
+		else
+		{
+			gameState.aiNumPosition--;
+		}
     	//play the animation 
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit

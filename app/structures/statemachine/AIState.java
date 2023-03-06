@@ -9,6 +9,8 @@ import structures.GameState;
 
 public class AIState extends State{
 	
+	private GameStateMachine gameStateMachine;
+	
 	public AIState()
 	{
 		//BasicCommands.drawUnit(out, null, null);
@@ -19,10 +21,11 @@ public class AIState extends State{
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
 		gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
+		this.gameStateMachine=gameStateMachine;
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
-		boolean turnComplete = gameState.ai.searchAction(gameState);
+		boolean turnComplete = gameState.ai.searchAction(out ,gameState,gameStateMachine);
 		State aiMove = gameState.ai.getNextAiMove();
 		if(!turnComplete) {
 			appendState(aiMove, new AIState());

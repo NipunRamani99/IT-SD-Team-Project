@@ -83,6 +83,17 @@ public class Unit {
 		}
 	}
 
+	//check it is avatar or not
+	private boolean isAvatar=false;
+	
+	public boolean isAvatar() {
+		return isAvatar;
+	}
+
+	public void setAvatar(boolean isAvatar) {
+		this.isAvatar = isAvatar;
+	}
+	
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();

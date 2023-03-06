@@ -1,5 +1,7 @@
 package structures.statemachine;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -7,6 +9,7 @@ import commands.BasicCommands;
 import events.EndTurnClicked;
 import events.EventProcessor;
 import structures.*;
+import structures.basic.Card;
 
 public class EndTurnState extends State{
 
@@ -35,9 +38,17 @@ public class EndTurnState extends State{
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 nextState = new AIState();
+			 //draw the ai card
+	         List<Card> aiCards= gameState.board.getAiCards();
+	         {
+	        	for(int i=0;i<gameState.aiNumPosition;i++)
+	        	{
+	        		BasicCommands.drawCard(out,aiCards.get(i), i+1, 0);
+	        	}
+	         }
 		 }
 		 else
-		 {
+		 {   			 
 			 gameState.currentTurn = Turn.PLAYER;
 			 BasicCommands.addPlayer1Notification(out, "Player turn", 1);
 			 //Human
@@ -53,6 +64,15 @@ public class EndTurnState extends State{
 
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
  			 nextState = new NoSelectionState();
+ 			 
+ 			 //draw the unit card
+	         List<Card> cards= gameState.board.getCards();
+	         {
+	        	for(int i=0;i<gameState.numPosition;i++)
+	        	{
+	        		BasicCommands.drawCard(out,cards.get(i), i+1, 0);
+	        	}
+	         }
 		 }
 	 }
 
