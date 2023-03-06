@@ -122,7 +122,7 @@ public class CastCard {
     	//the first two spell can only be cast on user's unit
     	//the last two spell can only be cast on ai's unit
      	  case "Truestrike":
-     		  if(tile.isOccupied()==Occupied.userOccupied) {
+     		  if(tile.isOccupied()==Occupied.aiOccupied) {
      		  spellName = StaticConfFiles.f1_inmolation;
      		  placeSpell(out, gameState, spellName, tile);
      		  AbilityCommands.truestrikeAbility(out, tile.getUnit());
@@ -130,12 +130,10 @@ public class CastCard {
      		  }
      		  break;
      	  case "Sundrop Elixir":
-     		 if(tile.isOccupied()==Occupied.userOccupied) {
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState, spellName, tile);
     		  AbilityCommands.sundropElixir(out, tile.getUnit());   
-    		  succeedcasting=true;
-     		 }
+    		  succeedcasting=true;     		 
     		  break;
      	  case "Staff of Y’Kir":
      		 if(tile.isOccupied()==Occupied.aiOccupied) {
@@ -146,12 +144,10 @@ public class CastCard {
      		 }
    		      break;
      	  case "Entropic Decay":
-     		 if(tile.isOccupied()==Occupied.userOccupied) {
   		      spellName = StaticConfFiles.f1_martyrdom;
   		      placeSpell(out, gameState, spellName, tile);
   		      AbilityCommands.entropicDecay(out, tile.getUnit());
-  		      succeedcasting=true;
-     		 }
+  		      succeedcasting=true;     		
   		      break;
 	      default:
 	    	  break;
