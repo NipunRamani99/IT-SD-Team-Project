@@ -18,12 +18,21 @@ public class UnitMovingState extends State {
     Tile startTile = null;
     Unit selectedUnit = null;
 
+	boolean isAiAction = false;
+
 	public UnitMovingState(Unit selectedUnit, Tile startTile, Tile targetTile) {
 		this.selectedUnit = selectedUnit;
 		this.startTile = startTile;
 		this.targetTile = targetTile;
 	}
-	
+
+	public UnitMovingState(Unit selectedUnit, Tile startTile, Tile targetTile, boolean aiAction) {
+		this.selectedUnit = selectedUnit;
+		this.startTile = startTile;
+		this.targetTile = targetTile;
+		this.isAiAction = aiAction;
+	}
+
     private void initiateMove(ActorRef out, GameState gameState) {
         //Get the target tile x, y position
         int targetX = this.targetTile.getTilex();
@@ -33,6 +42,7 @@ public class UnitMovingState extends State {
         int startY = startTile.getTiley();
         //Check the startTile has surrounding occupied tiles or not
         System.out.println("Start to move");
+		selectedUnit.setMovement(false);
         if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getAiUnit();
@@ -40,19 +50,28 @@ public class UnitMovingState extends State {
         	if(null==unit1&&null!=unit2)
         	{
         		//Move horizontally first
-        		 startTile.clearUnit();
+				if(gameState.currentTurn == Turn.PLAYER)
+					startTile.setUnit(null);
+				else
+					startTile.setAiUnit(null);
         	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
 
         	}
         	else if(null!=unit1&&null==unit2)
         	{
         		//Move vertically first
-        		startTile.clearUnit();
+				if(gameState.currentTurn == Turn.PLAYER)
+					startTile.setUnit(null);
+				else
+					startTile.setAiUnit(null);
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
         	}
         	else if(null==unit1&&null==unit2)
         	{
-        		startTile.setUnit(null);
+				if(gameState.currentTurn == Turn.PLAYER)
+					startTile.setUnit(null);
+				else
+					startTile.setAiUnit(null);
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
         	}
         	else

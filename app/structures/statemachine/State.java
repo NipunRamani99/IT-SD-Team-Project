@@ -20,5 +20,13 @@ public abstract class State {
         this.nextState = nextState;
     }
 
-    public State getNextState() { return nextState; }
+    public State getNextState() { return nextState;}
+    public void appendState(State s) {
+        if(nextState == null) {
+            nextState = s;
+        }
+        else {
+            nextState.appendState(s);
+        }
+    }
 }

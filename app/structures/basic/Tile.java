@@ -210,4 +210,9 @@ public class Tile {
 	public static int distance(Tile A, Tile B) {
 		return Math.abs(A.tilex - B.tilex) + Math.abs(A.tiley - B.tiley);
 	}
+
+	public int distanceToUnit(Unit unit) {
+		Position p = unit.getPosition();
+		return Math.abs(p.tilex - this.tilex) + Math.abs(p.tiley - this.tiley);
+	}
 }

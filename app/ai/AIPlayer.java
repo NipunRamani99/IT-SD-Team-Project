@@ -1,5 +1,8 @@
 package ai;
 
+import ai.actions.PursueAction;
+import ai.actions.Action;
+import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
 import structures.GameState;
 import structures.basic.Board;
 import structures.basic.Card;
@@ -7,7 +10,9 @@ import structures.basic.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -20,6 +25,34 @@ import structures.statemachine.NoSelectionState;
 import structures.statemachine.State;
 import structures.statemachine.UnitMovingState;
 
+class TurnCache {
+    public List<Unit> markedUnits = new ArrayList<>();
+    public List<Unit> aiUnits = new ArrayList<>();
+    public List<Unit> playerUnits = new ArrayList<>();
+
+    public TurnCache() {
+
+    }
+
+    public TurnCache(GameState gameState) {
+        this.playerUnits = searchTargets(gameState);
+        this.aiUnits =getAvailableUnits(gameState);
+    }
+
+    public List<Unit> searchTargets(GameState gameState) {
+        List<Unit> units = gameState.board.getUnits().stream().filter((unit -> !unit.isAi())).collect(Collectors.toList());
+        return units;
+    }
+
+    public List<Unit> getAvailableUnits(GameState gameState) {
+        List<Unit> units = gameState.board.getUnits();
+        units = units.stream().filter((unit -> {
+            return unit.isAi() && (unit.canAttack() || unit.getMovement());
+        })).collect(Collectors.toList());
+        return units;
+    }
+}
+
 /**
  * AIPlayer implements an AI which can analyse the positions on the board, calculate different actions,
  * and execute the actions one by one over the board. The actions it can perform includes moving a unit from one tile to another,
@@ -31,16 +64,17 @@ public class AIPlayer{
 
     private State nextAiMove = null;
 
-    public AIPlayer() {
-        this.nextAiMove = new EndTurnState();
+    private TurnCache turnCache = null;
 
+    private List<Action> aiActions = new ArrayList<>();
+
+    public AIPlayer() {
+        this.nextAiMove = null;
+        turnCache = new TurnCache();
     }
 
-    /**
-     * This function is for AI to execute asynchronously
-     */
-    public void update() {
-        //performAction();
+    public void beginTurn(GameState gameState) {
+        turnCache = new TurnCache(gameState);
     }
 
     /**
@@ -50,15 +84,50 @@ public class AIPlayer{
     public boolean searchAction(GameState gameState) {
         //Create a list of actions to be performed
         //Check if deck of cards has unit card
-        if(canPlay) {
-            Unit unit = gameState.aiUnit;
-            nextAiMove = new UnitMovingState(unit, gameState.board.getTile(unit.getPosition().getTilex(), unit.getPosition().getTiley()), gameState.board.getTile(unit.getPosition().getTilex() - 1, unit.getPosition().getTiley()));
-            //Move unit towards enemies
-            canPlay = false;
-            return false;
-        } else {
-            canPlay = true;
-            return true;
+
+            nextAiMove = null;
+            turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+            markEnemy();
+            pursueEnemy();
+            for(Action action : aiActions) {
+                State s  = action.processAction(gameState);
+                if(s == null) continue;
+                if(nextAiMove == null) {
+                    nextAiMove = s;
+                } else {
+                    nextAiMove.appendState(s);
+                }
+            }
+            canPlay = !aiActions.isEmpty();
+            aiActions.clear();
+            return canPlay;
+    }
+
+    public void markEnemy() {
+        turnCache.markedUnits = turnCache.playerUnits;
+    }
+
+    public void pursueEnemy() {
+        if(turnCache.aiUnits.isEmpty())
+            return;
+        for(Unit markedUnit : turnCache.markedUnits) {
+             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
+             turnCache.aiUnits.stream()
+                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
+                     .findFirst()
+                     .ifPresent((aiUnit -> {
+                         Action pursueAction = new PursueAction(markedUnit, aiUnit);
+                         aiActions.add(pursueAction);
+                         turnCache.aiUnits.remove(aiUnit);
+                     }));
+
+//             turnCache.aiUnits.removeIf(aiUnit -> {
+//                 boolean hit = (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();
+//                 if(!hit) return false;
+//                 Action pursueAction = new PursueAction(markedUnit, aiUnit);
+//                 aiActions.add(pursueAction);
+//                 return true;
+//             });
         }
     }
 

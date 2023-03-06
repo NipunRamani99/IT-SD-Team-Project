@@ -79,6 +79,15 @@ public class GameState {
 		}
 	}
 
+	public void resetBoardState() {
+		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
+			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+				Tile tile = board.getTile(i, j);
+				tile.setTileState(TileState.None);
+			}
+		}
+	}
+
 	public void resetCardSelection(ActorRef out) {
 		List<Card> cards = board.getCards();
 		for(int i = 0; i < cards.size(); i++) {

@@ -28,9 +28,7 @@ public class CardSelectedState extends State{
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-        cardSelected=gameState.board.getCard(handPosition);
-
-
+        cardSelected = gameState.board.getCard(handPosition);
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
