@@ -1,6 +1,7 @@
 package structures.statemachine;
 
 import structures.basic.*;
+import structures.basic.Tile.Occupied;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -111,42 +112,56 @@ public class CastCard {
 
     }
     
-    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+    public static boolean castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
     	//Transform the card into units
     	String spellName = null;
     	String cardName = card.getCardname();
+    	boolean succeedcasting = false;
     	switch(cardName)
     	{
+    	//the first two spell can only be cast on user's unit
+    	//the last two spell can only be cast on ai's unit
      	  case "Truestrike":
+     		  if(tile.isOccupied()==Occupied.userOccupied) {
      		  spellName = StaticConfFiles.f1_inmolation;
      		  placeSpell(out, gameState, spellName, tile);
      		  AbilityCommands.truestrikeAbility(out, tile.getUnit());
+     		  succeedcasting=true;
+     		  }
      		  break;
      	  case "Sundrop Elixir":
+     		 if(tile.isOccupied()==Occupied.userOccupied) {
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState, spellName, tile);
-    		  AbilityCommands.sundropElixir(out, tile.getUnit());    		  
+    		  AbilityCommands.sundropElixir(out, tile.getUnit());   
+    		  succeedcasting=true;
+     		 }
     		  break;
      	  case "Staff of Y’Kir":
+     		 if(tile.isOccupied()==Occupied.aiOccupied) {
    		      spellName = StaticConfFiles.f1_buff;
    		      placeSpell(out, gameState, spellName, tile);
    		      AbilityCommands.yKirAbility(out, tile.getUnit());
+   		      succeedcasting=true;
+     		 }
    		      break;
      	  case "Entropic Decay":
+     		 if(tile.isOccupied()==Occupied.userOccupied) {
   		      spellName = StaticConfFiles.f1_martyrdom;
   		      placeSpell(out, gameState, spellName, tile);
   		      AbilityCommands.entropicDecay(out, tile.getUnit());
+  		      succeedcasting=true;
+     		 }
   		      break;
 	      default:
 	    	  break;
 	    
     	} 	
-    	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
 
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			
+		return succeedcasting;
 }
 
 

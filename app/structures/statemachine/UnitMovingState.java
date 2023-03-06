@@ -30,6 +30,9 @@ public class UnitMovingState extends State {
         int startY = startTile.getTiley();
         //Check the startTile has surrounding occupied tiles or not
         System.out.println("Start to move");
+        //change the TileState
+        startTile.setTileState(TileState.None);
+        targetTile.setTileState(TileState.Occupied);
         if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
         	System.out.println(gameState.board.getTile(startX,targetY).getUnit());
@@ -38,20 +41,20 @@ public class UnitMovingState extends State {
         		&&null==gameState.board.getTile(targetX, startY).getUnit())
         	{
         		//Move horizontally first
-        		 startTile.setUnit(null);
+        		 startTile.clearUnit();        		 
         	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
         	}
         	else if(null==gameState.board.getTile(startX,targetY).getUnit()
             		&&null!=gameState.board.getTile(targetX, startY).getUnit())
         	{
         		//Move vertically first
-        		startTile.setUnit(null);
+        		startTile.clearUnit();;
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
         	}
         	else if(null==gameState.board.getTile(startX,targetY).getUnit()
             		&&null==gameState.board.getTile(targetX, startY).getUnit())
         	{
-        		startTile.setUnit(null);
+        		startTile.clearUnit();;
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
         	}
         	else
@@ -64,7 +67,7 @@ public class UnitMovingState extends State {
         }
         else
         {
-        	startTile.setUnit(null);  
+        	startTile.clearUnit();;  
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
         }
 //        startTile.setUnit(null);

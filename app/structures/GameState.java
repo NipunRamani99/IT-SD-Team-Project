@@ -69,7 +69,7 @@ public class GameState {
 			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
 				Tile tile = board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
-				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}	
 				if(tile.getTileState() != TileState.Occupied) {
 					tile.setTileState(TileState.None);
 				}

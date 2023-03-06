@@ -68,8 +68,10 @@ public class CardSelectedState extends State{
                 //if the tile is occupied and card is a spell card(spell needs unit to use)
                 }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
                 	//Cast card
-                    CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                	//use a boolean to check if the spell is cast on a correct unit(user or ai)
+                    boolean succeedcasting = CastCard.castSpellCard(out, cardSelected, tile, gameState);
                     //Delete card
+                    if(succeedcasting) {
                     BasicCommands.deleteCard(out, handPosition);          
                     gameState.board.deleteCard(handPosition);
                     
@@ -77,6 +79,7 @@ public class CardSelectedState extends State{
                  	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
                  	
                     System.out.println("CardSelectedState: Occupied Tile Clicked");
+                    }
                 }
                 gameState.resetBoardSelection(out);
 
