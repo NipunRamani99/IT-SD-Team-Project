@@ -23,10 +23,6 @@ import structures.statemachine.GameStateMachine;
  */
 public class EndTurnClicked implements EventProcessor{
 
-	private void checkWinner(GameState gameState) {
-		//Check if player/Ai's avatar has 0 health.
-		//Check if player/Ai's deck of cards is empty.
-	}
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 

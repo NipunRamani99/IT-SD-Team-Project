@@ -19,6 +19,9 @@ public class EndTurnState extends State{
 
 	 public void endTurn(ActorRef out, GameState gameState)
 	 {
+		 //every turn, every unit can attack
+		 gameState.board.setUnitAttackState();
+		 
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {
 			 gameState.currentTurn = Turn.AI;
@@ -80,14 +83,6 @@ public class EndTurnState extends State{
         	 	BasicCommands.deleteCard(out,i);
         	 }
  			 //draw the unit card
-//	         List<Card> cards= gameState.board.getCards();
-	         
-//        	 for(int i=0;i<gameState.numPosition;i++)
-//        	 {
-//        		if()
-//        		BasicCommands.drawCard(out,cards.get(i), i+1, 0);
-//        	 }
-	       //draw a card
 			gameState.board.drawCard();
 			List<Card> cards = gameState.board.getCards();
 			for(int i = 0; i < cards.size(); i++) {

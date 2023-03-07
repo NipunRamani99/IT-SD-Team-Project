@@ -1,6 +1,8 @@
 package commands;
 
 import akka.actor.ActorRef;
+import events.Attack;
+import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Unit;
 
@@ -33,17 +35,22 @@ public class AbilityCommands {
     /**
      * Truestrike spell
      */
-    public static void truestrikeAbility(ActorRef out, Unit unit){
+    public static void truestrikeAbility(ActorRef out, Unit unit, GameState gameState){
     	int health = unit.getHealth();
     	health = health - 2;
+    	if(health<=0)
+    	{
+    		Attack.deleteEnemyUnit(out, unit, gameState);
+    	}
     	unit.setHealth(health);
     	BasicCommands.setUnitHealth(out, unit, health);
+    	Attack.setPlayerHealth(out, health, unit, gameState);
     }
     
     /**
      * Sundrop Elixir spell
      */
-    public static void sundropElixir(ActorRef out, Unit unit){
+    public static void sundropElixir(ActorRef out, Unit unit, GameState gameState){
     	int health = unit.getHealth();
     	health = health + 5;
     	int originalHealth = unit.gethpFromCard();
@@ -54,6 +61,7 @@ public class AbilityCommands {
     		unit.setHealth(health);
     		BasicCommands.setUnitHealth(out, unit, health);
     	}
+    	Attack.setPlayerHealth(out, health, unit, gameState);
     }
 
     /**

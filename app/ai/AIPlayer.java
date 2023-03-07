@@ -1,6 +1,6 @@
 package ai;
 
-import ai.actions.PursueAction;
+import ai.actions.*;
 //import ai.actions.Action;
 import ai.*;
 import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
@@ -73,11 +73,11 @@ public class AIPlayer{
 
     private State nextAiMove = null;
     
-    
+ 	 List<Card> cards;
 
     private TurnCache turnCache = null;
 
-    private List<Action> aiActions = new ArrayList<>();
+    private List<AiAction> aiActions = new ArrayList<>();
 
     public AIPlayer() {
         this.nextAiMove = null;
@@ -92,7 +92,7 @@ public class AIPlayer{
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-    public boolean searchAction(ActorRef out,GameState gameState, GameStateMachine gameStateMachine) {
+   // public boolean searchAction(ActorRef out,GameState gameState, GameStateMachine gameStateMachine) {
         //Create a list of actions to be performed
         //Check if deck of cards has unit card
 //<<<<<<< HEAD
@@ -123,12 +123,14 @@ public class AIPlayer{
 //            canPlay = true;
 //            return true;
 //=======
-
+    public boolean searchAction(GameState gameState) {
+    	   //get the all the ai hand card
+            cards = gameState.board.getCards();
             nextAiMove = null;
             turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
             markEnemy();
             pursueEnemy();
-            for(Action action : aiActions) {
+            for(AiAction action : aiActions) {
                 State s  = action.processAction(gameState);
                 if(s == null) continue;
                 if(nextAiMove == null) {
@@ -155,7 +157,7 @@ public class AIPlayer{
                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
-                         Action pursueAction = new PursueAction(markedUnit, aiUnit);
+                         AiAction pursueAction = new PursueAction(markedUnit, aiUnit);
                          aiActions.add(pursueAction);
                          turnCache.aiUnits.remove(aiUnit);
                      }));
@@ -172,10 +174,27 @@ public class AIPlayer{
     
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
+    	//check the card on hand
+    	chooseAiCardPosition(gameState);
     	Tile chooseTile=Action.searchLowestAiUnitAttack(out, gameState);
     	System.out.println("Ai cast the card");
     	nextAiMove = new CardSelectedState(out, 1, chooseTile, gameState);
            
+    }
+    
+    
+    private int chooseAiCardPosition(GameState gameState)
+    {
+  
+    	 for(int i=1;i<=cards.size();i++)
+    	 {
+    		Card aiCard=cards.get(i-1);
+    	 	if(null!=aiCard&&gameState.AiPlayer.getMana()>=aiCard.getManacost())
+    	 	{
+    	 		return i;
+    	 	}
+    	 }
+    	return 0;
     }
 
     public State getNextAiMove() {

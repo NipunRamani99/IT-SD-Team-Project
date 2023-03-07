@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import events.Attack;
 import events.EventProcessor;
 import events.Heartbeat;
 import structures.GameState;
@@ -44,13 +45,13 @@ public class UnitAttackState extends State{
 
 		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
 		if(!reactAttack && selectedUnit.canAttack()) {
-			selectedUnit.setCanAttack(false);
 			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
 			if (nextState != null) {
 				reactState.setNextState(nextState);
 			}
 			this.nextState = reactState;
 		}
+
 	}
 	
 	@Override
@@ -64,9 +65,18 @@ public class UnitAttackState extends State{
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 		try {
-			System.out.println("Unit attack");
-			getUnitOnTileAttack(out, gameState);
-
+				if(selectedUnit.canAttack())
+				{
+					//make sure every unit can attack once
+					selectedUnit.setCanAttack(false);
+					System.out.println("Unit attack");
+					getUnitOnTileAttack(out, gameState);
+				}
+				else
+				{
+					if(nextState==null)
+						nextState=new NoSelectionState();
+				}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +96,7 @@ public class UnitAttackState extends State{
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
+		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
@@ -100,39 +111,17 @@ public class UnitAttackState extends State{
     {
     	if(health <= 0)
 		{
-			BasicCommands.setUnitHealth(out, enemyUnit,0 );
-			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
-			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			
-			BasicCommands.deleteUnit(out, enemyUnit);
-//<<<<<<< HEAD:app/structures/statemachine/HumanAttackState.java
-//			if(enemyUnit.isAi())
-//			{
-//				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
-//			}
-//			else
-//			{
-//				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-//			}
-//			
-//			
-//=======
-			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-			if(nextState != null)
-				nextState = nextState.getNextState();
-//>>>>>>> origin/dev/nipun:app/structures/statemachine/UnitAttackState.java
+          Attack.deleteEnemyUnit(out, enemyUnit, gameState);
+          Attack.setPlayerHealth(out, health, enemyUnit, gameState);
 		}
     	else
     	{
-    		BasicCommands.setUnitHealth(out, enemyUnit,health );
-    	}
-    	
-    	if(gameState.currentTurn==Turn.AI)
-    	{
-    		//nextState=nextState.getNextState();
+    	  BasicCommands.setUnitHealth(out, enemyUnit,health );	
+    	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
     	}
 
     }
+    
     
     private void setAvatarHealth(ActorRef out, Unit unit,int health)
     {

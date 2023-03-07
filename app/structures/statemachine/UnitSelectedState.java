@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
+import events.OtherClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.basic.Tile;
@@ -171,7 +172,13 @@ public class UnitSelectedState extends State{
             gameState.resetBoardSelection(out);
             System.out.println("UnitSelectedState: Card Clicked");
             gameStateMachine.setState(new CardSelectedState(out, message, gameState));
-        } else {
+        }else if(event instanceof OtherClicked)
+        {
+        	 gameState.resetBoardSelection(out);
+        	 gameState.resetCardSelection(out);
+        	 gameStateMachine.setState(new NoSelectionState());
+        }      
+        else {
             System.out.println("UnitSelectedState: Invalid Event");
         }
     }
@@ -203,9 +210,13 @@ public class UnitSelectedState extends State{
                         surroundingTile.setTileState(TileState.Reachable);
                         BasicCommands.drawTile(out, surroundingTile, 1);
                     }
-                    else {
+                    else if(surroundingTile.getAiUnit()!=null) {
                         surroundingTile.setTileState(TileState.Occupied);
                         BasicCommands.drawTile(out, surroundingTile, 2);
+                    }
+                    else
+                    {
+                    	//do nothing
                     }
                 }
             }

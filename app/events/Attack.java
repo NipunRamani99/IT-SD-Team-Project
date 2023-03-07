@@ -1,11 +1,9 @@
 package events;
 
-import structures.basic.Player;
-import structures.basic.Unit;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.*;
 import structures.statemachine.GameStateMachine;
@@ -13,7 +11,7 @@ import structures.statemachine.GameStateMachine;
 /**
  * This class will define the action of the unit attack, player attack, and attack between unit and player
  */
-public class Attack implements  EventProcessor,Runnable  {
+public class Attack {
     /**
      * This unit is for the friendly unit that will launch an attack
      */
@@ -48,42 +46,56 @@ public class Attack implements  EventProcessor,Runnable  {
      * @param myUnit the unit refers to the attacking unit
      * @param enemyUnit the unit refer to the attacked unit
      */
-    public Attack(Unit myUnit, Unit enemyUnit){
-    	//enemy unit attack
-    	//setUnitAttack()
-
-    }
-
+   
     /**
-     * This constructor is for the attack between my unit and aviator of enemy player
-     * @param myUnit the unit refers to any unit including attacking or attacked unit
-     * @param player the player refer to any player including player1 or player2
+     * delete the enemy unit
+     * @param out
+     * @param enemyUnit
+     * @param gameState
      */
-    public Attack(Unit myUnit, Player player){
-
-    }
-
-
-    /**
-     * This constructor is for the attack between the aviators of player1 and player2
-     * @param player1 The player refers to the attacking player
-     * @param player2  The player refers to the attacked player
-     */
-    public Attack(Player player1, Player player2){
-
-    }
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+    public static void deleteEnemyUnit(ActorRef out,Unit enemyUnit, GameState gameState)
+    {
+		BasicCommands.setUnitHealth(out, enemyUnit,0 );
+		BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
-	}
-
-	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
-		// TODO Auto-generated method stub
-		this.out=out;
-		this.gameState=gameState;
+		BasicCommands.deleteUnit(out, enemyUnit);
+		if(enemyUnit.isAi())
+		{
+			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
+		}
+		else
+		{
+			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
+		}
 		
-	}
+		gameState.board.deleteUnit(enemyUnit);
+    }
+    
+    
+    public static void setPlayerHealth(ActorRef out,int health,Unit targetUnit, GameState gameState)
+    {
+    	//for the human player
+    	if(0==targetUnit.getId())
+    	{
+    		if(health<=0)
+    			gameState.humanPlayer.setHealth(0);
+    		else
+    			gameState.humanPlayer.setHealth(health);
+    		BasicCommands.setPlayer1Health(out, gameState.humanPlayer);
+    	}
+    	//for the AI player
+    	else if(1==targetUnit.getId())
+    	{
+    		if(health<=0)
+    			gameState.AiPlayer.setHealth(0);
+    		else
+    			gameState.AiPlayer.setHealth(health);
+    		BasicCommands.setPlayer2Health(out, gameState.AiPlayer);
+    	}
+    	else
+    	{
+    		//do nothing
+    	}
+    }
 }

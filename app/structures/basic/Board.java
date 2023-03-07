@@ -163,17 +163,17 @@ public class Board {
 	    
 	    //draw the avatar on the board
 		
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
 		aiUnit.setAvatar(true);
-=======
-		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);
+//=======
+//		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);
         Unit aiUnit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id++, Unit.class);
 
-        aiUnit.setAi(true);
+//        aiUnit.setAi(true);
         aiUnit2.setAi(true);
->>>>>>> origin/dev/nipun
+//>>>>>>> origin/dev/nipun
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
         Tile aiTile2 = getTile(8,1);
@@ -193,13 +193,13 @@ public class Board {
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-=======
+//=======
         BasicCommands.setUnitAttack(out, aiUnit2, 4);
         BasicCommands.setUnitHealth(out, aiUnit2,3);
 
->>>>>>> origin/dev/nipun
+//>>>>>>> origin/dev/nipun
         gameState.aiUnit = aiUnit;
     }
     
@@ -222,6 +222,11 @@ public class Board {
     
     public void addUnit(Unit unit) {
         units.add(unit);
+    }
+    
+    public void deleteUnit(Unit unit)
+    {
+    	units.remove(unit);
     }
     
     public void deleteCard(int position) {
@@ -257,6 +262,15 @@ public class Board {
     			aiCards.set(i, c);
     			break;
     		}
+    	}
+    }
+    
+    //set attack state to be ture for all the unit
+    public void setUnitAttackState()
+    {
+    	for(Unit unit:units)
+    	{
+    		unit.setCanAttack(true);
     	}
     }
 

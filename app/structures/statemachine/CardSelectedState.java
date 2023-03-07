@@ -32,7 +32,7 @@ public class CardSelectedState extends State{
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-<<<<<<< HEAD
+//<<<<<<< HEAD
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
 
@@ -43,9 +43,9 @@ public class CardSelectedState extends State{
         }
         cardClickedTilesHighlight(out, gameState);
 
-=======
-        cardSelected = gameState.board.getCard(handPosition);
->>>>>>> origin/dev/nipun
+//=======
+//        cardSelected = gameState.board.getCard(handPosition);
+//>>>>>>> origin/dev/nipun
     }
     
     public CardSelectedState(ActorRef out,int position, Tile tile, GameState gameState)
@@ -75,41 +75,37 @@ public class CardSelectedState extends State{
                 gameStateMachine.setState(new NoSelectionState());
             } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
                 //if the tile is reachable and card is a unit card
-                if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
-                	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-                   	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                    //Cast card
-                    CastCard.castUnitCard(out, cardSelected, tile, gameState);
-                    //Delete card
-                    BasicCommands.deleteCard(out, handPosition);
-                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                    gameState.board.deleteCard(handPosition);
-                    System.out.println("CardSelectedState: Reachable Tile Clicked");                    
-                //if the tile is occupied and card is a spell card(spell needs unit to use)
-                }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
-                	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-                   	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                	//Cast card
-                    CastCard.castSpellCard(out, cardSelected, tile, gameState);
-                    //Delete card
-                    BasicCommands.deleteCard(out, handPosition);  
-                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                    gameState.board.deleteCard(handPosition);             	
-                    System.out.println("CardSelectedState: Occupied Tile Clicked");
-                }
+            	int mana=gameState.humanPlayer.getMana();
+            	if(mana>=cardSelected.getManacost())
+            	{
+            		 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
+                     	gameState.humanPlayer.setMana(mana-cardSelected.getManacost());
+                        	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                         //Cast card
+                         CastCard.castUnitCard(out, cardSelected, tile, gameState);
+                         //Delete card
+                         BasicCommands.deleteCard(out, handPosition);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                         gameState.board.deleteCard(handPosition);
+                         System.out.println("CardSelectedState: Reachable Tile Clicked");                    
+                     //if the tile is occupied and card is a spell card(spell needs unit to use)
+                     }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
+                     	gameState.humanPlayer.setMana(mana-cardSelected.getManacost());
+                        	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                     	//Cast card
+                         CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                         //Delete card
+                         BasicCommands.deleteCard(out, handPosition);  
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                         gameState.board.deleteCard(handPosition);             	
+                         System.out.println("CardSelectedState: Occupied Tile Clicked");
+                     }
+            	}
+               
                 gameState.resetBoardSelection(out);
-
-//                //assign the reachable tile to the gameState    
-//            	drawUnitOnBoard(out, gameState,cardSelected,tile);
-//               	//after the cast the unit, delete the card
-//               	BasicCommands.deleteCard(out, handPosition);
-//               	//Select the mana cost
-//               	gameState.humanPlayer.setMana( gameState.humanMana-cardSelected.getManacost());
-//               	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-//                System.out.println("CardSelectedState: Reachable Tile Clicked");         
-
+                gameState.resetCardSelection(out);
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
@@ -125,29 +121,39 @@ public class CardSelectedState extends State{
         }
         else if(gameState.currentTurn==Turn.AI) 
         {
-       	    //Cast unit
-        	if(cardType==CardType.UNIT)
+        	int mana=gameState.AiPlayer.getMana();
+        	if(mana>=cardSelected.getManacost())
         	{
-        		 CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
-        		 //cost the ai mana
-        		 gameState.AiPlayer.setMana( gameState.AiMana-cardSelected.getManacost());
-        		 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
-        		 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                 //Delete card
-                 BasicCommands.deleteCard(out, handPosition);
-                 gameState.board.deleteAiCard(handPosition);
+        		//Cast unit
+            	if(cardType==CardType.UNIT)
+            	{
+            		
+            		 CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
+            		 //cost the ai mana
+            		 gameState.AiPlayer.setMana( mana-cardSelected.getManacost());
+            		 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+            		 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                     //Delete card
+                     BasicCommands.deleteCard(out, handPosition);
+                     gameState.board.deleteAiCard(handPosition);
+            	}
+            	else  //cast spell
+            	{
+            		CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
+              		 //cost the ai mana
+           		    gameState.AiPlayer.setMana( mana-cardSelected.getManacost());
+           		    BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+           		    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+            		 //Delete card
+                    BasicCommands.deleteCard(out, handPosition);
+                    gameState.board.deleteAiCard(handPosition);
+            	}
         	}
-        	else  //cast spell
+        	else
         	{
-        		CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
-          		 //cost the ai mana
-       		    gameState.AiPlayer.setMana( gameState.AiMana-cardSelected.getManacost());
-       		    BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
-       		    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-        		 //Delete card
-                BasicCommands.deleteCard(out, handPosition);
-                gameState.board.deleteAiCard(handPosition);
+        		nextState= new NoSelectionState();
         	}
+       	    
         	gameState.resetBoardSelection(out);
         	gameStateMachine.setState(nextState,out, gameState);
            

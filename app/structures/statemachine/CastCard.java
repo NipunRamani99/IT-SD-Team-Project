@@ -166,7 +166,7 @@ public class CastCard {
      		  if(null!=tile.getAiUnit())
      		  {
      			 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit()); 
+        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState); 
      		  }
      		  else
      		  {
@@ -178,9 +178,9 @@ public class CastCard {
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState, spellName, tile);
     		  if(null!=tile.getUnit())
-    			  AbilityCommands.sundropElixir(out, tile.getUnit());
+    			  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
     		  else
-    			  AbilityCommands.sundropElixir(out, tile.getAiUnit());
+    			  AbilityCommands.sundropElixir(out, tile.getAiUnit(),gameState);
     		  break;
      	  case "Staff of Y'Kir'":
    		      spellName = StaticConfFiles.f1_buff;
@@ -251,7 +251,9 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
-    	tile.setUnit(unit); 	
+    	tile.setUnit(unit); 
+    	//when first placed, the unit can not attack
+    	unit.setCanAttack(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
     	try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}

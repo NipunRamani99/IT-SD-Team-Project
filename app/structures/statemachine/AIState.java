@@ -6,6 +6,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
 import structures.GameState;
+import ai.*;
 
 public class AIState extends State{
 	
@@ -25,11 +26,9 @@ public class AIState extends State{
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
-<<<<<<< HEAD
-		boolean turnComplete = gameState.ai.searchAction(out ,gameState,gameStateMachine);
-=======
+
 		boolean canPlay = gameState.ai.searchAction(gameState);
->>>>>>> origin/dev/nipun
+//>>>>>>> origin/dev/nipun
 		State aiMove = gameState.ai.getNextAiMove();
 		if(canPlay && aiMove != null) {
 			aiMove.appendState(new AIState());

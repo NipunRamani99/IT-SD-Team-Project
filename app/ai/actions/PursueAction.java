@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class PursueAction implements Action {
+public class PursueAction implements AiAction {
     private Unit markedUnit = null;
     private Unit aiUnit = null;
 
