@@ -177,7 +177,10 @@ public class CastCard {
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState, spellName, tile);
-    		  AbilityCommands.sundropElixir(out, tile.getUnit());    		  
+    		  if(null!=tile.getUnit())
+    			  AbilityCommands.sundropElixir(out, tile.getUnit());
+    		  else
+    			  AbilityCommands.sundropElixir(out, tile.getAiUnit());
     		  break;
      	  case "Staff of Y'Kir'":
    		      spellName = StaticConfFiles.f1_buff;

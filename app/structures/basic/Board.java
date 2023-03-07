@@ -132,7 +132,7 @@ public class Board {
 		}
 		
 		//Ai draw cards
-		for(int i=0;i<3;i++)
+		for(int i=0;i<2;i++)
 		{
 			aiDrawCard();
 		}
@@ -204,7 +204,12 @@ public class Board {
     }
     
     public void deleteCard(int position) {
-    	cards.set(position-1, new Card());
+    	cards.set(position-1,new Card());
+    }
+    
+    public void deleteAiCard(int position)
+    {
+    	aiCards.set(position-1, new Card());
     }
     
     //draw a card from deck

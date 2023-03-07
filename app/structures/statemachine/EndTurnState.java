@@ -38,20 +38,24 @@ public class EndTurnState extends State{
 
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 nextState = new AIState();
+ 			 //delete the player card
+ 			 List<Card> cards= gameState.board.getCards();
+ 			 for(int i=1;i<=cards.size();i++)
+        	 {
+        	 	BasicCommands.deleteCard(out,i);
+        	 }
 			 //draw the ai card
-	         List<Card> aiCards= gameState.board.getAiCards();
-	         {
-	        	for(int i=0;i<gameState.aiNumPosition;i++)
-	        	{
-	        		BasicCommands.drawCard(out,aiCards.get(i), i+1, 0);
-	        	}
-	         }
+ 			 gameState.board.aiDrawCard();
+	         List<Card> aiCards= gameState.board.getAiCards();	       
+			 for(int i = 0; i < aiCards.size(); i++) {
+				BasicCommands.drawCard(out, aiCards.get(i),i+1,0);
+			 }
 		 }
 		 else
 		 {   			 
 			 gameState.currentTurn = Turn.PLAYER;
 			 BasicCommands.addPlayer1Notification(out, "Player turn", 1);
-			 //Human
+			 //Human mana
 			 if(gameState.humanMana<9)
 			 {
 				 gameState.humanMana++;
@@ -65,14 +69,27 @@ public class EndTurnState extends State{
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
  			 nextState = new NoSelectionState();
  			 
+ 			 
+ 			 //delete the ai card
+ 			 List<Card> aiCards= gameState.board.getAiCards();
+ 			 for(int i=1;i<=aiCards.size();i++)
+        	 {
+        	 	BasicCommands.deleteCard(out,i);
+        	 }
  			 //draw the unit card
-	         List<Card> cards= gameState.board.getCards();
-	         {
-	        	for(int i=0;i<gameState.numPosition;i++)
-	        	{
-	        		BasicCommands.drawCard(out,cards.get(i), i+1, 0);
-	        	}
-	         }
+//	         List<Card> cards= gameState.board.getCards();
+	         
+//        	 for(int i=0;i<gameState.numPosition;i++)
+//        	 {
+//        		if()
+//        		BasicCommands.drawCard(out,cards.get(i), i+1, 0);
+//        	 }
+	       //draw a card
+			gameState.board.drawCard();
+			List<Card> cards = gameState.board.getCards();
+			for(int i = 0; i < cards.size(); i++) {
+				BasicCommands.drawCard(out, cards.get(i),i+1,0);
+			}
 		 }
 	 }
 

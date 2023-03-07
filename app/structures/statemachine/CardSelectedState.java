@@ -6,12 +6,14 @@ import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
 import events.Heartbeat;
+import events.OtherClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.*;
 
 import utils.BasicObjectBuilders;
+import utils.Constants;
 import utils.StaticConfFiles;
 
 import java.util.List;
@@ -38,11 +40,7 @@ public class CardSelectedState extends State{
         } else {
             cardType = CardType.UNIT;
         }
-        if(gameState.humanMana>=cardSelected.getManacost())
-            if(cardType == CardType.UNIT)
-        	    highlightUnitCardSelection(out, gameState);
-            else if(cardType == CardType.SPELL)
-                highlightSpellCardSelection(out, gameState);
+        cardClickedTilesHighlight(out, gameState);
 
     }
     
@@ -81,6 +79,7 @@ public class CardSelectedState extends State{
                     CastCard.castUnitCard(out, cardSelected, tile, gameState);
                     //Delete card
                     BasicCommands.deleteCard(out, handPosition);
+                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                     gameState.board.deleteCard(handPosition);
                     System.out.println("CardSelectedState: Reachable Tile Clicked");                    
                 //if the tile is occupied and card is a spell card(spell needs unit to use)
@@ -91,7 +90,8 @@ public class CardSelectedState extends State{
                 	//Cast card
                     CastCard.castSpellCard(out, cardSelected, tile, gameState);
                     //Delete card
-                    BasicCommands.deleteCard(out, handPosition);          
+                    BasicCommands.deleteCard(out, handPosition);  
+                    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                     gameState.board.deleteCard(handPosition);             	
                     System.out.println("CardSelectedState: Occupied Tile Clicked");
                 }
@@ -111,8 +111,15 @@ public class CardSelectedState extends State{
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
             System.out.println("CardSelectedState: Card Clicked");
+            cardClickedTilesHighlight(out, gameState);
             gameStateMachine.setState(new CardSelectedState(out, message, gameState));
-        }else if(gameState.currentTurn==Turn.AI) 
+        }else if(event instanceof OtherClicked)
+        {
+        	  gameState.resetBoardSelection(out);
+        	  gameState.resetCardSelection(out);
+        	  gameStateMachine.setState(new NoSelectionState());
+        }
+        else if(gameState.currentTurn==Turn.AI) 
         {
        	    //Cast unit
         	if(cardType==CardType.UNIT)
@@ -124,7 +131,7 @@ public class CardSelectedState extends State{
         		 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                  //Delete card
                  BasicCommands.deleteCard(out, handPosition);
-                 gameState.board.deleteCard(handPosition);
+                 gameState.board.deleteAiCard(handPosition);
         	}
         	else  //cast spell
         	{
@@ -135,7 +142,7 @@ public class CardSelectedState extends State{
        		    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
         		 //Delete card
                 BasicCommands.deleteCard(out, handPosition);
-                //gameState.board.deleteCard(handPosition);
+                gameState.board.deleteAiCard(handPosition);
         	}
         	gameState.resetBoardSelection(out);
         	gameStateMachine.setState(nextState,out, gameState);
@@ -149,17 +156,49 @@ public class CardSelectedState extends State{
     @Override
     public void enter(ActorRef out, GameState gameState) {
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-
-        if(cardSelected.getBigCard().getHealth() < 0) {
-            cardType = CardType.SPELL;
-        } else {
-            cardType = CardType.UNIT;
-        }
-        if(gameState.humanMana>=cardSelected.getManacost())
-            if(cardType == CardType.UNIT)
-                highlightUnitCardSelection(out, gameState);
-            else if(cardType == CardType.SPELL)
-                highlightSpellCardSelection(out, gameState);
+        cardClickedTilesHighlight(out, gameState);   
+          
+    }
+    
+    /**
+     * High the tiles when click the card
+     * @param out
+     * @param gameState
+     */
+    private void cardClickedTilesHighlight(ActorRef out, GameState gameState)
+    {
+	      if(cardSelected.getBigCard().getHealth() < 0) {
+	            cardType = CardType.SPELL;
+	      } else {
+	            cardType = CardType.UNIT;
+	      }
+    	
+    	  if(gameState.humanMana>=cardSelected.getManacost())
+          {
+	       	  if(cardType == CardType.UNIT)
+	       	  {
+	       		  highlightUnitCardSelection(out, gameState);
+	       	  }
+                
+              else if(cardType == CardType.SPELL)
+              {
+	       		  //highlight enemy unit
+	       		  if(cardSelected.getCardname().equals("Truestrike"))
+	       		  {
+	       			  highlightEnemyUnitSelection(out, gameState);
+	       		  }
+	       		  //highlight non avatar units
+	       		  else if(cardSelected.getCardname().equals("Entropic Decay"))
+	       		  {
+	       			  highlightNoAvatarSelection(out, gameState);
+	       		  }
+	       		  //highlight all the units
+	       		  else
+	       		  {
+	       			  highlightSpellCardSelection(out, gameState);
+	       		  }
+               }
+          }
     }
 
     @Override
@@ -167,6 +206,11 @@ public class CardSelectedState extends State{
 
     }
 
+    /**
+     * Highlight tiles for the general Unit card
+     * @param out
+     * @param gameState
+     */
     private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
@@ -190,6 +234,11 @@ public class CardSelectedState extends State{
         }
     }
 
+    /**
+     * Highlight the tiles for the general spell card 
+     * @param out
+     * @param gameState
+     */
     private void highlightSpellCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
@@ -198,6 +247,131 @@ public class CardSelectedState extends State{
             Position tilePos = unit.getPosition();
             Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
             BasicCommands.drawTile(out, tile, 2);
+            tile.setTileState(TileState.Occupied);
         }
     }
+    
+    /**
+     * High light the enemy unit tiles selection 
+     * @param out
+     * @param gameState
+     */
+    private void highlightEnemyUnitSelection(ActorRef out, GameState gameState)
+    {
+    	  BasicCommands.addPlayer1Notification(out, "enemy unit highlight ",1);
+    	  List<Unit> unitList = gameState.board.getUnits();
+          for(Unit unit : unitList) {
+              if(unit.isAi())
+              {
+            	  Position tilePos = unit.getPosition();
+                  Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+                  BasicCommands.drawTile(out, tile, 2);
+                  tile.setTileState(TileState.Occupied);
+              }
+          }
+        	 
+    }
+    
+    
+    /**
+     * High light the unit tiles selection
+     * @param out
+     * @param gameState
+     */
+    private void highlightUnitSelection(ActorRef out, GameState gameState)
+    {
+    	  BasicCommands.addPlayer1Notification(out, "Unit highlight ",1);
+    	  List<Unit> unitList = gameState.board.getUnits();
+          for(Unit unit : unitList) {
+              if(!unit.isAi())
+              {
+            	  Position tilePos = unit.getPosition();
+                  Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+                  BasicCommands.drawTile(out, tile, 2);
+                  tile.setTileState(TileState.Occupied);
+              }
+          }
+        	 
+    }
+    
+    /**
+     * High light the avatar tile selection
+     * @param out
+     * @param gameState
+     */
+    private void highlightAvatarSelection(ActorRef out, GameState gameState)
+    {
+    	  BasicCommands.addPlayer1Notification(out, "Avatar highlight ",1);
+    	  List<Unit> unitList = gameState.board.getUnits();
+          for(Unit unit : unitList) {
+        	  if(gameState.currentTurn==Turn.AI)
+        	  {
+        		  if(unit.isAvatar()&&unit.isAi())
+                  {
+                	  Position tilePos = unit.getPosition();
+                      Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+                      BasicCommands.drawTile(out, tile, 2);
+                      tile.setTileState(TileState.Occupied);
+                  } 
+        	  }
+        	  else
+        	  {
+        		  if(unit.isAvatar()&&!unit.isAi())
+                  {
+                	  Position tilePos = unit.getPosition();
+                      Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+                      BasicCommands.drawTile(out, tile, 2);
+                      tile.setTileState(TileState.Occupied);
+                  } 
+        	  }
+             
+          }
+        	 
+    }
+    
+    /**
+     * High light other units
+     * @param out
+     * @param gameState
+     */
+    private void highlightNoAvatarSelection(ActorRef out, GameState gameState)
+    {
+    	  BasicCommands.addPlayer1Notification(out, "No avatar highlight ",1);
+    	  List<Unit> unitList = gameState.board.getUnits();
+          for(Unit unit : unitList) {
+              if(!unit.isAvatar())
+              {
+            	  Position tilePos = unit.getPosition();
+                  Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
+                  BasicCommands.drawTile(out, tile, 2);
+                  tile.setTileState(TileState.Reachable);
+              }
+          }
+        	 
+    }
+    
+    /**
+     * High light available tiles
+     * @param out
+     * @param gameState
+     */
+    private void highlightAvailableSelection(ActorRef out, GameState gameState)
+    {
+    	  BasicCommands.addPlayer1Notification(out, "Available tile highlight ",1);
+    	  
+    	  for(int i=0;i<Constants.BOARD_WIDTH;i++)
+    	  {
+    		  for(int j=0;j<Constants.BOARD_HEIGHT;j++)
+    		  {
+    			  Tile tile= gameState.board.getTile(i, j);
+    			  if(null==tile.getAiUnit()&& null==tile.getUnit())
+    			  {
+    				  BasicCommands.drawTile(out, tile, 2);
+    				  tile.setTileState(TileState.Reachable);
+    			  }
+    		  }
+    	  }
+        	 
+    }
+
 }

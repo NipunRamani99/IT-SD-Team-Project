@@ -64,9 +64,7 @@ public class AIPlayer{
             Unit unit = gameState.aiUnit;
             gameState.targetTile=gameState.board.getTile(unit.getPosition().getTilex() - 3, unit.getPosition().getTiley());
             //get a card
-			 //add cards for ai
-
-          //  if(gameState.AiMana>=)
+            
             if(null!=gameState.targetTile.getUnit())
             {
             	aiCastCard(out, gameState, gameStateMachine);
