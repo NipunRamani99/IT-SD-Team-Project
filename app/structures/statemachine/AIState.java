@@ -25,22 +25,19 @@ public class AIState extends State{
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
+<<<<<<< HEAD
 		boolean turnComplete = gameState.ai.searchAction(out ,gameState,gameStateMachine);
+=======
+		boolean canPlay = gameState.ai.searchAction(gameState);
+>>>>>>> origin/dev/nipun
 		State aiMove = gameState.ai.getNextAiMove();
-		if(!turnComplete) {
-			appendState(aiMove, new AIState());
+		if(canPlay && aiMove != null) {
+			aiMove.appendState(new AIState());
 			nextState = aiMove;
 		} else {
 			nextState = new EndTurnState();
 		}
 
-	}
-	public void appendState(State head, State state) {
-		State currentState = head;
-		while(currentState.nextState != null) {
-			currentState = currentState.nextState;
-		}
-		currentState.setNextState(state);
 	}
     public void exit(ActorRef out, GameState gameState){}
 }

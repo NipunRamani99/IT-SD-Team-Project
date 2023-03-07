@@ -11,17 +11,14 @@ import structures.Turn;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
-import structures.basic.Tile.Occupied;
-import structures.basic.TileState;
-import utils.BasicObjectBuilders;
 
-public class HumanAttackState extends State{
+public class UnitAttackState extends State{
 
 	private Unit selectedUnit = null;
 
 	private Unit enemyUnit = null;
 
-	HumanAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
+	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
 	{
 		this.selectedUnit = selectedUnit;
 		if(isPlayer)
@@ -30,19 +27,25 @@ public class HumanAttackState extends State{
 			this.enemyUnit = targetTile.getUnit();
 	}
 
-	HumanAttackState(Unit selectedUnit, Unit enemyUnit)
+	public UnitAttackState(Unit selectedUnit, Unit enemyUnit)
 	{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = enemyUnit;
 	}
 
-	public HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
+//<<<<<<< HEAD:app/structures/statemachine/HumanAttackState.java
+//	public HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
+//=======
+	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
+//>>>>>>> origin/dev/nipun:app/structures/statemachine/UnitAttackState.java
 	{
+
 		this.selectedUnit = selectedUnit;
 
 		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
-		if(!reactAttack) {
-			State reactState = new HumanAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
+		if(!reactAttack && selectedUnit.canAttack()) {
+			selectedUnit.setCanAttack(false);
+			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
 			if (nextState != null) {
 				reactState.setNextState(nextState);
 			}
@@ -63,6 +66,7 @@ public class HumanAttackState extends State{
 		try {
 			System.out.println("Unit attack");
 			getUnitOnTileAttack(out, gameState);
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,16 +105,22 @@ public class HumanAttackState extends State{
 			try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			
 			BasicCommands.deleteUnit(out, enemyUnit);
-			if(enemyUnit.isAi())
-			{
-				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
-			}
-			else
-			{
-				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-			}
-			
-			
+//<<<<<<< HEAD:app/structures/statemachine/HumanAttackState.java
+//			if(enemyUnit.isAi())
+//			{
+//				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
+//			}
+//			else
+//			{
+//				gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
+//			}
+//			
+//			
+//=======
+			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
+			if(nextState != null)
+				nextState = nextState.getNextState();
+//>>>>>>> origin/dev/nipun:app/structures/statemachine/UnitAttackState.java
 		}
     	else
     	{

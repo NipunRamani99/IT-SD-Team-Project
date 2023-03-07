@@ -58,6 +58,7 @@ public class Initalize implements EventProcessor{
 		//CheckMoveLogic.executeDemo(out);
 		gameState.gameInitalised = true;
 
+
 	}
 
 }

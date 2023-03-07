@@ -22,6 +22,7 @@ public class EndTurnState extends State{
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {
 			 gameState.currentTurn = Turn.AI;
+
 			 BasicCommands.addPlayer1Notification(out, "AI turn", 1);
 			 //Ai
 			 //add mana+1 each turn
@@ -35,8 +36,10 @@ public class EndTurnState extends State{
 				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
-
+			 gameState.board.getUnits().forEach(unit -> {unit.setCanAttack(true);});
+			 gameState.board.getUnits().forEach(unit -> {unit.setMovement(true);});
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+			 gameState.ai.beginTurn(gameState);
 			 nextState = new AIState();
  			 //delete the player card
  			 List<Card> cards= gameState.board.getCards();

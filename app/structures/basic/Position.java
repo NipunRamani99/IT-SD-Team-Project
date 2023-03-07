@@ -18,12 +18,12 @@ public class Position {
 	
 	public Position() {}
 	
-	public Position(int xpos, int ypos, int tilex, int tilexy) {
+	public Position(int xpos, int ypos, int tilex, int tiley) {
 		super();
 		this.xpos = xpos;
 		this.ypos = ypos;
 		this.tilex = tilex;
-		this.tiley = tilexy;
+		this.tiley = tiley;
 	}
 	
 	//Define the position of the tile

@@ -28,16 +28,18 @@ public class Unit {
 	
 	//health and attcak for a unit
 	
-	private boolean isAi=false;
+	private boolean isAi= false;
 
 	private int attack;
 
 	private int health;
-
 	private int hpFromCard = 0;
-
 	private boolean isChosed=false;
-	
+
+	private boolean canAttack = true;
+
+	private boolean movement = true;
+
 	//Choose the unit
 	public boolean isChosed() {
 		return isChosed;
@@ -185,5 +187,39 @@ public class Unit {
 
 	public void setTile(Tile tile) {
 		this.tile = tile;
+	}
+
+	public int getDistance(Unit unit) {
+		Position a = position;
+		Position b = unit.getPosition();
+		return Math.abs(a.tilex - b.tilex) + Math.abs(a.tiley - b.tiley);
+	}
+
+	public Position getDisplacement(Unit unit) {
+		Position a = position;
+		Position b = unit.getPosition();
+		Position p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		return p;
+	}
+
+	public boolean withinDistance(Unit unit) {
+		Position displacement = this.getDisplacement(unit);
+		return Math.abs(displacement.tilex) <= 1 && Math.abs(displacement.tiley) <= 1;
+	}
+
+	public boolean canAttack() {
+		return canAttack;
+	}
+
+	public void setCanAttack(boolean canAttack) {
+		this.canAttack = canAttack;
+	}
+
+	public void setMovement(boolean movement) {
+		this.movement = movement;
+	}
+
+	public boolean getMovement() {
+		return movement;
 	}
 }

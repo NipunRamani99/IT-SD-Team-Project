@@ -1,12 +1,10 @@
 package structures.statemachine;
 
-import akka.actor.Actor;
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
-import events.Heartbeat;
 import events.TileClicked;
 import structures.GameState;
 import structures.basic.Tile;
@@ -23,7 +21,7 @@ public class UnitSelectedState extends State{
         Tile tile = gameState.board.getTile(tilex, tiley);
         this.tileClicked = tile;
         this.unitClicked = tile.getUnit();
-        highlightSurroundingTiles(out, tilex, tiley, tileClicked, gameState);
+
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
@@ -52,7 +50,7 @@ public class UnitSelectedState extends State{
                             diffX = diffX/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
                         }
@@ -62,7 +60,7 @@ public class UnitSelectedState extends State{
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -70,7 +68,7 @@ public class UnitSelectedState extends State{
                         else
                         {
                         	//Only attack without moving
-                        	State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                        	State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             gameStateMachine.setState(attackState, out, gameState);
                         }                      
                     } 
@@ -81,7 +79,7 @@ public class UnitSelectedState extends State{
                             int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2+1;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -92,7 +90,7 @@ public class UnitSelectedState extends State{
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2+1;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -102,7 +100,7 @@ public class UnitSelectedState extends State{
                         	int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex()+ diffX , tileClicked.getTiley());
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -112,7 +110,7 @@ public class UnitSelectedState extends State{
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -132,7 +130,7 @@ public class UnitSelectedState extends State{
                             int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2+1;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -143,7 +141,7 @@ public class UnitSelectedState extends State{
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2+1;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new HumanAttackState(unitClicked, tile, false, true);
+                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                             moveState.setNextState(attackState);
                             gameStateMachine.setState(moveState, out, gameState);
@@ -163,7 +161,7 @@ public class UnitSelectedState extends State{
                     }
                     else {
                         System.out.println("Get the Ai unit");
-                        gameStateMachine.setState(new HumanAttackState(unitClicked, tile, false, true), out, gameState);
+                        gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
                     }
                     gameState.resetBoardSelection(out);
             	}
@@ -180,7 +178,7 @@ public class UnitSelectedState extends State{
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
-
+        highlightSurroundingTiles(out, this.tileClicked.getTilex(), this.tileClicked.getTiley(), tileClicked, gameState);
     }
 
     @Override

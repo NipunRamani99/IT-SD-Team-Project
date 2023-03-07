@@ -1,0 +1,130 @@
+package ai.actions;
+
+import akka.actor.ActorRef;
+import commands.BasicCommands;
+import structures.GameState;
+import structures.basic.Position;
+import structures.basic.Tile;
+import structures.basic.TileState;
+import structures.basic.Unit;
+import structures.statemachine.State;
+import structures.statemachine.UnitAttackState;
+import structures.statemachine.UnitMovingState;
+import utils.Constants;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class PursueAction implements Action {
+    private Unit markedUnit = null;
+    private Unit aiUnit = null;
+
+    public PursueAction(Unit enemyUnit, Unit aiUnit) {
+        this.markedUnit = enemyUnit;
+        this.aiUnit = aiUnit;
+
+    }
+
+    public List<Tile> getReachableTiles(GameState gameState) {
+        int tilex = aiUnit.getPosition().getTilex();
+        int tiley = aiUnit.getPosition().getTiley();
+        Tile aiUnitTile = gameState.board.getTile(aiUnit.getPosition().getTilex(), aiUnit.getPosition().getTiley());
+        List<Tile> reachableTiles = new ArrayList<Tile>();
+        gameState.resetBoardState();
+        for(int i = -1; i <=1; i++ ) {
+            for(int j = -1; j <= 1; j++) {
+                int x = tilex + i;
+                if(x < 0) continue;
+                if(x >= Constants.BOARD_WIDTH) continue;
+                int y = tiley + j;
+                if(y < 0) continue;
+                if(y >= Constants.BOARD_HEIGHT) continue;
+                Tile surroundingTile = gameState.board.getTile(x, y);
+                if(surroundingTile == aiUnitTile)
+                    continue;
+                if (surroundingTile != null) {
+                    if(surroundingTile.getUnit() == null && surroundingTile.getUnit()==null) {
+                        surroundingTile.setTileState(TileState.Reachable);
+                        reachableTiles.add(surroundingTile);
+                    }
+                    else {
+                        surroundingTile.setTileState(TileState.Occupied);
+                    }
+                }
+            }
+        }
+
+        //highlight the Ai occupied tiles
+        for(int i=0;i<Constants.BOARD_WIDTH;i++)
+        {
+            for(int j=0;j<Constants.BOARD_HEIGHT;j++)
+            {
+                Tile aiTile=gameState.board.getTile(i, j);
+                if(null!=aiTile.getUnit())
+                {
+                    aiTile.setTileState(TileState.Occupied);;
+                }
+            }
+
+            int x = tilex - 2;
+            if(x >= 0) {
+                boolean occupied = gameState.board.getTile(x + 1, tiley).getUnit() != null;
+                if(!occupied) {
+                    if(gameState.board.getTile(x, tiley).getUnit() == null)
+                        reachableTiles.add(gameState.board.getTile(x, tiley));
+                }
+            }
+            x = tilex + 2;
+            if(x < Constants.BOARD_WIDTH) {
+                boolean occupied = gameState.board.getTile(x - 1, tiley).getUnit() != null;
+                if(!occupied) {
+                    if(gameState.board.getTile(x, tiley).getUnit() == null)
+                        reachableTiles.add(gameState.board.getTile(x, tiley));
+                }
+            }
+            int y = tiley - 2;
+            if(y >= 0) {
+                boolean occupied = gameState.board.getTile(tilex, y + 1).getUnit() != null;
+                if(!occupied) {
+                    if(gameState.board.getTile(tilex, y).getUnit() == null)
+                        reachableTiles.add(gameState.board.getTile(tilex, y));
+                }
+            }
+            y = tiley + 2;
+            if(y < Constants.BOARD_HEIGHT) {
+                boolean occupied = gameState.board.getTile(tilex, y - 1).getUnit() != null;
+                if(!occupied) {
+                    if(gameState.board.getTile(tilex, y).getUnit() == null)
+                        reachableTiles.add(gameState.board.getTile(tilex,y));
+                }
+            }
+        }
+        return reachableTiles;
+    }
+
+    public Tile getClosestTile(GameState gameState) {
+        List<Tile> reachableTiles = getReachableTiles(gameState);
+        reachableTiles.sort(Comparator.comparingInt((a)-> a.distanceToUnit(markedUnit)));
+        for(Tile reachableTile : reachableTiles) {
+            if(reachableTile.getAiUnit() == null) {
+                return reachableTile;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public State processAction(GameState gameState) {
+        if (aiUnit.withinDistance(markedUnit)) {
+            if(aiUnit.canAttack())
+                return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);
+            else
+                return null;
+        } else {
+            Tile closestTile = getClosestTile(gameState);
+            Tile startTile = gameState.board.getTile(aiUnit.getPosition());
+            return new UnitMovingState(aiUnit, startTile, closestTile);
+        }
+    }
+}

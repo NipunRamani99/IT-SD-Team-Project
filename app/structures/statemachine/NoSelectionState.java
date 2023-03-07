@@ -20,10 +20,10 @@ public class NoSelectionState extends State{
             int tiley = message.get("tiley").asInt();
             Tile tile = gameState.board.getTile(tilex, tiley);
             if(tile.getUnit() != null)
-                gameStateMachine.setState(new UnitSelectedState(out, message, gameState));
+                gameStateMachine.setState(new UnitSelectedState(out, message, gameState), out, gameState);
         } else if (event instanceof CardClicked) {
             System.out.println("NoSelectionState: Card clicked");
-            gameStateMachine.setState(new CardSelectedState(out, message, gameState));
+            gameStateMachine.setState(new CardSelectedState(out, message, gameState), out, gameState);
         } else if (event instanceof Heartbeat) {
             System.out.println("Heartbeat");
         } else if (event instanceof EndTurnClicked) {
