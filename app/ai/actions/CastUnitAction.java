@@ -8,7 +8,7 @@ import structures.statemachine.State;
 
 import java.util.List;
 
-public class CastUnitAction implements Action {
+public class CastUnitAction implements AiAction {
 
     private Card unitCard;
     private Tile targetTile;

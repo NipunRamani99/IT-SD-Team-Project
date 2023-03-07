@@ -143,7 +143,7 @@ public class AIPlayer{
                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
-                         Action action = null;
+                         AiAction action = null;
                          if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
                              action = new UnitAttackAction(aiUnit, markedUnit);
                          } else if(aiUnit.getMovement()) {
