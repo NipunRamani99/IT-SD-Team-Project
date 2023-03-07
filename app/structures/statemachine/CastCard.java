@@ -137,7 +137,7 @@ public class CastCard {
 	    	  break;	    
     	}
 
-
+		unit.setName(cardName);
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
@@ -166,7 +166,7 @@ public class CastCard {
      		  if(null!=tile.getAiUnit())
      		  {
      			 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState); 
+        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState);
      		  }
      		  else
      		  {
@@ -188,17 +188,17 @@ public class CastCard {
    		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar())
      		  {
      			 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.yKirAbility(out, tile.getUnit()); 
+        		 AbilityCommands.yKirAbility(out, tile.getUnit());
      		  }
    		      else if(null != tile.getAiUnit()&&tile.getAiUnit().isAvatar())
    		      {
    		    	 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.yKirAbility(out, tile.getAiUnit()); 
+        		 AbilityCommands.yKirAbility(out, tile.getAiUnit());
    		      }
    		      else
    		      {
    		    	 gameState.resetBoardSelection(out);
-    			 gameState.resetCardSelection(out); 
+    			 gameState.resetCardSelection(out);
    		      }
    		      break;
      	  case "Entropic Decay":
@@ -207,12 +207,12 @@ public class CastCard {
   		      if(null!=tile.getUnit()&&!tile.getUnit().isAvatar())
   		      {
   	  		      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());  
+  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());
   		      }
   		      else if(null!=tile.getAiUnit()&&!tile.getAiUnit().isAvatar())
   		      {
   			      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());  
+  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());
   		      }
   		      else
   		      {
@@ -236,9 +236,8 @@ public class CastCard {
 		{
 			gameState.aiNumPosition--;
 		}
-        
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			
+
+
 }
 
 
@@ -251,12 +250,11 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
-    	tile.setUnit(unit); 
+    	tile.setUnit(unit);
     	//when first placed, the unit can not attack
     	unit.setCanAttack(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
-    	try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		gameState.board.addUnit(unit);
 		//number of cards --
 		if(gameState.currentTurn==Turn.PLAYER)
@@ -267,7 +265,7 @@ public class CastCard {
 		{
 			gameState.aiNumPosition--;
 		}
-    	//play the animation 
+    	//play the animation
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
     }
@@ -280,7 +278,6 @@ public class CastCard {
     private static void placeSpell(ActorRef out, GameState gameState, String spellName, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
     
     //this method will check if this card is a unit card

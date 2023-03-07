@@ -24,15 +24,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
 import structures.basic.Unit;
-import structures.statemachine.CardSelectedState;
-import structures.statemachine.CastCard;
-import structures.statemachine.EndTurnState;
-import structures.statemachine.GameStateMachine;
-//import structures.statemachine.HumanAttackState;
-import structures.statemachine.NoSelectionState;
-import structures.statemachine.State;
-import structures.statemachine.UnitMovingState;
-import utils.Constants;
+import structures.statemachine.*;
 
 class TurnCache {
     public List<Unit> markedUnits = new ArrayList<>();
@@ -72,7 +64,7 @@ public class AIPlayer{
     private boolean canPlay = true;
 
     private State nextAiMove = null;
-    
+
  	 List<Card> cards;
 
     private TurnCache turnCache = null;
@@ -92,40 +84,10 @@ public class AIPlayer{
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-   // public boolean searchAction(ActorRef out,GameState gameState, GameStateMachine gameStateMachine) {
+    public boolean searchAction(GameState gameState) {
         //Create a list of actions to be performed
         //Check if deck of cards has unit card
-//<<<<<<< HEAD
-//        if(canPlay) {
-//            Unit unit = gameState.aiUnit;
-//            gameState.targetTile=gameState.board.getTile(unit.getPosition().getTilex() - 3, unit.getPosition().getTiley());
-//            //get a card
-//            
-//            if(null!=gameState.targetTile.getUnit())
-//            {
-//            	aiCastCard(out, gameState, gameStateMachine);
-//            	State unitMove = new UnitMovingState(unit, gameState.board.getTile(unit.getPosition().getTilex(), unit.getPosition().getTiley()), gameState.board.getTile(unit.getPosition().getTilex() - 2, unit.getPosition().getTiley()));
-//            	State aiAttack = new HumanAttackState(unit, gameState.targetTile, false,false);
-//            	unitMove.setNextState(aiAttack);
-//            	nextAiMove.setNextState(unitMove);
-//            	canPlay = false;
-//            }
-//            else
-//            {
-//            	nextAiMove = new UnitMovingState(unit, gameState.board.getTile(unit.getPosition().getTilex(), unit.getPosition().getTiley()), gameState.board.getTile(unit.getPosition().getTilex() +1, unit.getPosition().getTiley()));
-//            	canPlay = false;
-//            }
-//         
-//            //Move unit towards enemies
-//           // canPlay = false;
-//            return false;
-//        } else {
-//            canPlay = true;
-//            return true;
-//=======
-    public boolean searchAction(GameState gameState) {
-    	   //get the all the ai hand card
-            cards = gameState.board.getCards();
+        cards = gameState.board.getCards();
             nextAiMove = null;
             turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
             markEnemy();
@@ -157,8 +119,13 @@ public class AIPlayer{
                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
-                         AiAction pursueAction = new PursueAction(markedUnit, aiUnit);
-                         aiActions.add(pursueAction);
+                         AiAction action = null;
+                         if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
+                             action = new UnitAttackAction(aiUnit, markedUnit);
+                         } else if(aiUnit.getMovement()) {
+                             action = new PursueAction(markedUnit, aiUnit);
+                         }
+                         aiActions.add(action);
                          turnCache.aiUnits.remove(aiUnit);
                      }));
 
@@ -171,7 +138,7 @@ public class AIPlayer{
 //             });
         }
     }
-    
+
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand
@@ -179,13 +146,13 @@ public class AIPlayer{
     	Tile chooseTile=Action.searchLowestAiUnitAttack(out, gameState);
     	System.out.println("Ai cast the card");
     	nextAiMove = new CardSelectedState(out, 1, chooseTile, gameState);
-           
+
     }
-    
-    
+
+
     private int chooseAiCardPosition(GameState gameState)
     {
-  
+
     	 for(int i=1;i<=cards.size();i++)
     	 {
     		Card aiCard=cards.get(i-1);

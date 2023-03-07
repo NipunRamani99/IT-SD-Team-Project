@@ -3,6 +3,9 @@ package structures.basic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a representation of a Unit on the game board.
  * A unit has a unique id (this is used by the front-end.
@@ -25,7 +28,10 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
-	
+
+
+	String name = "";
+
 	//health and attcak for a unit
 	
 	private boolean isAi= false;
@@ -37,6 +43,8 @@ public class Unit {
 	private boolean isChosed=false;
 
 	private boolean canAttack = true;
+
+	private boolean secondAttackUsed = false;
 
 	private boolean movement = true;
 
@@ -221,5 +229,21 @@ public class Unit {
 
 	public boolean getMovement() {
 		return movement;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isSecondAttackUsed() {
+		return secondAttackUsed;
+	}
+
+	public void setSecondAttackUsed(boolean secondAttackUsed) {
+		this.secondAttackUsed = secondAttackUsed;
 	}
 }

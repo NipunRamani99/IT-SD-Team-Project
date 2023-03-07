@@ -34,24 +34,20 @@ public class UnitAttackState extends State{
 		this.enemyUnit = enemyUnit;
 	}
 
-//<<<<<<< HEAD:app/structures/statemachine/HumanAttackState.java
-//	public HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
-//=======
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
-//>>>>>>> origin/dev/nipun:app/structures/statemachine/UnitAttackState.java
 	{
 
 		this.selectedUnit = selectedUnit;
 
 		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
 		if(!reactAttack && selectedUnit.canAttack()) {
+			selectedUnit.setCanAttack(false);
 			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
 			if (nextState != null) {
 				reactState.setNextState(nextState);
 			}
 			this.nextState = reactState;
 		}
-
 	}
 	
 	@Override
@@ -85,7 +81,7 @@ public class UnitAttackState extends State{
 
 	@Override
 	public void exit(ActorRef out, GameState gameState) {
-		
+
 
 	}
 
@@ -95,9 +91,10 @@ public class UnitAttackState extends State{
 		//Attack animation
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		
+
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
+		unitAttack(out, enemyUnit, attackHealth, gameState);
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
 	
@@ -116,13 +113,13 @@ public class UnitAttackState extends State{
 		}
     	else
     	{
-    	  BasicCommands.setUnitHealth(out, enemyUnit,health );	
+    	  BasicCommands.setUnitHealth(out, enemyUnit,health );
     	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
     	}
 
     }
     
-    
+
     private void setAvatarHealth(ActorRef out, Unit unit,int health)
     {
     	BasicCommands.setUnitHealth(out,unit,health );

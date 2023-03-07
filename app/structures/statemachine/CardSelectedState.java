@@ -225,6 +225,7 @@ public class CardSelectedState extends State{
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
+        
         for(Unit unit : unitList) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
