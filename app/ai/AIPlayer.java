@@ -123,11 +123,12 @@ public class AIPlayer{
 //            canPlay = true;
 //            return true;
 //=======
-    public boolean searchAction(GameState gameState) {
+    public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
     	   //get the all the ai hand card
             cards = gameState.board.getCards();
             nextAiMove = null;
             turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+            aiCastCard(out, gameState, gameStateMachine);
             markEnemy();
             pursueEnemy();
             for(AiAction action : aiActions) {
@@ -175,10 +176,23 @@ public class AIPlayer{
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand
-    	chooseAiCardPosition(gameState);
-    	Tile chooseTile=Action.searchLowestAiUnitAttack(out, gameState);
+    	int pos=chooseAiCardPosition(gameState);
     	System.out.println("Ai cast the card");
-    	nextAiMove = new CardSelectedState(out, 1, chooseTile, gameState);
+    	Tile chooseTile=null;
+    	if(gameState.board.getCard(pos).getCardname().equals("Staff of Y'Kir'"))
+    	{
+    		chooseTile=Action.searchLowestAiUnitAttack(out, gameState);
+    		nextAiMove = new CardSelectedState(out, pos, chooseTile, gameState);
+    	}
+    	else if(gameState.board.getCard(pos).getCardname().equals("Entropic Decay"))
+    	{
+    		chooseTile= Action.searchHighestUnitHealth(out, gameState) ;
+    		nextAiMove = new CardSelectedState(out, pos, chooseTile, gameState);
+    	}
+    	else
+    	{
+    		
+    	}
            
     }
     
