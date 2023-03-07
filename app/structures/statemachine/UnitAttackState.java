@@ -98,6 +98,7 @@ public class UnitAttackState extends State{
 			BasicCommands.setUnitHealth(out, enemyUnit,0 );
 			BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
 			BasicCommands.deleteUnit(out, enemyUnit);
+			gameState.board.getUnits().remove(enemyUnit);
 			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
 			if(nextState != null)
 				nextState = nextState.getNextState();

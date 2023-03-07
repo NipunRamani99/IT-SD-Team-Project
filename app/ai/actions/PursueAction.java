@@ -116,15 +116,9 @@ public class PursueAction implements Action {
 
     @Override
     public State processAction(GameState gameState) {
-        if (aiUnit.withinDistance(markedUnit)) {
-            if(aiUnit.canAttack())
-                return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);
-            else
-                return null;
-        } else {
-            Tile closestTile = getClosestTile(gameState);
-            Tile startTile = gameState.board.getTile(aiUnit.getPosition());
-            return new UnitMovingState(aiUnit, startTile, closestTile);
-        }
+        Tile closestTile = getClosestTile(gameState);
+        Tile startTile = gameState.board.getTile(aiUnit.getPosition());
+        if(closestTile == startTile) return null;
+        return new UnitMovingState(aiUnit, startTile, closestTile);
     }
 }

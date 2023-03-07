@@ -25,6 +25,7 @@ import utils.Constants;
  *
  */
 public class GameState {
+	public UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
 	public boolean gameInitalised = false;
 	public boolean cardIsClicked =false;
 	public boolean unitIsClicked = false;

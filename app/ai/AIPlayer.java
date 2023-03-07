@@ -2,11 +2,10 @@ package ai;
 
 import ai.actions.PursueAction;
 import ai.actions.Action;
+import ai.actions.UnitAttackAction;
 import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
 import structures.GameState;
-import structures.basic.Board;
-import structures.basic.Card;
-import structures.basic.Player;
+import structures.basic.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +18,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
-import structures.basic.Unit;
 import structures.statemachine.EndTurnState;
 import structures.statemachine.NoSelectionState;
 import structures.statemachine.State;
@@ -36,7 +34,7 @@ class TurnCache {
 
     public TurnCache(GameState gameState) {
         this.playerUnits = searchTargets(gameState);
-        this.aiUnits =getAvailableUnits(gameState);
+        this.aiUnits = getAvailableUnits(gameState);
     }
 
     public List<Unit> searchTargets(GameState gameState) {
@@ -111,13 +109,19 @@ public class AIPlayer{
         if(turnCache.aiUnits.isEmpty())
             return;
         for(Unit markedUnit : turnCache.markedUnits) {
-             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
-             turnCache.aiUnits.stream()
+            turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
+
+            turnCache.aiUnits.stream()
                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
-                         Action pursueAction = new PursueAction(markedUnit, aiUnit);
-                         aiActions.add(pursueAction);
+                         Action action = null;
+                         if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
+                             action = new UnitAttackAction(aiUnit, markedUnit);
+                         } else if(aiUnit.getMovement()) {
+                             action = new PursueAction(markedUnit, aiUnit);
+                         }
+                         aiActions.add(action);
                          turnCache.aiUnits.remove(aiUnit);
                      }));
 
