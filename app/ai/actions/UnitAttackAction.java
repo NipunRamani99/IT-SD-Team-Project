@@ -5,7 +5,7 @@ import structures.basic.Unit;
 import structures.statemachine.State;
 import structures.statemachine.UnitAttackState;
 
-public class UnitAttackAction implements AiAction{
+public class UnitAttackAction implements Action{
 
     Unit aiUnit = null;
     Unit markedUnit = null;

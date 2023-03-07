@@ -44,7 +44,7 @@ public class CastCard {
     	switch(cardName)
     	{
     	  case "Azure Herald":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
+	    	  unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
 	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
@@ -150,7 +150,6 @@ public class CastCard {
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
     }
     
@@ -228,16 +227,6 @@ public class CastCard {
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
-		if(gameState.currentTurn==Turn.PLAYER)
-		{
-			gameState.numPosition--;
-		}
-		else
-		{
-			gameState.aiNumPosition--;
-		}
-
-
 }
 
 
@@ -303,7 +292,7 @@ public class CastCard {
 	    	  break;
     	  case "Ironcliff Guardian":
     		  isUnitCard = true;
-	    	  break;	  
+	    	  break;
     	  case "Pureblade Enforcer":
     		  isUnitCard = true;
 	    	  break;
