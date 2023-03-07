@@ -165,7 +165,7 @@ public class CastCard {
      		  if(null!=tile.getAiUnit())
      		  {
      			 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState); 
+        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState);
      		  }
      		  else
      		  {
@@ -187,17 +187,17 @@ public class CastCard {
    		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar())
      		  {
      			 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.yKirAbility(out, tile.getUnit()); 
+        		 AbilityCommands.yKirAbility(out, tile.getUnit());
      		  }
    		      else if(null != tile.getAiUnit()&&tile.getAiUnit().isAvatar())
    		      {
    		    	 placeSpell(out, gameState, spellName, tile);
-        		 AbilityCommands.yKirAbility(out, tile.getAiUnit()); 
+        		 AbilityCommands.yKirAbility(out, tile.getAiUnit());
    		      }
    		      else
    		      {
    		    	 gameState.resetBoardSelection(out);
-    			 gameState.resetCardSelection(out); 
+    			 gameState.resetCardSelection(out);
    		      }
    		      break;
      	  case "Entropic Decay":
@@ -206,12 +206,12 @@ public class CastCard {
   		      if(null!=tile.getUnit()&&!tile.getUnit().isAvatar())
   		      {
   	  		      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());  
+  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());
   		      }
   		      else if(null!=tile.getAiUnit()&&!tile.getAiUnit().isAvatar())
   		      {
   			      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());  
+  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());
   		      }
   		      else
   		      {
@@ -227,7 +227,7 @@ public class CastCard {
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
 }
 
 
@@ -240,7 +240,7 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
-    	tile.setUnit(unit); 
+    	tile.setUnit(unit);
     	//when first placed, the unit can not attack
     	unit.setCanAttack(false);
     	//draw the unit
@@ -255,7 +255,7 @@ public class CastCard {
 		{
 			gameState.aiNumPosition--;
 		}
-    	//play the animation 
+    	//play the animation
     	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
     	 //set the card click status to false when place the unit
     }

@@ -47,7 +47,6 @@ public class UnitAttackState extends State{
 			}
 			this.nextState = reactState;
 		}
-
 	}
 	
 	@Override
@@ -81,7 +80,7 @@ public class UnitAttackState extends State{
 
 	@Override
 	public void exit(ActorRef out, GameState gameState) {
-		
+
 
 	}
 
@@ -91,9 +90,10 @@ public class UnitAttackState extends State{
 		//Attack animation
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		
+
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
+		unitAttack(out, enemyUnit, attackHealth, gameState);
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
 	
@@ -109,16 +109,17 @@ public class UnitAttackState extends State{
 		{
           Attack.deleteEnemyUnit(out, enemyUnit, gameState);
           Attack.setPlayerHealth(out, health, enemyUnit, gameState);
+
 		}
     	else
     	{
-    	  BasicCommands.setUnitHealth(out, enemyUnit,health );	
+    	  BasicCommands.setUnitHealth(out, enemyUnit,health );
     	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
     	}
 
     }
     
-    
+
     private void setAvatarHealth(ActorRef out, Unit unit,int health)
     {
     	BasicCommands.setUnitHealth(out,unit,health );

@@ -1,18 +1,5 @@
 package ai;
 
-//<<<<<<< HEAD
-//import ai.actions.*;
-////import ai.actions.Action;
-//import ai.*;
-//import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
-//import structures.GameState;
-//import structures.Turn;
-//import structures.basic.Board;
-//import structures.basic.Card;
-//import structures.basic.Player;
-//import structures.basic.Tile;
-//import structures.basic.TileState;
-//=======
 import ai.actions.PursueAction;
 import ai.actions.AiAction;
 import ai.actions.*;
@@ -44,6 +31,7 @@ import structures.statemachine.NoSelectionState;
 import structures.statemachine.State;
 import structures.statemachine.UnitMovingState;
 import utils.Constants;
+import structures.statemachine.*;
 
 class TurnCache {
     public List<Unit> markedUnits = new ArrayList<>();
@@ -83,7 +71,7 @@ public class AIPlayer{
     private boolean canPlay = true;
 
     private State nextAiMove = null;
-    
+
  	 List<Card> cards;
 
     private TurnCache turnCache = null;
@@ -103,16 +91,13 @@ public class AIPlayer{
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-   // public boolean searchAction(ActorRef out,GameState gameState, GameStateMachine gameStateMachine) {
-        //Create a list of actions to be performed
-        //Check if deck of cards has unit card
 
     public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
     	   //get the all the ai hand card
             cards = gameState.board.getCards();
             nextAiMove = null;
             turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
-            aiCastCard(out, gameState, gameStateMachine);
+           // aiCastCard(out, gameState, gameStateMachine);
             markEnemy();
             pursueEnemy();
             for(AiAction action : aiActions) {
@@ -162,7 +147,7 @@ public class AIPlayer{
 //             });
         }
     }
-    
+
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand
@@ -185,11 +170,11 @@ public class AIPlayer{
     	}
            
     }
-    
-    
+
+
     private int chooseAiCardPosition(GameState gameState)
     {
-  
+
     	 for(int i=1;i<=cards.size();i++)
     	 {
     		Card aiCard=cards.get(i-1);
