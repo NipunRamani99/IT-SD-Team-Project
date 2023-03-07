@@ -1,7 +1,7 @@
 package ai;
 
+import ai.actions.AiAction;
 import ai.actions.PursueAction;
-import ai.actions.Action;
 import ai.actions.UnitAttackAction;
 import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
 import structures.GameState;
@@ -18,10 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
-import structures.statemachine.EndTurnState;
-import structures.statemachine.NoSelectionState;
-import structures.statemachine.State;
-import structures.statemachine.UnitMovingState;
+import structures.statemachine.*;
 
 class TurnCache {
     public List<Unit> markedUnits = new ArrayList<>();
@@ -117,7 +114,7 @@ public class AIPlayer{
                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
-                         Action action = null;
+                         AiAction action = null;
                          if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
                              action = new UnitAttackAction(aiUnit, markedUnit);
                          } else if(aiUnit.getMovement()) {

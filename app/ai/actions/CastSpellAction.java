@@ -3,7 +3,7 @@ package ai.actions;
 import structures.GameState;
 import structures.statemachine.State;
 
-public class CastSpellAction implements Action{
+public class CastSpellAction implements AiAction{
     @Override
     public State processAction(GameState gameState) {
         return null;
