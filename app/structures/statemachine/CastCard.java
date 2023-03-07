@@ -44,7 +44,7 @@ public class CastCard {
     	switch(cardName)
     	{
     	  case "Azure Herald":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
+	    	  unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
 	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id++, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
@@ -137,7 +137,7 @@ public class CastCard {
 	    	  break;	    
     	}
 
-
+		unit.setName(cardName);
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
@@ -150,7 +150,6 @@ public class CastCard {
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
     }
     
@@ -228,17 +227,7 @@ public class CastCard {
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
-		if(gameState.currentTurn==Turn.PLAYER)
-		{
-			gameState.numPosition--;
-		}
-		else
-		{
-			gameState.aiNumPosition--;
-		}
-        
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			
 }
 
 
@@ -256,7 +245,6 @@ public class CastCard {
     	unit.setCanAttack(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
-    	try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		gameState.board.addUnit(unit);
 		//number of cards --
 		if(gameState.currentTurn==Turn.PLAYER)
@@ -280,7 +268,6 @@ public class CastCard {
     private static void placeSpell(ActorRef out, GameState gameState, String spellName, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
     }
     
     //this method will check if this card is a unit card
@@ -306,7 +293,7 @@ public class CastCard {
 	    	  break;
     	  case "Ironcliff Guardian":
     		  isUnitCard = true;
-	    	  break;	  
+	    	  break;
     	  case "Pureblade Enforcer":
     		  isUnitCard = true;
 	    	  break;

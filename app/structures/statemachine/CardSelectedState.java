@@ -32,7 +32,6 @@ public class CardSelectedState extends State{
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
-//<<<<<<< HEAD
         cardSelected=gameState.board.getCard(handPosition);
         BasicCommands.drawCard(out, cardSelected, handPosition, 1);
 
@@ -42,10 +41,6 @@ public class CardSelectedState extends State{
             cardType = CardType.UNIT;
         }
         cardClickedTilesHighlight(out, gameState);
-
-//=======
-//        cardSelected = gameState.board.getCard(handPosition);
-//>>>>>>> origin/dev/nipun
     }
     
     public CardSelectedState(ActorRef out,int position, Tile tile, GameState gameState)
@@ -225,6 +220,7 @@ public class CardSelectedState extends State{
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
+        
         for(Unit unit : unitList) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {

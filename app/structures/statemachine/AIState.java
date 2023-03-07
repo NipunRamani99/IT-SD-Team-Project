@@ -28,7 +28,6 @@ public class AIState extends State{
 	public void enter(ActorRef out, GameState gameState) {
 
 		boolean canPlay = gameState.ai.searchAction(out, gameState, gameStateMachine);
-//>>>>>>> origin/dev/nipun
 		State aiMove = gameState.ai.getNextAiMove();
 		if(canPlay && aiMove != null) {
 			aiMove.appendState(new AIState());

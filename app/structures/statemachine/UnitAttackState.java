@@ -34,11 +34,7 @@ public class UnitAttackState extends State{
 		this.enemyUnit = enemyUnit;
 	}
 
-//<<<<<<< HEAD:app/structures/statemachine/HumanAttackState.java
-//	public HumanAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
-//=======
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
-//>>>>>>> origin/dev/nipun:app/structures/statemachine/UnitAttackState.java
 	{
 
 		this.selectedUnit = selectedUnit;
