@@ -2,6 +2,8 @@ package structures.statemachine;
 
 import structures.basic.*;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -45,91 +47,91 @@ public class CastCard {
     	{
     	  case "Azure Herald":
 	    	  unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id++, Card.class);
+	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Azurite Lion":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion,gameState.id++, Card.class);
+	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion,gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Comodo Charger":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger,gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger,gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Fire Spitter":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter,gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter,gameState.id++, Card.class);
+	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter,gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Hailstone Golem":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
     	  case "Ironcliff Guardian":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id++, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id, Card.class);
+	    	 // unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;	  
     	  case "Pureblade Enforcer":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
      	  case "Silverguard Knight":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;
      	  case "Blaze Hound":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_blaze_hound, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_blaze_hound, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "Bloodshard Golem":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_bloodshard_golem, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "Planar Scout":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_planar_scout, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_planar_scout, gameState.id++, Card.class);
+	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_planar_scout, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "Pyromancer":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pyromancer, gameState.id++, Card.class);
+	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pyromancer, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "Rock Pulveriser":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_rock_pulveriser, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, gameState.id++, Card.class);
+	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "Serpenti":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_serpenti, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_serpenti, gameState.id++, Card.class);
+	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_serpenti, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
      	  case "WindShrike":
      		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, gameState.id, Unit.class);
-	    	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, gameState.id++, Card.class);
+	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, gameState.id, Card.class);
 	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
      		  break;
@@ -137,6 +139,7 @@ public class CastCard {
 	    	  break;	    
     	}
 
+    	gameState.id++;
 		unit.setName(cardName);
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
@@ -146,7 +149,10 @@ public class CastCard {
 		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
     	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	
-		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
+    	//update the position
+    	updatePosition(out, card, gameState);
+    	//update the player mana;
+    	updatePlayerMana(out, card, gameState);
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
@@ -164,7 +170,7 @@ public class CastCard {
      		  //Only works on enemy unit
      		  if(null!=tile.getAiUnit())
      		  {
-     			 placeSpell(out, gameState, spellName, tile);
+     			 placeSpell(out, gameState,spellName, card, tile);
         		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState);
      		  }
      		  else
@@ -175,7 +181,7 @@ public class CastCard {
      		  break;
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
-    		  placeSpell(out, gameState, spellName, tile);
+    		  placeSpell(out, gameState,spellName,card, tile);
     		  if(null!=tile.getUnit())
     			  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
     		  else
@@ -186,12 +192,12 @@ public class CastCard {
    		      //works on your avatar
    		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar())
      		  {
-     			 placeSpell(out, gameState, spellName, tile);
+     			 placeSpell(out, gameState, spellName,card, tile);
         		 AbilityCommands.yKirAbility(out, tile.getUnit());
      		  }
    		      else if(null != tile.getAiUnit()&&tile.getAiUnit().isAvatar())
    		      {
-   		    	 placeSpell(out, gameState, spellName, tile);
+   		    	 placeSpell(out, gameState,spellName,card, tile);
         		 AbilityCommands.yKirAbility(out, tile.getAiUnit());
    		      }
    		      else
@@ -205,25 +211,27 @@ public class CastCard {
   		      //Reduce a non-avatar unit to 0 health
   		      if(null!=tile.getUnit()&&!tile.getUnit().isAvatar())
   		      {
-  	  		      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getUnit());
+  	  		      placeSpell(out, gameState,spellName,card, tile);
+  	  		      AbilityCommands.entropicDecay(out, tile.getUnit(),gameState);
+  	  		      tile.clearUnit();
   		      }
   		      else if(null!=tile.getAiUnit()&&!tile.getAiUnit().isAvatar())
   		      {
-  			      placeSpell(out, gameState, spellName, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit());
+  			      placeSpell(out, gameState, spellName,card, tile);
+  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit(),gameState);
+  	  		      tile.clearAiUnit();
   		      }
   		      else
   		      {
   		    	  gameState.resetBoardSelection(out);
   		    	  gameState.resetCardSelection(out);
   		      }
-
   		      break;
 	      default:
 	    	  break;
 	    
     	} 	
+    	
     	
 		BasicCommands.addPlayer1Notification(out, "Cast the "+card.getCardname(),1);
 		//delete the card when it is played
@@ -240,24 +248,15 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
-    	tile.setUnit(unit);
-    	//when first placed, the unit can not attack
+    	tile.setUnit(unit);   	
+		gameState.board.addUnit(unit);
+		if(gameState.currentTurn==Turn.AI)
+			unit.setAi(true);	
+    	//when first placed, the unit can not attack and move
     	unit.setCanAttack(false);
+    	unit.setCanMove(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
-		gameState.board.addUnit(unit);
-		//number of cards --
-		if(gameState.currentTurn==Turn.PLAYER)
-		{
-			gameState.numPosition--;
-		}
-		else
-		{
-			gameState.aiNumPosition--;
-		}
-    	//play the animation
-    	//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
-    	 //set the card click status to false when place the unit
     }
 	
 
@@ -265,9 +264,15 @@ public class CastCard {
      * The function will place the spell on a unit, and perform an action on that unit
      * @param unit The unit is the destination unit that the spell card will cast to
      */
-    private static void placeSpell(ActorRef out, GameState gameState, String spellName, Tile tile){
+    private static void placeSpell(ActorRef out, GameState gameState,String spellName, Card card, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
+		
+		//update the position
+    	updatePosition(out, card, gameState);
+    	
+    	//update the player mana;
+    	updatePlayerMana(out, card, gameState);
     }
     
     //this method will check if this card is a unit card
@@ -306,4 +311,36 @@ public class CastCard {
     	return isUnitCard;
     }
 
+    
+    public static void updatePlayerMana(ActorRef out,Card card,GameState gameState)
+    {
+    	if(gameState.currentTurn==Turn.AI)
+    	{
+    		 //cost the ai mana
+    		int mana=gameState.AiPlayer.getMana();
+   		 	gameState.AiPlayer.setMana( mana-card.getManacost());
+   		 	BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
+    	}
+    	else
+    	{
+    		//cost the human player mana
+    		int mana=gameState.humanPlayer.getMana();
+   		 	gameState.humanPlayer.setMana( mana-card.getManacost());
+   		 	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
+    	}
+    	
+    	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    }
+    
+    public static void updatePosition(ActorRef out, Card card, GameState gameState)
+    {
+    	int handPosition=0;
+    	handPosition=card.getCardPosition();
+        BasicCommands.deleteCard(out, handPosition);
+        if(gameState.currentTurn==Turn.AI)
+        	gameState.board.deleteAiCard(handPosition);
+        else
+        	gameState.board.deleteCard(handPosition);
+        try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    }
 }

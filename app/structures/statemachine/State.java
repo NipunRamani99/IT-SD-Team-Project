@@ -22,8 +22,9 @@ public abstract class State {
 
     public State getNextState() { return nextState;}
     public void appendState(State s) {
+    	if(s==null) return;
         if(nextState == null) {
-            nextState = s;
+            nextState=s;
         }
         else {
             nextState.appendState(s);

@@ -330,6 +330,7 @@ public class BasicCommands {
 			returnMessage.put("card", mapper.readTree(mapper.writeValueAsString(card)));
 			returnMessage.put("position", position);
 			returnMessage.put("mode", mode);
+			card.setCardPosition(position);
 			if (altTell!=null) altTell.tell(returnMessage);
 			else out.tell(returnMessage, out);
 		} catch (Exception e) {

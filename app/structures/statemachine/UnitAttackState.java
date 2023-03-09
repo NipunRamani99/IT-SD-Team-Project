@@ -32,14 +32,17 @@ public class UnitAttackState extends State{
 	{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = enemyUnit;
+		this.enemyUnit.setAttackBack(false);
+		this.selectedUnit.setAttackBack(false);
 	}
 
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
 	{
 
-		this.selectedUnit = selectedUnit;
-
+		this.selectedUnit = selectedUnit;	
+		this.selectedUnit.setAttackBack(false);
 		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
+		this.enemyUnit.setAttackBack(false);
 		if(!reactAttack && selectedUnit.canAttack()) {
 			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
 			if (nextState != null) {
@@ -54,13 +57,18 @@ public class UnitAttackState extends State{
 			GameStateMachine gameStateMachine) {
 		// Try to get the unit and attack
 		if(event instanceof  Heartbeat)
-			gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
+		{
+			if(gameState.currentTurn==Turn.PLAYER)
+				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
+			else
+				gameStateMachine.setState(nextState != null ? nextState : new EndTurnState());
+		}	
 	}
 
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 		try {
-				if(selectedUnit.canAttack())
+				if(selectedUnit.canAttack()||selectedUnit.isAttackBack())
 				{
 					//make sure every unit can attack once
 					selectedUnit.setCanAttack(false);
@@ -80,8 +88,15 @@ public class UnitAttackState extends State{
 
 	@Override
 	public void exit(ActorRef out, GameState gameState) {
-
-
+		
+		if(gameState.currentTurn==Turn.AI)
+		{
+			if(nextState==null)
+			{
+				nextState=new EndTurnState();
+			}
+		}
+		
 	}
 
 
@@ -92,8 +107,8 @@ public class UnitAttackState extends State{
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
-		unitAttack(out, enemyUnit, attackHealth, gameState);
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
 	
@@ -113,7 +128,9 @@ public class UnitAttackState extends State{
 		}
     	else
     	{
+    	  enemyUnit.setAttackBack(true);
     	  BasicCommands.setUnitHealth(out, enemyUnit,health );
+    	  try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
     	}
 

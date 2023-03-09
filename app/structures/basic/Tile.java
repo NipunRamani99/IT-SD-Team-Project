@@ -63,6 +63,7 @@ public class Tile {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
+		this.unit.setPositionByTile(this);
 		this.occupied=Occupied.userOccupied;
 	}
 	
@@ -75,7 +76,7 @@ public class Tile {
 	public void setAiUnit(Unit unit)
 	{
 		this.aiUnit = unit;
-		//aiUnit.setChosed(false);
+		this.aiUnit.setPositionByTile(this);
 		this.occupied=Occupied.aiOccupied;
 	}
 	

@@ -169,25 +169,25 @@ public class Board {
 		aiUnit.setAvatar(true);
 //=======
 //		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);
-        Unit aiUnit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id++, Unit.class);
+     //   Unit aiUnit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id++, Unit.class);
 
 //        aiUnit.setAi(true);
-        aiUnit2.setAi(true);
+       // aiUnit2.setAi(true);
 //>>>>>>> origin/dev/nipun
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
-        Tile aiTile2 = getTile(8,1);
+       // Tile aiTile2 = getTile(8,1);
 		aiUnit.setPositionByTile(aiTile);
-        aiUnit2.setPositionByTile(aiTile2);
+      //  aiUnit2.setPositionByTile(aiTile2);
 
 		//The tile set the unit
 		aiTile.setAiUnit(aiUnit);
-        aiTile2.setAiUnit(aiUnit2);
+        //aiTile2.setAiUnit(aiUnit2);
 	    addUnit(aiUnit);
-        addUnit(aiUnit2);
+       // addUnit(aiUnit2);
 		//draw unit
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
-        BasicCommands.drawUnit(out, aiUnit2,aiTile2);
+       // BasicCommands.drawUnit(out, aiUnit2,aiTile2);
 
 		//unit attack and health
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
@@ -196,8 +196,8 @@ public class Board {
 //<<<<<<< HEAD
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 //=======
-        BasicCommands.setUnitAttack(out, aiUnit2, 4);
-        BasicCommands.setUnitHealth(out, aiUnit2,3);
+    //    BasicCommands.setUnitAttack(out, aiUnit2, 4);
+    //    BasicCommands.setUnitHealth(out, aiUnit2,3);
 
 //>>>>>>> origin/dev/nipun
         gameState.aiUnit = aiUnit;
@@ -271,6 +271,17 @@ public class Board {
     	for(Unit unit:units)
     	{
     		unit.setCanAttack(true);
+    	}
+    }
+  
+    /**
+     * Set all the unit can move
+     */
+    public void setUnitMoveState()
+    {
+    	for(Unit unit:units)
+    	{
+    		unit.setCanMove(true);
     	}
     }
 

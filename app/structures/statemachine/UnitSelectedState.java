@@ -8,6 +8,7 @@ import events.EventProcessor;
 import events.OtherClicked;
 import events.TileClicked;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
@@ -24,6 +25,12 @@ public class UnitSelectedState extends State{
         this.unitClicked = tile.getUnit();
 
     }
+    
+    public UnitSelectedState(Unit unit,Unit enemyUnit,GameState gameState)
+    {
+    	this.tileClicked = gameState.board.getTile(enemyUnit.getPosition());
+    	this.unitClicked = unit;
+    }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
         if(event instanceof TileClicked) {
@@ -39,6 +46,7 @@ public class UnitSelectedState extends State{
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
                 gameStateMachine.setState(new UnitMovingState(unitClicked, tileClicked, tile), out, gameState);
             }
+          
             else if(tile.getTileState()==TileState.Occupied)
             {
             	if(null!=tile.getAiUnit())
@@ -75,28 +83,7 @@ public class UnitSelectedState extends State{
                     } 
                     else if(distance == 3)
                     {
-                    	//X axis moving
-                        if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
-                            int diffX = tile.getTilex() - tileClicked.getTilex();
-                            diffX = diffX/2+1;
-                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
-                        }
-                        //Y axis moving
-                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
-                        {
-                        	int diffY = tile.getTiley() - tileClicked.getTiley();
-                            diffY = diffY/2+1;
-                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
-                        }
-                        else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 1)
+                        if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 1)
                         {
                         	int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
@@ -123,38 +110,8 @@ public class UnitSelectedState extends State{
                         	gameStateMachine.setState(noSelectionState, out, gameState);
                         }
                     }
-                    
-                    else if(distance==4)
-                    {
-                     	//X axis moving
-                        if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
-                            int diffX = tile.getTilex() - tileClicked.getTilex();
-                            diffX = diffX/2+1;
-                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
-                        }
-                        //Y axis moving
-                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
-                        {
-                        	int diffY = tile.getTiley() - tileClicked.getTiley();
-                            diffY = diffY/2+1;
-                            Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
-                        }
-                        else
-                        {
-                        	//do nothing
-                        	State noSelectionState = new NoSelectionState();
-                        	gameStateMachine.setState(noSelectionState, out, gameState);
-                        }
-                    }
-                    else if(distance>4)
+
+                    else if(distance>3)
                     {
                     	//do nothing
                     	State noSelectionState = new NoSelectionState();
@@ -177,7 +134,85 @@ public class UnitSelectedState extends State{
         	 gameState.resetBoardSelection(out);
         	 gameState.resetCardSelection(out);
         	 gameStateMachine.setState(new NoSelectionState());
-        }      
+        } 
+        else if(gameState.currentTurn==Turn.AI)
+        {
+        	Tile tile = gameState.board.getTile(unitClicked.getPosition());
+        	if(null!=tile.getAiUnit())
+        	{
+                int distance = Tile.distance(tile, tileClicked);
+                if(distance == 2) {
+                	//X axis moving
+                    if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2) {
+                        int diffX = tile.getTilex() - tileClicked.getTilex();
+                        diffX = diffX/2;
+                        Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
+                        State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                        State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        moveState.setNextState(attackState);
+                        gameStateMachine.setState(moveState, out, gameState);
+                    }
+                    //Y axis moving
+                    else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                    {
+                    	int diffY = tile.getTiley() - tileClicked.getTiley();
+                        diffY = diffY/2;
+                        Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                        State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                        moveState.setNextState(attackState);
+                        gameStateMachine.setState(moveState, out, gameState);
+                    }
+                    else
+                    {
+                    	//Only attack without moving
+                    	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        gameStateMachine.setState(attackState, out, gameState);
+                    }                      
+                } 
+                else if(distance == 3)
+                {
+                    if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 1)
+                    {
+                    	int diffX = tile.getTilex() - tileClicked.getTilex();
+                        diffX = diffX/2;
+                        Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex()+ diffX , tileClicked.getTiley());
+                        State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                        moveState.setNextState(attackState);
+                        gameStateMachine.setState(moveState, out, gameState);
+                    }
+                    else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 1&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                    {
+                    	int diffY = tile.getTiley() - tileClicked.getTiley();
+                        diffY = diffY/2;
+                        Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                        State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                        moveState.setNextState(attackState);
+                        gameStateMachine.setState(moveState, out, gameState);
+                    }
+                    else
+                    {
+                    	//do nothing
+                    	State noSelectionState = new NoSelectionState();
+                    	gameStateMachine.setState(noSelectionState, out, gameState);
+                    }
+                }
+
+                else if(distance>3)
+                {
+                	//do nothing
+                	State noSelectionState = new NoSelectionState();
+                	gameStateMachine.setState(noSelectionState, out, gameState);
+                }
+                else {
+                    System.out.println("Get the unit");
+                    gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                }
+                gameState.resetBoardSelection(out);
+        	}
+        }
         else {
             System.out.println("UnitSelectedState: Invalid Event");
         }
@@ -185,11 +220,23 @@ public class UnitSelectedState extends State{
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
-        highlightSurroundingTiles(out, this.tileClicked.getTilex(), this.tileClicked.getTiley(), tileClicked, gameState);
+    	if(gameState.currentTurn==Turn.PLAYER)
+    	    if(null==this.tileClicked.getAiUnit())
+    	    	highlightSurroundingTiles(out, this.tileClicked.getTilex(), this.tileClicked.getTiley(), tileClicked, gameState);
+    	else
+    		aiHighlightSurroundingTiles(out, this.unitClicked.getPosition().getTilex(),this.unitClicked.getPosition().getTiley(),gameState.board.getTile(unitClicked.getPosition()), gameState);
     }
 
     @Override
     public void exit(ActorRef out, GameState gameState) {
+    	
+		if(gameState.currentTurn==Turn.AI)
+		{
+			if(nextState==null)
+			{
+				nextState=new EndTurnState();
+			}
+		}
 
     }
 
@@ -222,19 +269,6 @@ public class UnitSelectedState extends State{
                 }
             }
         }
-        
-        //highlight the Ai occupied tiles
-        for(int i=0;i<Constants.BOARD_WIDTH;i++)
-        {
-        	for(int j=0;j<Constants.BOARD_HEIGHT;j++)
-        	{
-        		Tile aiTile=gameState.board.getTile(i, j);
-        		if(null!=aiTile.getAiUnit())
-        		{
-        			   aiTile.setTileState(TileState.Occupied);;
-                       BasicCommands.drawTile(out, aiTile, 2);
-        		}
-        	}
 
         int x = tilex - 2;
         if(x >= 0) {
@@ -246,6 +280,26 @@ public class UnitSelectedState extends State{
                 gameState.board.getTile(x, tiley).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(x,tiley), tileState.ordinal());
             }
+            
+            //check the surrounding tiles
+            if(tiley+1<Constants.BOARD_HEIGHT)
+            {
+            	if(gameState.board.getTile(x, tiley+1).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(x, tiley+1).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley+1),2);
+            	}
+            }
+                      
+            if(tiley-1>=0)
+            {
+            	if(gameState.board.getTile(x, tiley-1).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(x, tiley-1).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley-1),2);
+            	}
+            }
+                      
         }
         x = tilex + 2;
         if(x < Constants.BOARD_WIDTH) {
@@ -257,7 +311,27 @@ public class UnitSelectedState extends State{
                 gameState.board.getTile(x, tiley).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(x,tiley),tileState.ordinal());
             }
+            
+            //check the surrounding tiles
+            if(tiley+1<Constants.BOARD_HEIGHT)
+            {
+            	if(gameState.board.getTile(x, tiley+1).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(x, tiley+1).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley+1),2);
+            	}
+            }
+            
+            if(tiley-1>=0)
+            {
+            	if(gameState.board.getTile(x, tiley-1).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(x, tiley-1).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley-1),2);
+            	}
+            }
         }
+        
         int y = tiley - 2;
         if(y >= 0) {
             boolean occupied = gameState.board.getTile(tilex, y + 1).getAiUnit() != null;
@@ -268,7 +342,29 @@ public class UnitSelectedState extends State{
                 gameState.board.getTile(tilex, y).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
             }
+            
+            //check the surrounding tiles
+            if(tilex+1<Constants.BOARD_WIDTH)
+            {
+            	if(gameState.board.getTile(tilex+1, y).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(tilex+1, y).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(tilex+1, y),2);
+            	}
+            }
+            
+            if(tilex-1>=0)
+            {
+            	if(gameState.board.getTile(tilex-1, y).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(tilex-1, y).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
+            	}
+            }
+           
         }
+        
+        
         y = tiley + 2;
         if(y < Constants.BOARD_HEIGHT) {
             boolean occupied = gameState.board.getTile(tilex, y - 1).getAiUnit() != null;
@@ -279,7 +375,191 @@ public class UnitSelectedState extends State{
                 gameState.board.getTile(tilex, y).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
             }
+            
+            //check the surrounding tiles
+            if(tilex+1<=Constants.BOARD_WIDTH)
+            {
+            	if(gameState.board.getTile(tilex+1, y).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(tilex+1, y).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(tilex+1, y),2);
+            	}
+            }
+            
+            if(tilex-1>=0)
+            {
+            	if(gameState.board.getTile(tilex-1, y).getAiUnit() != null)
+            	{
+            		gameState.board.getTile(tilex-1, y).setTileState(TileState.Occupied);
+            		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
+            	}
+            }
         }
     }
-  }
+    
+    
+/**
+ * Ai highlight the surrounding tiles to move
+ * @param out
+ * @param tilex
+ * @param tiley
+ * @param tileClicked
+ * @param gameState
+ */
+public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile tileClicked, GameState gameState) {
+    for(int i = -1; i <=1; i++ ) {
+        for(int j = -1; j <= 1; j++) {
+            int x = tilex + i;
+            if(x < 0) continue;
+            if(x >= Constants.BOARD_WIDTH) continue;
+            int y = tiley + j;
+            if(y < 0) continue;
+            if(y >= Constants.BOARD_HEIGHT) continue;
+            Tile surroundingTile = gameState.board.getTile(x, y);
+            if(surroundingTile == tileClicked)
+                continue;
+            if (surroundingTile != null) {
+                if(surroundingTile.getUnit() == null && surroundingTile.getAiUnit()==null) {
+                    surroundingTile.setTileState(TileState.Reachable);
+                    BasicCommands.drawTile(out, surroundingTile, 1);
+                }
+                else if(surroundingTile.getUnit()!=null) {
+                    surroundingTile.setTileState(TileState.Occupied);
+                    BasicCommands.drawTile(out, surroundingTile, 2);
+                }
+                else
+                {
+                	//do nothing
+                }
+            }
+        }
+    }
+
+    int x = tilex - 2;
+    if(x >= 0) {
+        boolean occupied = gameState.board.getTile(x + 1, tiley).getAiUnit() != null;
+        if(!occupied) {
+            TileState tileState = TileState.Reachable;
+            if(gameState.board.getTile(x, tiley).getUnit() != null)
+                tileState = TileState.Occupied;
+            gameState.board.getTile(x, tiley).setTileState(tileState);
+            BasicCommands.drawTile(out, gameState.board.getTile(x,tiley), tileState.ordinal());
+        }
+        
+        //check the surrounding tiles
+        if(tiley+1<Constants.BOARD_HEIGHT)
+        {
+        	if(gameState.board.getTile(x, tiley+1).getUnit() != null)
+        	{
+        		gameState.board.getTile(x, tiley+1).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley+1),2);
+        	}
+        }
+                  
+        if(tiley-1>=0)
+        {
+        	if(gameState.board.getTile(x, tiley-1).getUnit() != null)
+        	{
+        		gameState.board.getTile(x, tiley-1).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley-1),2);
+        	}
+        }
+                  
+    }
+    x = tilex + 2;
+    if(x < Constants.BOARD_WIDTH) {
+        boolean occupied = gameState.board.getTile(x - 1, tiley).getAiUnit() != null;
+        if(!occupied) {
+            TileState tileState = TileState.Reachable;
+            if(gameState.board.getTile(x, tiley).getUnit() != null)
+                tileState = TileState.Occupied;
+            gameState.board.getTile(x, tiley).setTileState(tileState);
+            BasicCommands.drawTile(out, gameState.board.getTile(x,tiley),tileState.ordinal());
+        }
+        
+        //check the surrounding tiles
+        if(tiley+1<Constants.BOARD_HEIGHT)
+        {
+        	if(gameState.board.getTile(x, tiley+1).getUnit() != null)
+        	{
+        		gameState.board.getTile(x, tiley+1).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley+1),2);
+        	}
+        }
+        
+        if(tiley-1>=0)
+        {
+        	if(gameState.board.getTile(x, tiley-1).getUnit() != null)
+        	{
+        		gameState.board.getTile(x, tiley-1).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(x,tiley-1),2);
+        	}
+        }
+    }
+    
+    int y = tiley - 2;
+    if(y >= 0) {
+        boolean occupied = gameState.board.getTile(tilex, y + 1).getUnit() != null;
+        if(!occupied) {
+            TileState tileState = TileState.Reachable;
+            if(gameState.board.getTile(tilex, y).getUnit() != null)
+                tileState = TileState.Occupied;
+            gameState.board.getTile(tilex, y).setTileState(tileState);
+            BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
+        }
+        
+        //check the surrounding tiles
+        if(tilex+1<Constants.BOARD_WIDTH)
+        {
+        	if(gameState.board.getTile(tilex+1, y).getUnit() != null)
+        	{
+        		gameState.board.getTile(tilex+1, y).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(tilex+1, y),2);
+        	}
+        }
+        
+        if(tilex-1>=0)
+        {
+        	if(gameState.board.getTile(tilex-1, y).getUnit() != null)
+        	{
+        		gameState.board.getTile(tilex-1, y).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
+        	}
+        }
+       
+    }
+    
+    
+    y = tiley + 2;
+    if(y < Constants.BOARD_HEIGHT) {
+        boolean occupied = gameState.board.getTile(tilex, y - 1).getAiUnit() != null;
+        if(!occupied) {
+            TileState tileState = TileState.Reachable;
+            if(gameState.board.getTile(tilex, y).getUnit() != null)
+                tileState = TileState.Occupied;
+            gameState.board.getTile(tilex, y).setTileState(tileState);
+            BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
+        }
+        
+        //check the surrounding tiles
+        if(tilex+1<=Constants.BOARD_WIDTH)
+        {
+        	if(gameState.board.getTile(tilex+1, y).getUnit() != null)
+        	{
+        		gameState.board.getTile(tilex+1, y).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(tilex+1, y),2);
+        	}
+        }
+        
+        if(tilex-1>=0)
+        {
+        	if(gameState.board.getTile(tilex-1, y).getUnit() != null)
+        	{
+        		gameState.board.getTile(tilex-1, y).setTileState(TileState.Occupied);
+        		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
+        	}
+        }
+     }
+
+	}
 }  

@@ -164,6 +164,27 @@ public class Action {
        
 	   return selectedTile;
    }
+   
+   //Search for the non-avator unit highest health point
+   public static Tile searchHighestNonAvatarUnitHealth(ActorRef out, GameState gameState)
+   {
+	   Tile selectedTile=null;
+	   int health=0;
+       for (int i =0; i <Constants.BOARD_WIDTH; i++) {
+           for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
+               Tile surroundingTile = gameState.board.getTile(i, j);
+               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAvatar()) {
+                   int unitHealth= surroundingTile.getUnit().getHealth();
+                   if(unitHealth>=health)
+                   {
+                	   selectedTile=surroundingTile;
+                   }
+               }
+           }
+       }
+       
+	   return selectedTile;
+   }
 
 
   

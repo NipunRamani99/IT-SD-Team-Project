@@ -56,6 +56,7 @@ public class Attack {
     public static void deleteEnemyUnit(ActorRef out,Unit enemyUnit, GameState gameState)
     {
 		BasicCommands.setUnitHealth(out, enemyUnit,0 );
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
@@ -83,6 +84,7 @@ public class Attack {
     		else
     			gameState.humanPlayer.setHealth(health);
     		BasicCommands.setPlayer1Health(out, gameState.humanPlayer);
+    		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	}
     	//for the AI player
     	else if(1==targetUnit.getId())
@@ -92,6 +94,7 @@ public class Attack {
     		else
     			gameState.AiPlayer.setHealth(health);
     		BasicCommands.setPlayer2Health(out, gameState.AiPlayer);
+    		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	}
     	else
     	{

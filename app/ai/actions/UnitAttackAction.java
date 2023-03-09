@@ -4,6 +4,7 @@ import structures.GameState;
 import structures.basic.Unit;
 import structures.statemachine.State;
 import structures.statemachine.UnitAttackState;
+import structures.statemachine.UnitSelectedState;
 
 public class UnitAttackAction implements AiAction{
 
@@ -18,6 +19,7 @@ public class UnitAttackAction implements AiAction{
     public State processAction(GameState gameState) {
         if(aiUnit.withinDistance(markedUnit) && aiUnit.canAttack()) {
             return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);
+        	//return new UnitSelectedState(aiUnit, markedUnit,gameState);
         }
         return null;
     }

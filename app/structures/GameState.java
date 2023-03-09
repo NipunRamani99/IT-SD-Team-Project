@@ -49,6 +49,8 @@ public class GameState {
 	
 	public Tile targetTile=null;
 	
+	public boolean AiMarkEnemy =false;
+	
 	public int numPosition=3;
 	public int aiNumPosition=3;
 	

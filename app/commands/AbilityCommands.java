@@ -3,8 +3,11 @@ package commands;
 import akka.actor.ActorRef;
 import events.Attack;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.Card;
+import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.UnitAnimationType;
 
 /**
  * This class is for the special abilities of different units and spells
@@ -95,8 +98,15 @@ public class AbilityCommands {
     /**
      * Entropic Decay spell
      */
-    public static void entropicDecay(ActorRef out, Unit unit) {
+    public static void entropicDecay(ActorRef out, Unit unit, GameState gameState) {
     	unit.setHealth(0);
     	BasicCommands.setUnitHealth(out, unit, 0);
+    	BasicCommands.playUnitAnimation(out, unit,UnitAnimationType.death);
+    	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+    	BasicCommands.deleteUnit(out, unit);
+    	Tile tile= gameState.board.getTile(unit.getPosition());
+    	if(unit.isAi())
+    		tile.clearAiUnit();
+    	else tile.clearUnit();
     }
 }

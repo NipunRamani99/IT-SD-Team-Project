@@ -40,7 +40,9 @@ public class CardSelectedState extends State{
         } else {
             cardType = CardType.UNIT;
         }
+        
         cardClickedTilesHighlight(out, gameState);
+        	
     }
     
     public CardSelectedState(ActorRef out,int position, Tile tile, GameState gameState)
@@ -74,28 +76,14 @@ public class CardSelectedState extends State{
             	if(mana>=cardSelected.getManacost())
             	{
             		 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
-                     	gameState.humanPlayer.setMana(mana-cardSelected.getManacost());
-                        	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                          //Cast card
-                         CastCard.castUnitCard(out, cardSelected, tile, gameState);
-                         //Delete card
-                         BasicCommands.deleteCard(out, handPosition);
-                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                         gameState.board.deleteCard(handPosition);
-                         System.out.println("CardSelectedState: Reachable Tile Clicked");                    
-                     //if the tile is occupied and card is a spell card(spell needs unit to use)
+            			 System.out.println("CardSelectedState: Reachable Tile Clicked");  
+                         CastCard.castUnitCard(out, cardSelected, tile, gameState);                                          
+                
                      }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
-                     	gameState.humanPlayer.setMana(mana-cardSelected.getManacost());
-                        	BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                      	//Cast card
-                         CastCard.castSpellCard(out, cardSelected, tile, gameState);
-                         //Delete card
-                         BasicCommands.deleteCard(out, handPosition);  
-                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                         gameState.board.deleteCard(handPosition);             	
-                         System.out.println("CardSelectedState: Occupied Tile Clicked");
+                    	 System.out.println("CardSelectedState: Occupied Tile Clicked");
+                         CastCard.castSpellCard(out, cardSelected, tile, gameState);	                       
                      }
             	}
                
@@ -119,42 +107,30 @@ public class CardSelectedState extends State{
         	int mana=gameState.AiPlayer.getMana();
         	if(mana>=cardSelected.getManacost())
         	{
-        		//Cast unit
+        		//AI cast unit
             	if(cardType==CardType.UNIT)
-            	{
-            		
+            	{          		
             		 CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
-            		 //cost the ai mana
-            		 gameState.AiPlayer.setMana( mana-cardSelected.getManacost());
-            		 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
-            		 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-                     //Delete card
-                     BasicCommands.deleteCard(out, handPosition);
-                     gameState.board.deleteAiCard(handPosition);
             	}
-            	else  //cast spell
+            	else  //AI cast spell
             	{
             		CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
-              		 //cost the ai mana
-           		    gameState.AiPlayer.setMana( mana-cardSelected.getManacost());
-           		    BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
-           		    try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-            		 //Delete card
-                    BasicCommands.deleteCard(out, handPosition);
-                    gameState.board.deleteAiCard(handPosition);
             	}
         	}
-        	else
-        	{
-        		nextState= new NoSelectionState();
-        	}
-       	    
+      	    
         	gameState.resetBoardSelection(out);
-        	gameStateMachine.setState(nextState,out, gameState);
-           
+        	gameState.resetBoardState();
+        	gameStateMachine.setState(nextState,out, gameState);         
         } 
         else {
             System.out.println("CardSelectedState: Invalid Event");
+            if(gameState.currentTurn==Turn.AI)
+            {
+            	gameState.resetBoardSelection(out);
+            	gameState.resetBoardState();
+            	gameStateMachine.setState(new EndTurnState());
+            }
+            	
         }
     }
 
@@ -182,7 +158,10 @@ public class CardSelectedState extends State{
           {
 	       	  if(cardType == CardType.UNIT)
 	       	  {
-	       		  highlightUnitCardSelection(out, gameState);
+	       		  if(gameState.currentTurn==Turn.PLAYER)
+	       			  highlightUnitCardSelection(out, gameState);
+	       		  else
+	       			  aiHighlightUnitCardSelection(out, gameState);
 	       	  }
                 
               else if(cardType == CardType.SPELL)
@@ -206,6 +185,8 @@ public class CardSelectedState extends State{
           }
     }
 
+    
+    
     @Override
     public void exit(ActorRef out, GameState gameState) {
 
@@ -222,21 +203,65 @@ public class CardSelectedState extends State{
         List<Unit> unitList = gameState.board.getUnits();
         
         for(Unit unit : unitList) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if(i == 0 && j == 0) continue;;
-                    int x = unit.getPosition().getTilex() + i;
-                    int y = unit.getPosition().getTiley() + j;
-                    Tile surroundingTile = gameState.board.getTile(x, y);
-                    if (surroundingTile != null && !unit.isAi()) {
-                        if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
-                            surroundingTile.setTileState(TileState.Reachable);
-                            BasicCommands.drawTile(out, surroundingTile, 1);
-                            try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+        	if(!unit.isAi())
+        	{
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if(i == 0 && j == 0) continue;;
+                        int x = unit.getPosition().getTilex() + i;
+                        int y = unit.getPosition().getTiley() + j;
+                        Tile surroundingTile = gameState.board.getTile(x, y);
+                        if (surroundingTile != null) {
+                            if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                                surroundingTile.setTileState(TileState.Reachable);
+                                BasicCommands.drawTile(out, surroundingTile, 1);
+                                try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                            }
+                            else if(surroundingTile.getAiUnit()!=null)
+                            {
+                            	 surroundingTile.setTileState(TileState.Occupied);
+                                 BasicCommands.drawTile(out, surroundingTile, 2);
+                                 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                            }
+                           
                         }
                     }
                 }
-            }
+        	}
+
+        }
+    }
+ 
+    /**
+     * Ai highlight tiles for the general Unit card
+     * @param out
+     * @param gameState
+     */
+    private void aiHighlightUnitCardSelection(ActorRef out, GameState gameState)
+    {
+        BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
+        List<Unit> unitList = gameState.board.getUnits();
+        
+        for(Unit unit : unitList) {
+        	if(unit.isAi())
+        	{
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if(i == 0 && j == 0) continue;;
+                        int x = unit.getPosition().getTilex() + i;
+                        int y = unit.getPosition().getTiley() + j;
+                        Tile surroundingTile = gameState.board.getTile(x, y);
+                        if (surroundingTile != null) {
+                            if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                                surroundingTile.setTileState(TileState.Reachable);
+                                BasicCommands.drawTile(out, surroundingTile, 1);
+                                try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+                            }
+                        }
+                    }
+                }	
+        	}
+
         }
     }
 
@@ -293,8 +318,11 @@ public class CardSelectedState extends State{
               {
             	  Position tilePos = unit.getPosition();
                   Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                  BasicCommands.drawTile(out, tile, 2);
-                  tile.setTileState(TileState.Occupied);
+                  if(null!=tile.getAiUnit()&&null!=tile.getUnit())
+                  {
+                	   BasicCommands.drawTile(out, tile, 2);
+                       tile.setTileState(TileState.Occupied); 
+                  }             
               }
           }
         	 
@@ -316,8 +344,11 @@ public class CardSelectedState extends State{
                   {
                 	  Position tilePos = unit.getPosition();
                       Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                      BasicCommands.drawTile(out, tile, 2);
-                      tile.setTileState(TileState.Occupied);
+                      if(null!=tile.getUnit())
+                      {
+                    	   BasicCommands.drawTile(out, tile, 2);
+                           tile.setTileState(TileState.Occupied); 
+                      }
                   } 
         	  }
         	  else
@@ -326,8 +357,11 @@ public class CardSelectedState extends State{
                   {
                 	  Position tilePos = unit.getPosition();
                       Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                      BasicCommands.drawTile(out, tile, 2);
-                      tile.setTileState(TileState.Occupied);
+                      if(null!=tile.getAiUnit())
+                      {
+                    	   BasicCommands.drawTile(out, tile, 2);
+                           tile.setTileState(TileState.Occupied); 
+                      }
                   } 
         	  }
              

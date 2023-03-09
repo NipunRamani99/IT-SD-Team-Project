@@ -43,10 +43,14 @@ public class Unit {
 	private boolean isChosed=false;
 
 	private boolean canAttack = true;
+	
+	private boolean canMove =true;
 
 	private boolean secondAttackUsed = false;
 
 	private boolean movement = true;
+	
+	private boolean canAttackBack=false;
 
 	//Choose the unit
 	public boolean isChosed() {
@@ -91,6 +95,17 @@ public class Unit {
 		{
 			this.hpFromCard=health;
 		}
+	}
+	
+	//set attack back status
+	public void setAttackBack(boolean attackBack)
+	{
+		this.canAttackBack=attackBack;
+	}
+	
+	public boolean isAttackBack()
+	{
+		return this.canAttackBack;
 	}
 
 	//check it is avatar or not
@@ -212,7 +227,7 @@ public class Unit {
 
 	public boolean withinDistance(Unit unit) {
 		Position displacement = this.getDisplacement(unit);
-		return Math.abs(displacement.tilex) <= 1 && Math.abs(displacement.tiley) <= 1;
+		return (Math.abs(displacement.tilex)<=1&&Math.abs(displacement.tiley)<=1);
 	}
 
 	public boolean canAttack() {
@@ -221,6 +236,16 @@ public class Unit {
 
 	public void setCanAttack(boolean canAttack) {
 		this.canAttack = canAttack;
+	}
+	
+	public boolean canMove()
+	{
+		return canMove;
+	}
+	
+	public void setCanMove(boolean canMove)
+	{
+		this.canMove=canMove;
 	}
 
 	public void setMovement(boolean movement) {
