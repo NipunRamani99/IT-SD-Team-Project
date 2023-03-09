@@ -39,7 +39,7 @@ public class CastCard {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState){  	
+    public static Unit castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState){  	
     	//Transform the card into units
     	Unit unit = null;
     	String cardName = card.getCardname();
@@ -78,7 +78,7 @@ public class CastCard {
     	  case "Ironcliff Guardian":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
 	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id, Card.class);
-	    	 // unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;	  
     	  case "Pureblade Enforcer":
@@ -156,7 +156,8 @@ public class CastCard {
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-
+		
+		return unit;
     }
     
     public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
@@ -180,7 +181,7 @@ public class CastCard {
      		  }
      		  break;
      	  case "Sundrop Elixir":
-    		  spellName = StaticConfFiles.f1_summon;
+    		  spellName = StaticConfFiles.f1_buff;
     		  placeSpell(out, gameState,spellName,card, tile);
     		  if(null!=tile.getUnit())
     			  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);

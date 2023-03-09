@@ -2,6 +2,8 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
@@ -78,8 +80,8 @@ public class CardSelectedState extends State{
             		 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
                          //Cast card
             			 System.out.println("CardSelectedState: Reachable Tile Clicked");  
-                         CastCard.castUnitCard(out, cardSelected, tile, gameState);                                          
-                
+                         Unit unit = CastCard.castUnitCard(out, cardSelected, tile, gameState);                                          
+                         AbilityCommands.useAbility(out, unit, gameState);
                      }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
                      	//Cast card
                     	 System.out.println("CardSelectedState: Occupied Tile Clicked");

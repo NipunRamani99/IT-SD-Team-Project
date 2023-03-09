@@ -1,13 +1,20 @@
 package commands;
 
+import java.util.List;
+
 import akka.actor.ActorRef;
 import events.Attack;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.Card;
+import structures.basic.EffectAnimation;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.UnitAbility;
+import structures.basic.UnitAbilityTable;
 import structures.basic.UnitAnimationType;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 /**
  * This class is for the special abilities of different units and spells
@@ -15,24 +22,45 @@ import structures.basic.UnitAnimationType;
 public class AbilityCommands {
 
     /**
-     * Pureblade Enforce ability
+     * Provoke ability
      */
-    public static void enforceAbility(){
-
+    public static void Provoke(ActorRef out, Unit unit, GameState gameState){
     }
 
     /**
-     * Silverguard Knight ability
+     * Ranged ability
      */
-    public static void knightAbility(){
-
+    public static void Ranged(){
     }
 
     /**
-     * Fire Spitter ability
+     * HEAL_AVATAR_ON_SUMMON ability
      */
-    public static void fireSpitterAbility(){
-
+    public static void Heal_Avatar_On_Summon(ActorRef out, GameState gameState){
+    	for(int i=0;i<9;i++) {
+    		for(int j=0;j<5;j++) {
+     			Tile tile = gameState.board.getTile(i, j);
+    			Unit unit = tile.getUnit();
+    			boolean isAvatar = false;
+    			if(unit != null) {
+    			isAvatar = unit.isAvatar();
+    			}
+    			if(isAvatar) {
+    				int health = unit.getHealth();
+    				if(health<17) {
+    					health = health+3;
+    				}else {
+    					health = 20;
+    				}
+    				EffectAnimation ef = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff);
+    				BasicCommands.playEffectAnimation(out, ef, tile);
+    				unit.setHealth(health);
+    				BasicCommands.setUnitHealth(out, unit, health);
+    				Attack.setPlayerHealth(out, health, unit, gameState);
+    				break;
+    			}
+    		}
+    	}
     }
 
     /**
@@ -108,5 +136,33 @@ public class AbilityCommands {
     	if(unit.isAi())
     		tile.clearAiUnit();
     	else tile.clearUnit();
+    }
+    
+    public static void useAbility(ActorRef out, Unit unit, GameState gameState) {
+    	UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
+    	List<UnitAbility> unitAbilityList = unitAbilityTable.getUnitAbilities(unit.getName());
+    	for(UnitAbility unitAbility:unitAbilityList) {
+    		if(unitAbility == UnitAbility.ATTACK_TWICE) {
+    			
+    		}else if(unitAbility == UnitAbility.BUFF_UNIT_ON_AVATAR_DAMAGE) {
+    			
+    		}else if(unitAbility == UnitAbility.BUFF_UNIT_ON_ENEMY_SPELL) {
+    			
+    		}else if(unitAbility == UnitAbility.DRAW_CARD_ON_DEATH) {
+    			
+    		}else if(unitAbility == UnitAbility.DRAW_CARD_ON_SUMMON) {
+    			
+    		}else if(unitAbility == UnitAbility.FLYING) {
+    			
+    		}else if(unitAbility == UnitAbility.HEAL_AVATAR_ON_SUMMON) {
+    			Heal_Avatar_On_Summon(out, gameState);
+    		}else if(unitAbility == UnitAbility.PROVOKE) {
+    			
+    		}else if(unitAbility == UnitAbility.RANGED) {
+    			
+    		}else if(unitAbility == UnitAbility.SUMMON_ANYWHERE) {
+    			
+    		}
+    	}
     }
 }
