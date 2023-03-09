@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import structures.GameState;
+import structures.Turn;
+import structures.statemachine.EndTurnState;
 import structures.statemachine.GameStateMachine;
+import structures.statemachine.State;
 
 /**
  * In the user’s browser, the game is running in an infinite loop, where there is around a 1 second delay 
@@ -19,11 +22,12 @@ import structures.statemachine.GameStateMachine;
  * @author Dr. Richard McCreadie
  *
  */
-public class Heartbeat implements EventProcessor{
+public class Heartbeat implements EventProcessor {
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message,  GameStateMachine gameStateMachine) {
 		gameStateMachine.processInput(out, gameState, message, this);
+
 	}
 
 }

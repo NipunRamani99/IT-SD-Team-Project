@@ -1,13 +1,18 @@
 package ai;
 
+import ai.actions.PursueAction;
+import ai.actions.AiAction;
+import ai.actions.*;
+import ai.actions.UnitAttackAction;
+import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
 import structures.GameState;
-import structures.basic.Board;
-import structures.basic.Card;
-import structures.basic.Player;
+import structures.basic.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -15,97 +20,203 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
 
+import structures.basic.Unit;
+import structures.statemachine.CardSelectedState;
+import structures.statemachine.CastCard;
+
+import structures.statemachine.EndTurnState;
+import structures.statemachine.GameStateMachine;
+//import structures.statemachine.HumanAttackState;
+import structures.statemachine.NoSelectionState;
+import structures.statemachine.State;
+import structures.statemachine.UnitMovingState;
+import utils.Constants;
+import structures.statemachine.*;
+
+class TurnCache {
+    public List<Unit> markedUnits = new ArrayList<>();
+    public List<Unit> aiUnits = new ArrayList<>();
+    public List<Unit> playerUnits = new ArrayList<>();
+
+    public TurnCache() {
+
+    }
+
+    public TurnCache(GameState gameState) {
+        this.playerUnits = searchTargets(gameState);
+        this.aiUnits = getAvailableUnits(gameState);
+    }
+
+    public List<Unit> searchTargets(GameState gameState) {
+        List<Unit> units = gameState.board.getUnits().stream().filter((unit -> !unit.isAi())).collect(Collectors.toList());
+        return units;
+    }
+
+    public List<Unit> getAvailableUnits(GameState gameState) {
+        List<Unit> units = gameState.board.getUnits();
+        units = units.stream().filter((unit -> {
+            return unit.isAi() && (unit.canAttack() || unit.getMovement());
+        })).collect(Collectors.toList());
+        return units;
+    }
+    
+
+}
+
 /**
  * AIPlayer implements an AI which can analyse the positions on the board, calculate different actions,
  * and execute the actions one by one over the board. The actions it can perform includes moving a unit from one tile to another,
  * selecting a unit and then using it to attack an enemy unit, cast a card from its hand, etc.
  */
 public class AIPlayer{
-    /**
-     * This is the reference of the whole board
-     */
-    private Board board;
-    /**
-     * This collection contains all the action that the AI could perform
-     */
-    private ArrayList<Action> actions ;
-    /**
-     * This collection contains all the card that AI could play
-     */
-    private ArrayList<Card> hand ;
-    
-    /**
-     * The actor reference
-     */
-    private ActorRef out;
-    
-    /**
-     * The game state
-     */
-    private GameState gameState;
 
-    /**
-     * The player of AI
-     */
-    private Player playerAI;
-    
-    
-    /**
-     * AI will need a reference to board to analyse its position and a list of cards which it will use to play the game.
-     * @param board reference to a board instance
-     * @param deck the list of cards it will use to play the game
-     */
-    public AIPlayer(Board board, ArrayList<Card> deck) {
-        this.board = board;
-        this.hand = deck;
+    private boolean canPlay = true;
+
+    private State nextAiMove = null;
+
+    List<Card> cards;
+
+    private TurnCache turnCache = null;
+
+    private List<AiAction> aiActions = new ArrayList<>();
+
+    public AIPlayer() {
+        this.nextAiMove = null;
+        turnCache = new TurnCache();
     }
 
-    /**
-     * This function is for AI to execute asynchronously
-     */
-    public void update() {
-        searchAction();
-        //performAction();
+    public void beginTurn(GameState gameState) {
+        turnCache = new TurnCache(gameState);
     }
 
     /**
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-    private void searchAction() {
-        //Create a list of actions to be performed
+
+    public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
+    	   //Firstly, AI will search and attack
+			if(!gameState.AiMarkEnemy)
+			{
+				 //get the all the ai hand card
+		        cards = gameState.board.getAiCards();
+		        nextAiMove = null;
+		        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+		        aiCastCard(out, gameState, gameStateMachine);
+		        markEnemy();
+		        pursueEnemy();
+		        gameState.AiMarkEnemy=true;
+			}
+            for(AiAction action : aiActions) {
+                State s  = action.processAction(gameState);
+                if(s == null) continue;
+                if(nextAiMove == null) {
+                    nextAiMove = s;
+                } else {
+                    nextAiMove.appendState(s);
+                }
+            }
+            canPlay = !aiActions.isEmpty();
+            aiActions.clear();
+            return canPlay;
     }
 
+    public void markEnemy() {
+        turnCache.markedUnits = turnCache.playerUnits;
+    }
+
+    public void pursueEnemy() {
+        if(turnCache.aiUnits.isEmpty())
+            return;
+        List<Unit> aiUnits=turnCache.aiUnits;
+        List<Unit> markedUnits =turnCache.markedUnits;
+        for(Unit markedUnit : markedUnits) {
+            turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
+            if(markedUnit==null) continue;
+            
+          //  if(turnCache.aiUnits.isEmpty()) return;
+            for(Unit aiUnit : aiUnits)
+            {
+            	if(aiUnit==null) continue;
+            	if(checkAvailableUnit(aiUnit,markedUnit))
+            	{
+            		AiAction action =null;
+            		if(aiUnit.canAttack()&&aiUnit.withinDistance(markedUnit))
+            		{
+            			action = new UnitAttackAction(aiUnit, markedUnit);
+            		}
+            		else if (aiUnit.canMove())
+            		{
+            			action = new PursueAction(markedUnit, aiUnit);
+            		}
+            		aiActions.add(action);
+            		//turnCache.aiUnits.remove(aiUnit);
+            	}
+//            turnCache.aiUnits.stream()
+//                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
+//                     .findFirst()
+//                     .ifPresent((aiUnit -> {
+//                         AiAction action = null;
+//                         if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
+//                             action = new UnitAttackAction(aiUnit, markedUnit);
+//                         } else if(aiUnit.getMovement()) {
+//                             action = new PursueAction(markedUnit, aiUnit);
+//                         }
+//                         aiActions.add(action);
+//                         turnCache.aiUnits.remove(aiUnit);
+//                     }));
+            
+            
+
+        }
+      }
+    }
+    
     /**
-     * The perform action method will execute the action generated by search action method.
-     * The list of action will be cleared after executing all the actions to prepare for next turn.
+     * Check the available unit
+     * @param unit
+     * @param markedUnit
+     * @return boolean value
      */
-    private void performAction(ActionType actionType) {
-        //Execute actions and then clear the list
-        Action action = new Action(actionType, out, gameState);
-        Thread act = new Thread(action);
-        act.start();
-        //Begin to execute
-        try {
-			act.join();
-		} catch (InterruptedException e) {
-			// Print the exception message
-			e.printStackTrace();
-		}
+    private boolean checkAvailableUnit(Unit unit,Unit markedUnit)
+    {
+    	if((unit.canAttack()&&unit.withinDistance(markedUnit))||unit.canMove())
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
     }
 
-	public void processEvent(ActorRef out, GameState gameState,ActionType actionType) {
-	 
-		this.out=out;
-		this.gameState=gameState;
-		
-		//initialize the board and action type
-		this.board=gameState.board;
-		//this.hand = gameState.board.cards;
-		
-		//search the board
-	
-		//begin to execute
-		 performAction(actionType);
-	}
+    private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
+    {
+    	//check the card on hand
+       AiAction castSpell = new CastSpellAction(out);
+       AiAction castUnit = new CastUnitAction(out,turnCache.markedUnits);
+       aiActions.add(castSpell); 
+       aiActions.add(castUnit);
+    }
+
+
+    private int chooseAiCardPosition(GameState gameState)
+    {
+
+    	 for(int i=1;i<=cards.size();i++)
+    	 {
+    		Card aiCard=cards.get(i-1);
+    	 	if(null!=aiCard&&gameState.AiPlayer.getMana()>=aiCard.getManacost())
+    	 	{
+    	 		return i;
+    	 	}
+    	 }
+    	return 0;
+    }
+
+    public State getNextAiMove() {
+        return nextAiMove;
+    }
+    
+
 }

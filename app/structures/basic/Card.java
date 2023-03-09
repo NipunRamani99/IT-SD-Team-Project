@@ -15,6 +15,8 @@ public class Card {
 	int id;
 	String cardname;
 	int manacost;
+
+	int position;
 	
 	MiniCard miniCard;
 	BigCard bigCard;
@@ -28,6 +30,16 @@ public class Card {
 		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
+	}
+	
+	public int getCardPosition()
+	{
+		return position;
+	}
+	
+	public void setCardPosition(int position)
+	{
+		this.position=position;
 	}
 	
 	public int getId() {

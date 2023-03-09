@@ -47,7 +47,7 @@ public class Tile {
 	
 	//The ai unit
 	private Unit aiUnit=null;
-	
+
 	/**
 	 * for the human player
 	 * 
@@ -63,6 +63,7 @@ public class Tile {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
+		this.unit.setPositionByTile(this);
 		this.occupied=Occupied.userOccupied;
 	}
 	
@@ -75,7 +76,7 @@ public class Tile {
 	public void setAiUnit(Unit unit)
 	{
 		this.aiUnit = unit;
-		//aiUnit.setChosed(false);
+		this.aiUnit.setPositionByTile(this);
 		this.occupied=Occupied.aiOccupied;
 	}
 	
@@ -98,6 +99,7 @@ public class Tile {
 		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
 		this.occupied=Occupied.none;
+		tileState = TileState.None;
 	}
 	
 	public void clearAiUnit()
@@ -105,6 +107,7 @@ public class Tile {
 		if(null!=this.aiUnit) this.aiUnit.setChosed(false);
 		this.aiUnit=null;
 		this.occupied=Occupied.none;
+		tileState = TileState.None;
 	}
 	public Tile()
 	{
@@ -204,9 +207,15 @@ public class Tile {
 		tileTextures.add("assets/game/extra/ui/tile_grid.png");
 		tileTextures.add("assets/game/extra/ui/tile_grid_red.png");
 		return new Tile(tileTextures,0, 0, 115, 115, 0, 0);
+
 	}
 
 	public static int distance(Tile A, Tile B) {
 		return Math.abs(A.tilex - B.tilex) + Math.abs(A.tiley - B.tiley);
+	}
+
+	public int distanceToUnit(Unit unit) {
+		Position p = unit.getPosition();
+		return Math.abs(p.tilex - this.tilex) + Math.abs(p.tiley - this.tiley);
 	}
 }

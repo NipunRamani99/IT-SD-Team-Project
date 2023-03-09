@@ -3,6 +3,9 @@ package structures.basic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a representation of a Unit on the game board.
  * A unit has a unique id (this is used by the front-end.
@@ -25,19 +28,30 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
-	
+
+
+	String name = "";
+
 	//health and attcak for a unit
 	
-	private boolean isAi=false;
+	private boolean isAi= false;
 
 	private int attack;
 
 	private int health;
-
 	private int hpFromCard = 0;
-
 	private boolean isChosed=false;
+
+	private boolean canAttack = true;
 	
+	private boolean canMove =true;
+
+	private boolean secondAttackUsed = false;
+
+	private boolean movement = true;
+	
+	private boolean canAttackBack=false;
+
 	//Choose the unit
 	public boolean isChosed() {
 		return isChosed;
@@ -82,7 +96,29 @@ public class Unit {
 			this.hpFromCard=health;
 		}
 	}
+	
+	//set attack back status
+	public void setAttackBack(boolean attackBack)
+	{
+		this.canAttackBack=attackBack;
+	}
+	
+	public boolean isAttackBack()
+	{
+		return this.canAttackBack;
+	}
 
+	//check it is avatar or not
+	private boolean isAvatar=false;
+	
+	public boolean isAvatar() {
+		return isAvatar;
+	}
+
+	public void setAvatar(boolean isAvatar) {
+		this.isAvatar = isAvatar;
+	}
+	
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();
@@ -174,5 +210,65 @@ public class Unit {
 
 	public void setTile(Tile tile) {
 		this.tile = tile;
+	}
+
+	public int getDistance(Unit unit) {
+		Position a = position;
+		Position b = unit.getPosition();
+		return Math.abs(a.tilex - b.tilex) + Math.abs(a.tiley - b.tiley);
+	}
+
+	public Position getDisplacement(Unit unit) {
+		Position a = position;
+		Position b = unit.getPosition();
+		Position p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		return p;
+	}
+
+	public boolean withinDistance(Unit unit) {
+		Position displacement = this.getDisplacement(unit);
+		return (Math.abs(displacement.tilex)<=1&&Math.abs(displacement.tiley)<=1);
+	}
+
+	public boolean canAttack() {
+		return canAttack;
+	}
+
+	public void setCanAttack(boolean canAttack) {
+		this.canAttack = canAttack;
+	}
+	
+	public boolean canMove()
+	{
+		return canMove;
+	}
+	
+	public void setCanMove(boolean canMove)
+	{
+		this.canMove=canMove;
+	}
+
+	public void setMovement(boolean movement) {
+		this.movement = movement;
+	}
+
+	public boolean getMovement() {
+		return movement;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isSecondAttackUsed() {
+		return secondAttackUsed;
+	}
+
+	public void setSecondAttackUsed(boolean secondAttackUsed) {
+		this.secondAttackUsed = secondAttackUsed;
 	}
 }

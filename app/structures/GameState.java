@@ -12,7 +12,6 @@ import structures.statemachine.CastCard;
 import structures.basic.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import events.CardClicked;
 import events.TileClicked;
 import utils.Constants;
@@ -25,6 +24,7 @@ import utils.Constants;
  *
  */
 public class GameState {
+	public UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
 	public boolean gameInitalised = false;
 	public boolean cardIsClicked =false;
 	public boolean unitIsClicked = false;
@@ -49,6 +49,11 @@ public class GameState {
 	
 	public Tile targetTile=null;
 	
+	public boolean AiMarkEnemy =false;
+	
+	public int numPosition=3;
+	public int aiNumPosition=3;
+	
 	public int id=0;
 	//public ActionType type;
 	//The mana for human player
@@ -63,6 +68,8 @@ public class GameState {
 
 	public int handPosition = -1;
 	public Card card = null;
+	public Unit aiUnit = null;
+	public Turn currentTurn = Turn.PLAYER;
 
 	public void resetBoardSelection(ActorRef out) {
 		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
@@ -73,6 +80,15 @@ public class GameState {
 				if(tile.getTileState() != TileState.Occupied) {
 					tile.setTileState(TileState.None);
 				}
+			}
+		}
+	}
+
+	public void resetBoardState() {
+		for(int i = 0; i < Constants.BOARD_WIDTH; i++ ) {
+			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+				Tile tile = board.getTile(i, j);
+				tile.setTileState(TileState.None);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import events.EventProcessor;
 import structures.GameState;
 
-public class State {
+public abstract class State {
 
     protected State nextState  = null;
 
@@ -15,9 +15,19 @@ public class State {
 
     public void exit(ActorRef out, GameState gameState){}
 
+
     public void setNextState(State nextState) {
         this.nextState = nextState;
     }
 
-    public State getNextState() { return nextState; }
+    public State getNextState() { return nextState;}
+    public void appendState(State s) {
+    	if(s==null) return;
+        if(nextState == null) {
+            nextState=s;
+        }
+        else {
+            nextState.appendState(s);
+        }
+    }
 }
