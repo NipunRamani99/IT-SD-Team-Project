@@ -18,37 +18,29 @@ public class UnitAttackState extends State{
 	private Unit selectedUnit = null;
 
 	private Unit enemyUnit = null;
+	
+	private boolean counterAttack=true;
 
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
 	{
 		this.selectedUnit = selectedUnit;
-		if(isPlayer)
-			this.enemyUnit = targetTile.getAiUnit();
-		else
-			this.enemyUnit = targetTile.getUnit();
+		this.enemyUnit = targetTile.getUnit();
 	}
 
 	public UnitAttackState(Unit selectedUnit, Unit enemyUnit)
 	{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = enemyUnit;
-		this.enemyUnit.setAttackBack(false);
-		this.selectedUnit.setAttackBack(false);
+
 	}
 
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
 	{
 
 		this.selectedUnit = selectedUnit;	
-		this.selectedUnit.setAttackBack(false);
-		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
-		this.enemyUnit.setAttackBack(false);
+		this.enemyUnit =targetTile.getUnit();
 		if(!reactAttack && selectedUnit.canAttack()) {
-			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
-			if (nextState != null) {
-				reactState.setNextState(nextState);
-			}
-			this.nextState = reactState;
+			this.counterAttack=true;
 		}
 	}
 	
@@ -61,29 +53,41 @@ public class UnitAttackState extends State{
 			if(gameState.currentTurn==Turn.PLAYER)
 				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 			else
+			{
 				gameStateMachine.setState(nextState != null ? nextState : new EndTurnState());
-		}	
+				if(nextState!=null) {}
+					//enter(out,gameState);
+			}
+				
+			
+		}
 	}
 
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
-		try {
-				if(selectedUnit.canAttack()||selectedUnit.isAttackBack())
-				{
-					//make sure every unit can attack once
-					selectedUnit.setCanAttack(false);
-					System.out.println("Unit attack");
-					getUnitOnTileAttack(out, gameState);
-				}
-				else
-				{
-					if(nextState==null)
-						nextState=new NoSelectionState();
-				}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
+		if(selectedUnit.canAttack()||counterAttack)
+		{
+			//make sure every unit can attack once
+			System.out.println("Unit attack");
+			getUnitOnTileAttack(out, gameState);
 		}
+		
+		else
+		{
+			if(gameState.currentTurn==Turn.PLAYER)
+			{
+				if(nextState==null)
+					nextState=new NoSelectionState();
+			}
+			else
+			{
+				if(nextState==null)
+					nextState=new EndTurnState();
+			}
+			
+		}
+
 	}
 
 	@Override
@@ -100,7 +104,7 @@ public class UnitAttackState extends State{
 	}
 
 
-	private void getUnitOnTileAttack(ActorRef out, GameState gameState)throws InterruptedException
+	private void getUnitOnTileAttack(ActorRef out, GameState gameState)
 	{
 		//Attack animation
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
@@ -120,6 +124,9 @@ public class UnitAttackState extends State{
 
     private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
+    	//make sure can unit can attack back once 
+    	if(counterAttack) {counterAttack=false;selectedUnit.setCanAttack(false); }
+    	
     	if(health <= 0)
 		{
           Attack.deleteEnemyUnit(out, enemyUnit, gameState);
@@ -128,22 +135,22 @@ public class UnitAttackState extends State{
 		}
     	else
     	{
-    	  enemyUnit.setAttackBack(true);
+    	  enemyUnit.setAttackBack(true);	
     	  BasicCommands.setUnitHealth(out, enemyUnit,health );
     	  try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
+    	  attackBack(out, enemyUnit,selectedUnit, gameState);
     	}
 
     }
     
-
-    private void setAvatarHealth(ActorRef out, Unit unit,int health)
+    
+    private void attackBack(ActorRef out, Unit selectedUnit, Unit enemyUnit, GameState gameState)
     {
-    	BasicCommands.setUnitHealth(out,unit,health );
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
-//			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-//			nextState = nextState.getNextState();
-
+    	this.selectedUnit=selectedUnit;
+    	this.enemyUnit=enemyUnit;
+    	enter(out, gameState);
     }
+    
+
 }

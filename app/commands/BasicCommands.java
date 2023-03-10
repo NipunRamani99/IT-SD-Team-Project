@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.actor.ActorRef;
 import play.libs.Json;
+import structures.GameState;
 import structures.basic.Card;
 import structures.basic.EffectAnimation;
 import structures.basic.Player;
@@ -132,21 +133,15 @@ public class BasicCommands {
 	 * @param tile
 	 */
 	@SuppressWarnings({"deprecation"})
-	public static void moveUnitToTile(ActorRef out, Unit unit, Tile tile) {
+	public static void moveUnitToTile(ActorRef out, Unit unit, Tile tile, GameState gameState) {
 		try {
 			ObjectNode returnMessage = Json.newObject();
-			//if it is the ai unit, set the unit to the tile
-			if(unit.isAi())
-			{
-				tile.setAiUnit(unit);
-			}
-			//If it is the  unit, set the unit to the tile
-			else
-			{
-				tile.setUnit(unit);
-			}
 			
-			//if it  is the ai unit, set the unit to the Ai
+			//clear original tile state
+			gameState.board.getTile(unit.getPosition()).clearUnit();
+			// set the unit to the tile
+			tile.setUnit(unit);
+			
 			returnMessage.put("messagetype", "moveUnitToTile");
 			returnMessage.put("unit", mapper.readTree(mapper.writeValueAsString(unit)));
 			returnMessage.put("tile", mapper.readTree(mapper.writeValueAsString(tile)));
@@ -168,9 +163,13 @@ public class BasicCommands {
 	 * @param tile
 	 */
 	@SuppressWarnings({"deprecation"})
-	public static void moveUnitToTile(ActorRef out, Unit unit, Tile tile, boolean yfirst) {
+	public static void moveUnitToTile(ActorRef out, Unit unit, Tile tile, boolean yfirst,GameState gameState) {
 		try {
 			ObjectNode returnMessage = Json.newObject();
+			
+			gameState.board.getTile(unit.getPosition()).clearUnit();
+			// set the unit to the tile
+			tile.setUnit(unit);
 			returnMessage.put("messagetype", "moveUnitToTile");
 			returnMessage.put("yfirst", yfirst);
 			returnMessage.put("unit", mapper.readTree(mapper.writeValueAsString(unit)));

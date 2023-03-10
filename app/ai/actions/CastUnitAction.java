@@ -65,7 +65,7 @@ public class CastUnitAction implements AiAction {
          for (int i =0; i <Constants.BOARD_WIDTH; i++) {
              for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                  Tile surroundingTile = gameState.board.getTile(i, j);
-                 if (null!=surroundingTile.getAiUnit()&& null!=surroundingTile.getUnit())
+                 if ( null==surroundingTile.getUnit())
                    tiles.add(surroundingTile);
              }
          }
@@ -89,7 +89,7 @@ public class CastUnitAction implements AiAction {
                     int y = unit.getPosition().getTiley() + j;
                     Tile surroundingTile = gameState.board.getTile(x, y);
                     if (surroundingTile != null && unit.isAi()) {
-                        if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                        if (surroundingTile.getUnit() == null) {
                             tiles.add(surroundingTile);
                         }
                     }
@@ -109,7 +109,7 @@ public class CastUnitAction implements AiAction {
         List<Tile> reachableTiles = getAvailableTiles(gameState);
         reachableTiles.sort(Comparator.comparingInt((a)-> a.distanceToUnit(markedUnit)));
         for(Tile reachableTile : reachableTiles) {
-            if(reachableTile.getAiUnit() == null) {
+            if(reachableTile.getUnit() == null) {
                 return reachableTile;
             }
         }

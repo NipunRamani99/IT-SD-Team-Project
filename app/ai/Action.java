@@ -67,7 +67,7 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getUnit()) {
+               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAi()) {
                    int unitHealth= surroundingTile.getUnit().getHealth();
                    if(unitHealth<=health)
                    {
@@ -88,8 +88,8 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getAiUnit()) {
-                   int unitHealth= surroundingTile.getAiUnit().getHealth();
+               if (null!=surroundingTile.getUnit()&&surroundingTile.getUnit().isAi()) {
+                   int unitHealth= surroundingTile.getUnit().getHealth();
                    if(unitHealth<=health)
                    {
                 	   selectedTile=surroundingTile;
@@ -109,8 +109,8 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getAiUnit()) {
-                   int unitAttack= surroundingTile.getAiUnit().getAttack();
+               if (null!=surroundingTile.getUnit()&&surroundingTile.getUnit().isAi()) {
+                   int unitAttack= surroundingTile.getUnit().getAttack();
                    if(unitAttack<=attack)
                    {
                 	   selectedTile=surroundingTile;
@@ -131,8 +131,8 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getAiUnit()) {
-                   int unitAttack= surroundingTile.getAiUnit().getAttack();
+               if (null!=surroundingTile.getUnit()&&surroundingTile.getUnit().isAi()) {
+                   int unitAttack= surroundingTile.getUnit().getAttack();
                    if(unitAttack>=attack)
                    {
                 	   selectedTile=surroundingTile;
@@ -152,7 +152,28 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getUnit()) {
+               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAi()) {
+                   int unitHealth= surroundingTile.getUnit().getHealth();
+                   if(unitHealth>=health)
+                   {
+                	   selectedTile=surroundingTile;
+                   }
+               }
+           }
+       }
+       
+	   return selectedTile;
+   }
+   
+   //Search for the non-avator unit highest health point
+   public static Tile searchHighestNonAvatarAllUnitHealth(ActorRef out, GameState gameState)
+   {
+	   Tile selectedTile=null;
+	   int health=0;
+       for (int i =0; i <Constants.BOARD_WIDTH; i++) {
+           for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
+               Tile surroundingTile = gameState.board.getTile(i, j);
+               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAvatar()) {
                    int unitHealth= surroundingTile.getUnit().getHealth();
                    if(unitHealth>=health)
                    {
@@ -173,7 +194,8 @@ public class Action {
        for (int i =0; i <Constants.BOARD_WIDTH; i++) {
            for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
                Tile surroundingTile = gameState.board.getTile(i, j);
-               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAvatar()) {
+               if (null!=surroundingTile.getUnit()&&!surroundingTile.getUnit().isAvatar()
+            		   &&!surroundingTile.getUnit().isAi()) {
                    int unitHealth= surroundingTile.getUnit().getHealth();
                    if(unitHealth>=health)
                    {

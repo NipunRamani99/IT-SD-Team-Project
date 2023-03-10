@@ -37,7 +37,7 @@ public class UnitMovingState extends State {
         }
         else if(selectedUnit.isAi())
         {
-        	if(null==targetTile.getUnit()&&null==targetTile.getAiUnit())
+        	if(null==targetTile.getUnit())
         	{
         		aiUnitMove(out, gameState);
         	}
@@ -58,36 +58,32 @@ public class UnitMovingState extends State {
         int startY = startTile.getTiley();
     	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
-        	Unit unit1=gameState.board.getTile(startX,targetY).getAiUnit();
-        	Unit unit2=gameState.board.getTile(targetX,startY).getAiUnit();
-        	if(null==unit1&&null!=unit2)
+        	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
+        	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
+        	if(null==unit1&&null!=unit2&&unit2.isAi())
         	{
-            	//Move vertically first
-            	startTile.clearUnit();
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
-        	    selectedUnit.setCanMove(false);
+ 
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+        	    selectedUnit.setMovement(false);
         	}
-        	else if(null==unit1&&null==unit2)
+        	else if(null!=unit1&&null==unit2&&unit1.isAi())
         	{
             	//Depend on the unit is ai or not
-            	startTile.clearUnit();
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
-                selectedUnit.setCanMove(false);
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+                selectedUnit.setMovement(false);
         	}
         	else
         	{
         		//do not move
-        		this.targetTile=startTile;
-        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile);
+        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
         		gameState.moved=false;
         		System.out.println("Do not move");
         	}
         }
         else
-        {
-        	startTile.clearUnit();	
-        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
-            selectedUnit.setCanMove(false);
+        {	
+        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
+            selectedUnit.setMovement(false);
         }
     }
     
@@ -103,64 +99,62 @@ public class UnitMovingState extends State {
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
-        	if(null==unit1&&null!=unit2)
+        	if(null==unit1&&null!=unit2&&!unit2.isAi())
         	{
         		//Move horizontally first
-        		 startTile.clearAiUnit();
-        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true);
-                 selectedUnit.setCanMove(false);
+        		 startTile.clearUnit();
+        	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+                 selectedUnit.setMovement(false);
         	}
-        	else if(null!=unit1&&null==unit2)
+        	else if(null!=unit1&&null==unit2&&!unit1.isAi())
         	{
         		//Move vertically first
-        		startTile.clearAiUnit();
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false);
-        	    selectedUnit.setCanMove(false);
+        		startTile.clearUnit();
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+        	    selectedUnit.setMovement(false);
         	}
         	else if(null==unit1&&null==unit2)
         	{
-        		startTile.clearAiUnit();
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
-                selectedUnit.setCanMove(false);
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
+                selectedUnit.setMovement(false);
         	}
         	else
         	{
         		//do not move
         		this.targetTile=startTile;
-        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile);
+        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
         		gameState.moved=false;
         		System.out.println("Do not move");
         	}
         }
         else
         {
-        	startTile.clearAiUnit();
-        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile);
-            selectedUnit.setCanMove(false);
+        	
+        	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,gameState);
+            selectedUnit.setMovement(false);
         }
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
             if(event instanceof UnitStopped) {
             	//Check the unit is moved or not
-				if(gameState.currentTurn == Turn.PLAYER) {
-					targetTile.setUnit(selectedUnit);
-				} else {
-					targetTile.setAiUnit(selectedUnit);
-				}
+				targetTile.setUnit(selectedUnit);
                 selectedUnit.setPositionByTile(targetTile);
                 if(gameState.currentTurn==Turn.PLAYER)
                 	gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
                 else
                 	gameStateMachine.setState( nextState != null? nextState : new EndTurnState());
             }
-            else if(!selectedUnit.canMove()&&gameState.currentTurn==Turn.PLAYER)
+            else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.PLAYER)
             {
             	gameStateMachine.setState(new NoSelectionState());
             }         	
             else if(gameState.currentTurn==Turn.AI)
             {
-            	gameStateMachine.setState(nextState);
+            	if(nextState!=null)
+            		gameStateMachine.setState(nextState);
+            	else
+            		gameStateMachine.setState(new EndTurnState());
             }
             else
             {
@@ -173,7 +167,7 @@ public class UnitMovingState extends State {
 
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
-		if(selectedUnit.canMove())
+		if(selectedUnit.getMovement())
 			initiateMove(out,gameState);
 			
 	}

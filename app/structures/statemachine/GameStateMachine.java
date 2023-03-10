@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import events.EventProcessor;
 import structures.GameState;
+import structures.Turn;
 
 import java.util.*;
 
@@ -29,7 +30,12 @@ public class GameStateMachine {
     }
 
     public void processInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor eventProcessor) {
-        currentState.handleInput(out, gameState, message, eventProcessor,this);
+        try {
+			currentState.handleInput(out, gameState, message, eventProcessor,this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
     }
     

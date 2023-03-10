@@ -20,8 +20,8 @@ public class EndTurnState extends State{
 	 public void endTurn(ActorRef out, GameState gameState)
 	 {
 		 //every turn, every unit can attack and move
-		 gameState.board.setUnitAttackState();
-		 gameState.board.setUnitMoveState();
+		 //gameState.board.setUnitAttackState();
+		 //gameState.board.setUnitMoveState();
 		 
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {		 
@@ -79,7 +79,7 @@ public class EndTurnState extends State{
  			 
  			 //delete the ai card
  			 List<Card> aiCards= gameState.board.getAiCards();
- 			 for(int i=1;i<=aiCards.size();i++)
+ 			 for(int i=1;i<=6;i++)
         	 {
         	 	BasicCommands.deleteCard(out,i);
         	 }
@@ -96,7 +96,17 @@ public class EndTurnState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		gameStateMachine.setState(nextState, out, gameState);
+		if(nextState!=null)
+			gameStateMachine.setState(nextState, out, gameState);
+		else if(gameState.currentTurn==Turn.AI)
+		{
+			endTurn(out, gameState);
+		}
+		else if(gameState.currentTurn==Turn.PLAYER)
+		{
+			nextState= new NoSelectionState();
+		}
+			
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {

@@ -31,7 +31,8 @@ public class AIState extends State{
 		State aiMove = gameState.ai.getNextAiMove();
 		if(canPlay && aiMove != null) {
 			aiMove.appendState(new AIState());
-			nextState = aiMove;
+//			nextState = aiMove;
+			nextState=aiMove;
 		} else {
 			nextState = new EndTurnState();
 		}

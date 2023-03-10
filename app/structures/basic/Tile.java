@@ -73,19 +73,19 @@ public class Tile {
 	
 	//Set the Ai unit
 	
-	public void setAiUnit(Unit unit)
-	{
-		this.aiUnit = unit;
-		this.aiUnit.setPositionByTile(this);
-		this.occupied=Occupied.aiOccupied;
-	}
+//	public void setAiUnit(Unit unit)
+//	{
+//		this.aiUnit = unit;
+//		this.aiUnit.setPositionByTile(this);
+//		this.occupied=Occupied.aiOccupied;
+//	}
 	
 	//Get the Ai unit
-	public Unit getAiUnit() {
-		
-		if(null!=this.aiUnit) aiUnit.setChosed(true);
-		return aiUnit;
-	}
+//	public Unit getAiUnit() {
+//		
+//		if(null!=this.aiUnit) aiUnit.setChosed(true);
+//		return aiUnit;
+//	}
 
 	//return the tile status
 	public Occupied isOccupied() {
@@ -98,17 +98,19 @@ public class Tile {
 	{
 		if(null!=this.unit) this.unit.setChosed(false);
 		this.unit=null;
-		this.occupied=Occupied.none;
-		tileState = TileState.None;
-	}
-	
-	public void clearAiUnit()
-	{
-		if(null!=this.aiUnit) this.aiUnit.setChosed(false);
 		this.aiUnit=null;
 		this.occupied=Occupied.none;
 		tileState = TileState.None;
 	}
+//	
+//	public void clearAiUnit()
+//	{
+//		if(null!=this.aiUnit) this.aiUnit.setChosed(false);
+//		this.aiUnit=null;
+//		this.unit=null;
+//		this.occupied=Occupied.none;
+//		tileState = TileState.None;
+//	}
 	public Tile()
 	{
 		this.occupied=Occupied.none;

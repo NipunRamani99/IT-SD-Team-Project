@@ -9,7 +9,7 @@ public abstract class State {
 
     protected State nextState  = null;
 
-    public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {}
+    public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) throws Exception {}
 
     public void enter(ActorRef out, GameState gameState) {}
 

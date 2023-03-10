@@ -227,7 +227,8 @@ public class Unit {
 
 	public boolean withinDistance(Unit unit) {
 		Position displacement = this.getDisplacement(unit);
-		return (Math.abs(displacement.tilex)<=1&&Math.abs(displacement.tiley)<=1);
+		if(Math.abs(displacement.tilex)<=1&&Math.abs(displacement.tiley)<=1) return true;	
+		return false;
 	}
 
 	public boolean canAttack() {
@@ -238,15 +239,15 @@ public class Unit {
 		this.canAttack = canAttack;
 	}
 	
-	public boolean canMove()
-	{
-		return canMove;
-	}
-	
-	public void setCanMove(boolean canMove)
-	{
-		this.canMove=canMove;
-	}
+//	public boolean canMove()
+//	{
+//		return canMove;
+//	}
+//	
+//	public void setCanMove(boolean canMove)
+//	{
+//		this.canMove=canMove;
+//	}
 
 	public void setMovement(boolean movement) {
 		this.movement = movement;

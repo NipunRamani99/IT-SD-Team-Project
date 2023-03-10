@@ -100,13 +100,11 @@ public class AbilityCommands {
      */
     public static void entropicDecay(ActorRef out, Unit unit, GameState gameState) {
     	unit.setHealth(0);
+    	gameState.board.getTile(unit.getPosition()).clearUnit();
+    	gameState.board.deleteUnit(unit);
     	BasicCommands.setUnitHealth(out, unit, 0);
     	BasicCommands.playUnitAnimation(out, unit,UnitAnimationType.death);
     	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
     	BasicCommands.deleteUnit(out, unit);
-    	Tile tile= gameState.board.getTile(unit.getPosition());
-    	if(unit.isAi())
-    		tile.clearAiUnit();
-    	else tile.clearUnit();
     }
 }

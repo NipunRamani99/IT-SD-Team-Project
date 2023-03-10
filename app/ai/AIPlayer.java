@@ -11,6 +11,7 @@ import structures.basic.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,18 +96,16 @@ public class AIPlayer{
      */
 
     public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
-    	   //Firstly, AI will search and attack
-			if(!gameState.AiMarkEnemy)
-			{
-				 //get the all the ai hand card
-		        cards = gameState.board.getAiCards();
-		        nextAiMove = null;
-		        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
-		        aiCastCard(out, gameState, gameStateMachine);
-		        markEnemy();
-		        pursueEnemy();
-		        gameState.AiMarkEnemy=true;
-			}
+    	//Firstly, AI will search and attack
+		//get the all the ai hand card
+	        cards = gameState.board.getAiCards();
+	        nextAiMove = null;
+	        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+	        aiCastCard(out, gameState, gameStateMachine);
+	        markEnemy();
+	        pursueEnemy();
+	        gameState.AiMarkEnemy=true;
+		        
             for(AiAction action : aiActions) {
                 State s  = action.processAction(gameState);
                 if(s == null) continue;
@@ -128,48 +127,54 @@ public class AIPlayer{
     public void pursueEnemy() {
         if(turnCache.aiUnits.isEmpty())
             return;
-        List<Unit> aiUnits=turnCache.aiUnits;
-        List<Unit> markedUnits =turnCache.markedUnits;
-        for(Unit markedUnit : markedUnits) {
+//        Iterator<Unit> aiUnits=turnCache.aiUnits.iterator();
+//    	Iterator<Unit> markedUnits =turnCache.markedUnits.iterator();
+//   
+//        while(aiUnits.hasNext())
+//        {
+//        	Unit aiUnit = aiUnits.next();
+//        	
+//        	while(markedUnits.hasNext())
+//        	{
+//        		Unit markedUnit = markedUnits.next();
+//        		if(checkAvailableUnit(aiUnit,markedUnit))
+//        		{
+//        			AiAction action =null;
+//        			if(aiUnit.canAttack()&&aiUnit.withinDistance(markedUnit)) {
+//        				action = new UnitAttackAction(aiUnit,markedUnit);
+//        			}
+//        			else if(aiUnit.getMovement())
+//        			{
+//        				action = new PursueAction(markedUnit,aiUnit);
+//        			}
+//   
+//        			aiActions.add(action);
+//        			aiUnits.remove();
+//        			markedUnits.remove();
+//        			break;
+//        			
+//        		}
+//        	}
+//        	
+//        }
+        
+        for(Unit markedUnit : turnCache.markedUnits) {
             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
-            if(markedUnit==null) continue;
-            
-          //  if(turnCache.aiUnits.isEmpty()) return;
-            for(Unit aiUnit : aiUnits)
-            {
-            	if(aiUnit==null) continue;
-            	if(checkAvailableUnit(aiUnit,markedUnit))
-            	{
-            		AiAction action =null;
-            		if(aiUnit.canAttack()&&aiUnit.withinDistance(markedUnit))
-            		{
-            			action = new UnitAttackAction(aiUnit, markedUnit);
-            		}
-            		else if (aiUnit.canMove())
-            		{
-            			action = new PursueAction(markedUnit, aiUnit);
-            		}
-            		aiActions.add(action);
-            		//turnCache.aiUnits.remove(aiUnit);
-            	}
-//            turnCache.aiUnits.stream()
-//                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
-//                     .findFirst()
-//                     .ifPresent((aiUnit -> {
-//                         AiAction action = null;
-//                         if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
-//                             action = new UnitAttackAction(aiUnit, markedUnit);
-//                         } else if(aiUnit.getMovement()) {
-//                             action = new PursueAction(markedUnit, aiUnit);
-//                         }
-//                         aiActions.add(action);
-//                         turnCache.aiUnits.remove(aiUnit);
-//                     }));
-            
-            
-
+            turnCache.aiUnits.stream()
+                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || (aiUnit.getMovement() && !aiUnit.withinDistance(markedUnit)) ;})
+                     .findFirst()
+                     .ifPresent((aiUnit -> {
+                         AiAction action = null;
+                         if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
+                             action = new UnitAttackAction(aiUnit, markedUnit);
+                         } else if(aiUnit.getMovement() && !aiUnit.withinDistance(markedUnit)) {
+                             action = new PursueAction(markedUnit, aiUnit);
+                         }
+                         aiActions.add(action);
+                         turnCache.aiUnits.remove(aiUnit);
+                     }));                  
         }
-      }
+        
     }
     
     /**
@@ -178,18 +183,24 @@ public class AIPlayer{
      * @param markedUnit
      * @return boolean value
      */
-    private boolean checkAvailableUnit(Unit unit,Unit markedUnit)
-    {
-    	if((unit.canAttack()&&unit.withinDistance(markedUnit))||unit.canMove())
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    }
+//    private boolean checkAvailableUnit(Unit unit,Unit markedUnit)
+//    {
+//    	if((unit.canAttack()&&unit.withinDistance(markedUnit))||unit.getMovement())
+//    	{
+//    		return true;
+//    	}
+//    	else
+//    	{
+//    		return false;
+//    	}
+//    }
 
+    /**
+     * Ai cast the card from the hand
+     * @param out
+     * @param gameState
+     * @param gameStateMachine
+     */
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand

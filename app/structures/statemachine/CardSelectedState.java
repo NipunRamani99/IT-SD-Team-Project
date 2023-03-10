@@ -58,7 +58,7 @@ public class CardSelectedState extends State{
     	
     }
     @Override
-    public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
+    public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine){
         if(event instanceof TileClicked) {
             int tilex = gameState.position.getTilex();
             int tiley = gameState.position.getTiley();
@@ -212,12 +212,12 @@ public class CardSelectedState extends State{
                         int y = unit.getPosition().getTiley() + j;
                         Tile surroundingTile = gameState.board.getTile(x, y);
                         if (surroundingTile != null) {
-                            if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                            if (surroundingTile.getUnit() == null) {
                                 surroundingTile.setTileState(TileState.Reachable);
                                 BasicCommands.drawTile(out, surroundingTile, 1);
                                 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                             }
-                            else if(surroundingTile.getAiUnit()!=null)
+                            else if(surroundingTile.getUnit()!=null&&surroundingTile.getUnit().isAi())
                             {
                             	 surroundingTile.setTileState(TileState.Occupied);
                                  BasicCommands.drawTile(out, surroundingTile, 2);
@@ -252,7 +252,7 @@ public class CardSelectedState extends State{
                         int y = unit.getPosition().getTiley() + j;
                         Tile surroundingTile = gameState.board.getTile(x, y);
                         if (surroundingTile != null) {
-                            if (surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                            if (surroundingTile.getUnit() == null) {
                                 surroundingTile.setTileState(TileState.Reachable);
                                 BasicCommands.drawTile(out, surroundingTile, 1);
                                 try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
@@ -294,9 +294,9 @@ public class CardSelectedState extends State{
           for(Unit unit : unitList) {
               if(unit.isAi())
               {
-            	  Position tilePos = unit.getPosition();
-                  Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                  BasicCommands.drawTile(out, tile, 2);
+                  Tile tile = gameState.board.getTile(unit.getPosition());
+                  if(null!=tile.getUnit())
+                	  BasicCommands.drawTile(out, tile, 2);
                   tile.setTileState(TileState.Occupied);
               }
           }
@@ -318,7 +318,7 @@ public class CardSelectedState extends State{
               {
             	  Position tilePos = unit.getPosition();
                   Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                  if(null!=tile.getAiUnit()&&null!=tile.getUnit())
+                  if(null!=tile.getUnit())
                   {
                 	   BasicCommands.drawTile(out, tile, 2);
                        tile.setTileState(TileState.Occupied); 
@@ -344,7 +344,7 @@ public class CardSelectedState extends State{
                   {
                 	  Position tilePos = unit.getPosition();
                       Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                      if(null!=tile.getUnit())
+                      if(null!=tile.getUnit()&&!tile.getUnit().isAi())
                       {
                     	   BasicCommands.drawTile(out, tile, 2);
                            tile.setTileState(TileState.Occupied); 
@@ -357,7 +357,7 @@ public class CardSelectedState extends State{
                   {
                 	  Position tilePos = unit.getPosition();
                       Tile tile = gameState.board.getTile(tilePos.getTilex(),tilePos.getTiley());
-                      if(null!=tile.getAiUnit())
+                      if(null!=tile.getUnit()&&tile.getUnit().isAi())
                       {
                     	   BasicCommands.drawTile(out, tile, 2);
                            tile.setTileState(TileState.Occupied); 
@@ -404,7 +404,7 @@ public class CardSelectedState extends State{
     		  for(int j=0;j<Constants.BOARD_HEIGHT;j++)
     		  {
     			  Tile tile= gameState.board.getTile(i, j);
-    			  if(null==tile.getAiUnit()&& null==tile.getUnit())
+    			  if( null==tile.getUnit())
     			  {
     				  BasicCommands.drawTile(out, tile, 2);
     				  tile.setTileState(TileState.Reachable);

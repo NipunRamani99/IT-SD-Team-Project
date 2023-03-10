@@ -10,6 +10,7 @@ import structures.basic.Unit;
 import structures.statemachine.State;
 import structures.statemachine.UnitAttackState;
 import structures.statemachine.UnitMovingState;
+import structures.statemachine.UnitSelectedState;
 import utils.Constants;
 
 import java.util.ArrayList;
@@ -44,11 +45,11 @@ public class PursueAction implements AiAction {
                 if(surroundingTile == aiUnitTile)
                     continue;
                 if (surroundingTile != null) {
-                    if(surroundingTile.getUnit() == null && surroundingTile.getUnit()==null) {
+                    if(surroundingTile.getUnit() == null ) {
                         surroundingTile.setTileState(TileState.Reachable);
                         reachableTiles.add(surroundingTile);
                     }
-                    else {
+                    else if(surroundingTile.getUnit()!=null&&!surroundingTile.getUnit().isAi()) {
                         surroundingTile.setTileState(TileState.Occupied);
                     }
                 }
@@ -107,11 +108,44 @@ public class PursueAction implements AiAction {
         List<Tile> reachableTiles = getReachableTiles(gameState);
         reachableTiles.sort(Comparator.comparingInt((a)-> a.distanceToUnit(markedUnit)));
         for(Tile reachableTile : reachableTiles) {
-            if(reachableTile.getAiUnit() == null) {
+            if(reachableTile.getUnit() == null) {
                 return reachableTile;
             }
         }
         return null;
+    }
+    
+    public  List<Tile> getOccupiedTile(GameState gameState)
+    {
+    	  int tilex = aiUnit.getPosition().getTilex();
+          int tiley = aiUnit.getPosition().getTiley();
+          Tile aiUnitTile = gameState.board.getTile(aiUnit.getPosition().getTilex(), aiUnit.getPosition().getTiley());
+          List<Tile> occupiedTiles = new ArrayList<Tile>();
+          gameState.resetBoardState();
+          for(int i = -1; i <=1; i++ ) {
+              for(int j = -1; j <= 1; j++) {
+                  int x = tilex + i;
+                  if(x < 0) continue;
+                  if(x >= Constants.BOARD_WIDTH) continue;
+                  int y = tiley + j;
+                  if(y < 0) continue;
+                  if(y >= Constants.BOARD_HEIGHT) continue;
+                  Tile surroundingTile = gameState.board.getTile(x, y);
+                  if(surroundingTile == aiUnitTile)
+                      continue;
+                  if (surroundingTile != null) {
+                      if(surroundingTile.getUnit() == null ) {
+                          surroundingTile.setTileState(TileState.Reachable);
+                          
+                      }
+                      else if(surroundingTile.getUnit()!=null&&!surroundingTile.getUnit().isAi()) {
+                          surroundingTile.setTileState(TileState.Occupied);
+                          occupiedTiles.add(surroundingTile);
+                      }
+                  }
+              }
+          }
+          return occupiedTiles;
     }
 
     @Override
@@ -119,6 +153,8 @@ public class PursueAction implements AiAction {
         Tile closestTile = getClosestTile(gameState);
         Tile startTile = gameState.board.getTile(aiUnit.getPosition());
         if(closestTile == startTile) return null;
-        return new UnitMovingState(aiUnit, startTile, closestTile);
+        if(closestTile.getTileState()==TileState.Reachable)
+        	return new UnitMovingState(aiUnit,startTile, closestTile);
+        return null;
     }
 }

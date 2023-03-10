@@ -60,16 +60,8 @@ public class Attack {
 		BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 		
-		BasicCommands.deleteUnit(out, enemyUnit);
-		if(enemyUnit.isAi())
-		{
-			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearAiUnit();	
-		}
-		else
-		{
-			gameState.board.getTile(enemyUnit.getPosition().getTilex(), enemyUnit.getPosition().getTiley()).clearUnit();
-		}
-		
+		BasicCommands.deleteUnit(out, enemyUnit);		
+		gameState.board.getTile(enemyUnit.getPosition()).clearUnit();
 		gameState.board.deleteUnit(enemyUnit);
     }
     

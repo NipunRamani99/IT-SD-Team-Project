@@ -157,23 +157,9 @@ public class Board {
 		BasicCommands.setUnitHealth(out, unit,20);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		
-		
-		//Create an AI player
-		//Initialize the AI part
-	    
-	    //draw the avatar on the board
-		
-//<<<<<<< HEAD
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
 		aiUnit.setAvatar(true);
-//=======
-//		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);
-     //   Unit aiUnit2 = BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id++, Unit.class);
-
-//        aiUnit.setAi(true);
-       // aiUnit2.setAi(true);
-//>>>>>>> origin/dev/nipun
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
        // Tile aiTile2 = getTile(8,1);
@@ -181,7 +167,7 @@ public class Board {
       //  aiUnit2.setPositionByTile(aiTile2);
 
 		//The tile set the unit
-		aiTile.setAiUnit(aiUnit);
+		aiTile.setUnit(aiUnit);
         //aiTile2.setAiUnit(aiUnit2);
 	    addUnit(aiUnit);
        // addUnit(aiUnit2);
@@ -265,25 +251,6 @@ public class Board {
     	}
     }
     
-    //set attack state to be ture for all the unit
-    public void setUnitAttackState()
-    {
-    	for(Unit unit:units)
-    	{
-    		unit.setCanAttack(true);
-    	}
-    }
-  
-    /**
-     * Set all the unit can move
-     */
-    public void setUnitMoveState()
-    {
-    	for(Unit unit:units)
-    	{
-    		unit.setCanMove(true);
-    	}
-    }
 
     public Tile getTile(Position position) {
         return getTile(position.tilex, position.tiley);

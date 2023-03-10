@@ -145,9 +145,9 @@ public class CastCard {
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
 		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-	 	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+	 	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-    	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
     	
     	//update the position
     	updatePosition(out, card, gameState);
@@ -168,10 +168,10 @@ public class CastCard {
      	  case "Truestrike":
      		  spellName = StaticConfFiles.f1_inmolation;
      		  //Only works on enemy unit
-     		  if(null!=tile.getAiUnit())
+     		  if(null!=tile.getUnit()&&tile.getUnit().isAi())
      		  {
      			 placeSpell(out, gameState,spellName, card, tile);
-        		 AbilityCommands.truestrikeAbility(out, tile.getAiUnit(),gameState);
+        		 AbilityCommands.truestrikeAbility(out, tile.getUnit(),gameState);
      		  }
      		  else
      		  {
@@ -182,24 +182,16 @@ public class CastCard {
      	  case "Sundrop Elixir":
     		  spellName = StaticConfFiles.f1_summon;
     		  placeSpell(out, gameState,spellName,card, tile);
-    		  if(null!=tile.getUnit())
-    			  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
-    		  else
-    			  AbilityCommands.sundropElixir(out, tile.getAiUnit(),gameState);
+    		  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
     		  break;
      	  case "Staff of Y'Kir'":
    		      spellName = StaticConfFiles.f1_buff;
    		      //works on your avatar
-   		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar())
+   		      if(null!=tile.getUnit()&&tile.getUnit().isAvatar()&&tile.getUnit().isAi())
      		  {
      			 placeSpell(out, gameState, spellName,card, tile);
         		 AbilityCommands.yKirAbility(out, tile.getUnit());
      		  }
-   		      else if(null != tile.getAiUnit()&&tile.getAiUnit().isAvatar())
-   		      {
-   		    	 placeSpell(out, gameState,spellName,card, tile);
-        		 AbilityCommands.yKirAbility(out, tile.getAiUnit());
-   		      }
    		      else
    		      {
    		    	 gameState.resetBoardSelection(out);
@@ -209,17 +201,11 @@ public class CastCard {
      	  case "Entropic Decay":
   		      spellName = StaticConfFiles.f1_martyrdom;
   		      //Reduce a non-avatar unit to 0 health
-  		      if(null!=tile.getUnit()&&!tile.getUnit().isAvatar())
+  		      Unit targetUnit= tile.getUnit();
+  		      if(null!=targetUnit&&!tile.getUnit().isAvatar())
   		      {
   	  		      placeSpell(out, gameState,spellName,card, tile);
   	  		      AbilityCommands.entropicDecay(out, tile.getUnit(),gameState);
-  	  		      tile.clearUnit();
-  		      }
-  		      else if(null!=tile.getAiUnit()&&!tile.getAiUnit().isAvatar())
-  		      {
-  			      placeSpell(out, gameState, spellName,card, tile);
-  	  		      AbilityCommands.entropicDecay(out, tile.getAiUnit(),gameState);
-  	  		      tile.clearAiUnit();
   		      }
   		      else
   		      {
@@ -247,14 +233,15 @@ public class CastCard {
     private static void placeUnit(GameState gameState, Unit unit, Tile tile, ActorRef out){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
-    	//set the unit to the tile
-    	tile.setUnit(unit);   	
+    	 	
 		gameState.board.addUnit(unit);
+		//set the unit according to the user
 		if(gameState.currentTurn==Turn.AI)
-			unit.setAi(true);	
+			unit.setAi(true);
+		tile.setUnit(unit);	
     	//when first placed, the unit can not attack and move
     	unit.setCanAttack(false);
-    	unit.setCanMove(false);
+    	unit.setMovement(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
     }
