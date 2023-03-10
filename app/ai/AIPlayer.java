@@ -122,6 +122,7 @@ public class AIPlayer{
 
     public void markEnemy() {
         turnCache.markedUnits = turnCache.playerUnits;
+        turnCache.markedUnits.sort(Comparator.comparingInt(a->a.getHealth()));
     }
 
     public void pursueEnemy() {
@@ -157,7 +158,7 @@ public class AIPlayer{
 //        	}
 //        	
 //        }
-        
+
         for(Unit markedUnit : turnCache.markedUnits) {
             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
             turnCache.aiUnits.stream()

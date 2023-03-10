@@ -153,8 +153,6 @@ public class PursueAction implements AiAction {
         Tile closestTile = getClosestTile(gameState);
         Tile startTile = gameState.board.getTile(aiUnit.getPosition());
         if(closestTile == startTile) return null;
-        if(closestTile.getTileState()==TileState.Reachable)
-        	return new UnitMovingState(aiUnit,startTile, closestTile);
-        return null;
+        return new UnitMovingState(aiUnit,startTile, closestTile);
     }
 }

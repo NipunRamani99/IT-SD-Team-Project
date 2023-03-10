@@ -48,13 +48,16 @@ public class UnitAttackState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// Try to get the unit and attack
-		if(event instanceof  Heartbeat)
+		if(event instanceof Heartbeat)
 		{
+			BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
+			BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
+
 			if(gameState.currentTurn==Turn.PLAYER)
 				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 			else
 			{
-				gameStateMachine.setState(nextState != null ? nextState : new EndTurnState());
+				gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
 				if(nextState!=null) {}
 					//enter(out,gameState);
 			}
@@ -108,11 +111,7 @@ public class UnitAttackState extends State{
 	{
 		//Attack animation
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-
-		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
+ 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
 		unitAttack(out, enemyUnit, attackHealth, gameState);
 	}
 	

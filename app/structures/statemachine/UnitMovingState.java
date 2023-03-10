@@ -143,7 +143,7 @@ public class UnitMovingState extends State {
                 if(gameState.currentTurn==Turn.PLAYER)
                 	gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
                 else
-                	gameStateMachine.setState( nextState != null? nextState : new EndTurnState());
+                	gameStateMachine.setState( nextState != null? nextState : new EndTurnState(), out, gameState);
             }
             else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.PLAYER)
             {
@@ -152,13 +152,13 @@ public class UnitMovingState extends State {
             else if(gameState.currentTurn==Turn.AI)
             {
             	if(nextState!=null)
-            		gameStateMachine.setState(nextState);
+            		gameStateMachine.setState(nextState, out, gameState);
             	else
-            		gameStateMachine.setState(new EndTurnState());
+            		gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             else
             {
-            	gameStateMachine.setState(new EndTurnState());
+            	gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             	
     }
