@@ -7,6 +7,7 @@ import structures.basic.TileState;
 import structures.basic.Unit;
 import structures.basic.UnitAbility;
 import structures.statemachine.CardSelectedState;
+import structures.statemachine.DrawCardState;
 import structures.statemachine.State;
 import utils.Constants;
 import java.util.Random;
@@ -140,6 +141,12 @@ public class CastUnitAction implements AiAction {
     		}
     		
     	}
+        if(gameState.unitAbilityTable.getUnitAbilities(card.getCardname()).contains(UnitAbility.DRAW_CARD_ON_SUMMON)) {
+            State s = new DrawCardState(false);
+            State s2 = new CardSelectedState(out,card.getCardPosition(), tile, gameState);
+            s2.setNextState(s);
+            return s;
+        }
     	if(tile!=null)
     		return new  CardSelectedState(out,card.getCardPosition(), tile, gameState);
     	else

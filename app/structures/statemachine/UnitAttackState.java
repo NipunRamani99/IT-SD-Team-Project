@@ -71,8 +71,6 @@ public class UnitAttackState extends State{
 				if(nextState!=null) {}
 					//enter(out,gameState);
 			}
-				
-			
 		}
 	}
 
