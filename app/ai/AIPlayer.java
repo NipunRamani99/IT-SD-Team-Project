@@ -39,8 +39,6 @@ class TurnCache {
     public List<Unit> aiUnits = new ArrayList<>();
     public List<Unit> playerUnits = new ArrayList<>();
 
-    private Unit unit=null;
-    
     public TurnCache() {
 
     }
@@ -103,7 +101,7 @@ public class AIPlayer{
 	        cards = gameState.board.getAiCards();
 	        nextAiMove = null;
 	        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
-	        aiCastCard(out, gameState);
+	        aiCastCard(out, gameState, gameStateMachine);
 	        markEnemy();
 	        pursueEnemy();
 	        gameState.AiMarkEnemy=true;
@@ -135,8 +133,9 @@ public class AIPlayer{
 
         for(Unit markedUnit : turnCache.markedUnits) {
             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
+
             turnCache.aiUnits.stream()
-                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || (aiUnit.getMovement() && !aiUnit.withinDistance(markedUnit)) ;})
+                     .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
                      .findFirst()
                      .ifPresent((aiUnit -> {
                          AiAction action = null;
@@ -147,11 +146,11 @@ public class AIPlayer{
                          }
                          aiActions.add(action);
                          turnCache.aiUnits.remove(aiUnit);
-                     }));                  
+                     }));
         }
-        
+
     }
-    
+
     /**
      * Check the available unit
      * @param unit
@@ -176,7 +175,7 @@ public class AIPlayer{
      * @param gameState
      * @param gameStateMachine
      */
-    private void aiCastCard(ActorRef out, GameState gameState)
+    private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand
        AiAction castSpell = new CastSpellAction(out);

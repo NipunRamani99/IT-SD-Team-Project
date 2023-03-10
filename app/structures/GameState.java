@@ -107,5 +107,4 @@ public class GameState {
 			BasicCommands.drawCard(out, cards.get(i),i+1,0);
 		}
 	}
-	
 }

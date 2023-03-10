@@ -26,7 +26,6 @@ public class PursueAction implements AiAction {
     public PursueAction(Unit enemyUnit, Unit aiUnit) {
         this.markedUnit = enemyUnit;
         this.aiUnit = aiUnit;
-
     }
 
     public List<Tile> getReachableTiles(GameState gameState) {

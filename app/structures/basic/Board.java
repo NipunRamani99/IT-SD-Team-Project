@@ -174,6 +174,7 @@ public class Board {
        // addUnit(aiUnit2);
 		//draw unit
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
+       // BasicCommands.drawUnit(out, aiUnit2,aiTile2);
 
 		//unit attack and health
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
@@ -181,6 +182,7 @@ public class Board {
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+        gameState.aiUnit = aiUnit;
     }
     
     
@@ -248,5 +250,9 @@ public class Board {
 
     public Tile getTile(Position position) {
         return getTile(position.tilex, position.tiley);
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
     }
 }

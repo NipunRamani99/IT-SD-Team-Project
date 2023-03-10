@@ -220,4 +220,8 @@ public class Tile {
 		Position p = unit.getPosition();
 		return Math.abs(p.tilex - this.tilex) + Math.abs(p.tiley - this.tiley);
 	}
+
+	public Position getPosition() {
+		return new Position(tilex, tiley);
+	}
 }
