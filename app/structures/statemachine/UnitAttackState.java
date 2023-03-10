@@ -69,7 +69,7 @@ public class UnitAttackState extends State{
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 	
-		if(selectedUnit.canAttack()||counterAttack)
+		if(selectedUnit.canAttack()&&counterAttack)
 		{
 			//make sure every unit can attack once
 			System.out.println("Unit attack");

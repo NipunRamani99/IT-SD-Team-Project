@@ -144,10 +144,11 @@ public class CastCard {
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
-		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-	 	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
     	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+    	
     	
     	//update the position
     	updatePosition(out, card, gameState);

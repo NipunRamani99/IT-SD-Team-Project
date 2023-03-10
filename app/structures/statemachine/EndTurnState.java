@@ -19,9 +19,6 @@ public class EndTurnState extends State{
 
 	 public void endTurn(ActorRef out, GameState gameState)
 	 {
-		 //every turn, every unit can attack and move
-		 //gameState.board.setUnitAttackState();
-		 //gameState.board.setUnitMoveState();
 		 
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {		 

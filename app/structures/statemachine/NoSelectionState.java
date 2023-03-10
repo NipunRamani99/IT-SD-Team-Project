@@ -52,7 +52,7 @@ public class NoSelectionState extends State{
 	private boolean checkWinner(ActorRef out,GameState gameState) {
 		if(0==gameState.AiPlayer.getHealth())
 		{
-		  BasicCommands.addPlayer1Notification(out, "Congratulations!You win game:)", 5);
+		  BasicCommands.addPlayer1Notification(out, "Congratulations!You win the game:)", 5);
 		  return true;
 		}
 		else if(0 ==gameState.humanPlayer.getHealth())

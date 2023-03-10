@@ -152,10 +152,10 @@ public class Board {
 		tile.setUnit(unit);	
 		BasicCommands.drawUnit(out, unit, tile);
 		//unit attack and health
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitAttack(out, unit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit,20);
-		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
@@ -173,20 +173,12 @@ public class Board {
        // addUnit(aiUnit2);
 		//draw unit
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
-       // BasicCommands.drawUnit(out, aiUnit2,aiTile2);
 
 		//unit attack and health
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
-//<<<<<<< HEAD
-		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-//=======
-    //    BasicCommands.setUnitAttack(out, aiUnit2, 4);
-    //    BasicCommands.setUnitHealth(out, aiUnit2,3);
-
-//>>>>>>> origin/dev/nipun
-        gameState.aiUnit = aiUnit;
     }
     
     
