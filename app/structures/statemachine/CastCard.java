@@ -78,7 +78,7 @@ public class CastCard {
     	  case "Ironcliff Guardian":
 	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
 	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id, Card.class);
-	    	 // unit.setHealth(card.getBigCard().getHealth());
+	    	  unit.setHealth(card.getBigCard().getHealth());
 	    	  unit.setAttack(card.getBigCard().getAttack());
 	    	  break;	  
     	  case "Pureblade Enforcer":
@@ -144,9 +144,9 @@ public class CastCard {
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
-    	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+    	try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
     	
     	
@@ -245,6 +245,7 @@ public class CastCard {
     	unit.setMovement(false);
     	//draw the unit
     	BasicCommands.drawUnit(out, unit, tile);
+    	try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
     }
 	
 
@@ -255,7 +256,7 @@ public class CastCard {
     private static void placeSpell(ActorRef out, GameState gameState,String spellName, Card card, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
-		
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		//update the position
     	updatePosition(out, card, gameState);
     	

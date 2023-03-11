@@ -156,6 +156,7 @@ public class Board {
 		BasicCommands.setUnitAttack(out, unit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit,20);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
@@ -179,6 +180,7 @@ public class Board {
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
     }
     
     

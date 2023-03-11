@@ -56,7 +56,7 @@ public class UnitMovingState extends State {
         //Get the start tile x, y position
         int startX = startTile.getTilex();
         int startY = startTile.getTiley();
-    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
+    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY)&&null==targetTile.getUnit())
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
@@ -86,6 +86,10 @@ public class UnitMovingState extends State {
         			new EndTurnState();
         	}
         }
+    	else if((Math.abs(targetX-startX)+Math.abs(targetY-startY))>2)
+    	{
+    		if(null==nextState) new EndTurnState();
+    	}
         else
         {	
         	startTile.clearUnit();
@@ -103,7 +107,7 @@ public class UnitMovingState extends State {
         //Get the start tile x, y position
         int startX = startTile.getTilex();
         int startY = startTile.getTiley();
-    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
+    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY)&&null==targetTile.getUnit())
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
@@ -140,6 +144,10 @@ public class UnitMovingState extends State {
         		exit(out, gameState);
         	}
         }
+    	else if((Math.abs(targetX-startX)+Math.abs(targetY-startY))>2)
+    	{
+    		if(null==nextState) new EndTurnState();
+    	}
         else
         {
         	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
