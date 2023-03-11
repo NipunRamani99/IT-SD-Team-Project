@@ -50,9 +50,11 @@ public class UnitAttackState extends State{
 		// Try to get the unit and attack
 		if(event instanceof Heartbeat)
 		{
-			BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
-			BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
-
+			if(this.selectedUnit!=null&& this.enemyUnit!=null)
+			{
+				BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
+				BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
+			}
 			if(gameState.currentTurn==Turn.PLAYER)
 				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 			else
@@ -69,7 +71,7 @@ public class UnitAttackState extends State{
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 	
-		if(selectedUnit.canAttack()&&counterAttack)
+		if(selectedUnit.canAttack()&&null!=enemyUnit)
 		{
 			//make sure every unit can attack once
 			System.out.println("Unit attack");
@@ -110,9 +112,15 @@ public class UnitAttackState extends State{
 	private void getUnitOnTileAttack(ActorRef out, GameState gameState)
 	{
 		//Attack animation
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
+		this.selectedUnit.setCanAttack(false);
  		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
-		unitAttack(out, enemyUnit, attackHealth, gameState);
+		unitAttack(out, this.enemyUnit, attackHealth, gameState);		
+		if(this.enemyUnit.isAttackBack())
+  		  attackBack(out, this.enemyUnit,this.selectedUnit, gameState);
 	}
 	
 
@@ -124,7 +132,6 @@ public class UnitAttackState extends State{
     private void unitAttack(ActorRef out, Unit enemyUnit, int health, GameState gameState)
     {
     	//make sure can unit can attack back once 
-    	if(counterAttack) {counterAttack=false;selectedUnit.setCanAttack(false); }
     	
     	if(health <= 0)
 		{
@@ -133,22 +140,30 @@ public class UnitAttackState extends State{
 
 		}
     	else
-    	{
-    	  enemyUnit.setAttackBack(true);	
+    	{	
     	  BasicCommands.setUnitHealth(out, enemyUnit,health );
     	  try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     	  Attack.setPlayerHealth(out, health, enemyUnit, gameState);
-    	  attackBack(out, enemyUnit,selectedUnit, gameState);
     	}
 
     }
     
-    
+    /**
+     * The unit attack back
+     * @param out
+     * @param selectedUnit
+     * @param enemyUnit
+     * @param gameState
+     */
     private void attackBack(ActorRef out, Unit selectedUnit, Unit enemyUnit, GameState gameState)
     {
-    	this.selectedUnit=selectedUnit;
-    	this.enemyUnit=enemyUnit;
-    	enter(out, gameState);
+    	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+    	BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.attack);
+    	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+    	BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
+	    selectedUnit.setAttackBack(false);
+ 		int attackHealth = enemyUnit.getHealth() - selectedUnit.getAttack();
+		unitAttack(out, enemyUnit, attackHealth, gameState);
     }
     
 

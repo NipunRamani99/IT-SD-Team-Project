@@ -19,7 +19,9 @@ public class EndTurnState extends State{
 
 	 public void endTurn(ActorRef out, GameState gameState)
 	 {
-		 
+		 gameState.board.getUnits().forEach(unit -> {unit.setCanAttack(true);});
+		 gameState.board.getUnits().forEach(unit -> {unit.setMovement(true);});
+		 gameState.board.getUnits().forEach(unit -> {unit.setAttackBack(true);});
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {		 
 			 gameState.currentTurn = Turn.AI;
@@ -37,8 +39,7 @@ public class EndTurnState extends State{
 				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
-			 gameState.board.getUnits().forEach(unit -> {unit.setCanAttack(true);});
-			 gameState.board.getUnits().forEach(unit -> {unit.setMovement(true);});
+			
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 gameState.ai.beginTurn(gameState);
 			 nextState = new AIState();

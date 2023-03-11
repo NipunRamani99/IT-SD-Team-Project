@@ -42,15 +42,13 @@ public class Unit {
 	private int hpFromCard = 0;
 	private boolean isChosed=false;
 
-	private boolean canAttack = true;
-	
-	private boolean canMove =true;
+	private boolean canAttack = true;	
 
 	private boolean secondAttackUsed = false;
 
 	private boolean movement = true;
 	
-	private boolean canAttackBack=false;
+	private boolean canAttackBack=true;
 
 	//Choose the unit
 	public boolean isChosed() {

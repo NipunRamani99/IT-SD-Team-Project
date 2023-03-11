@@ -41,18 +41,7 @@ public class CastUnitAction implements AiAction {
     }
     
     public List<Tile> getAvailableTiles(GameState gameState) {
-        //Find all available tiles to summon on
-      //  List<UnitAbility> abilityList= gameState.unitAbilityTable.getUnitAbilities(unitCard.getCardname());
-//        if(abilityList.contains(UnitAbility.SUMMON_ANYWHERE)) {
-//        	
-//            //Return all empty tiles
-//        	return getAllEmptyTiles(gameState);
-//        }
-//        else
-//        {
-        	//return the available tiles for ai unit
         	return getSurroundingTiles(gameState);
-//        }
     }
     
     /**
@@ -82,21 +71,22 @@ public class CastUnitAction implements AiAction {
     	List<Tile> tiles= new ArrayList<Tile>();
         List<Unit> unitList = gameState.board.getUnits();     
         for(Unit unit : unitList) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if(i == 0 && j == 0) continue;;
-                    int x = unit.getPosition().getTilex() + i;
-                    int y = unit.getPosition().getTiley() + j;
-                    Tile surroundingTile = gameState.board.getTile(x, y);
-                    if (surroundingTile != null && unit.isAi()) {
-                        if (surroundingTile.getUnit() == null) {
-                            tiles.add(surroundingTile);
-                        }
-                    }
-                }
-            }
-        }
-        return tiles;
+        	if(unit.isAi())
+        	{
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if(i == 0 && j == 0) continue;;
+                        int x = unit.getPosition().getTilex() + i;
+                        int y = unit.getPosition().getTiley() + j;
+                        Tile surroundingTile = gameState.board.getTile(x, y);
+                        if (surroundingTile == null ) {
+                                tiles.add(surroundingTile);
+                            }
+                        }                  
+                	}
+        	}
+       }
+       return tiles;
     }
     
     /**
@@ -121,27 +111,6 @@ public class CastUnitAction implements AiAction {
      * @param markedUnits
      * @return unit
      */
-//    public Unit getLowestHealthUnit(List<Unit> markedUnits)
-//    {
-//    	 if(markedUnits.isEmpty())
-//             return null;
-//         for(Unit markedUnit : markedUnits) {
-//             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
-//
-//             turnCache.aiUnits.stream()
-//                      .filter(aiUnit -> {return (aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) || aiUnit.getMovement();})
-//                      .findFirst()
-//                      .ifPresent((aiUnit -> {
-//                          AiAction action = null;
-//                          if(aiUnit.canAttack() && aiUnit.withinDistance(markedUnit)) {
-//                              action = new UnitAttackAction(aiUnit, markedUnit);
-//                          } else if(aiUnit.getMovement()) {
-//                              action = new PursueAction(markedUnit, aiUnit);
-//                          }
-//                          aiActions.add(action);
-//                          turnCache.aiUnits.remove(aiUnit);
-//                      }));
-//    }
     
     @Override
     public State processAction(GameState gameState) {

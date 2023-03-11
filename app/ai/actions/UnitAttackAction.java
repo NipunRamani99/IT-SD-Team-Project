@@ -218,11 +218,6 @@ public class UnitAttackAction implements AiAction{
     
 
     public State processAction(GameState gameState) {  
-//        if(null!=getLowestHealthUnitTile(gameState))
-//        {
-//        	System.out.println("move and attack");
-//        	return new UnitSelectedState(aiUnit, getLowestHealthUnitTile(gameState));
-//        }
         if(aiUnit.withinDistance(markedUnit) && aiUnit.canAttack()) {
             return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);
         }

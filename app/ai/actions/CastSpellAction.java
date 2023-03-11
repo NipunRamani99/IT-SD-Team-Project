@@ -42,11 +42,8 @@ public class CastSpellAction implements AiAction{
 				break;
 			case "Entropic Decay":
 				 tile =Action.searchHighestNonAvatarUnitHealth(out, gameState);
-				 break;
-			
+				 break;		
 		}
-//		if(null!=tile)
-//			CastCard.castSpellCard(out, card, tile, gameState);
 			
 	}
 	
@@ -72,7 +69,7 @@ public class CastSpellAction implements AiAction{
     		}
     		
     	}
-    	if(tile!=null)
+    	if(tile!=null&&card!=null)
     		return new CardSelectedState(out,card.getCardPosition(), tile, gameState);
     	else
     		return null;

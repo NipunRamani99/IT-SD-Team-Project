@@ -39,6 +39,8 @@ class TurnCache {
     public List<Unit> aiUnits = new ArrayList<>();
     public List<Unit> playerUnits = new ArrayList<>();
 
+    private Unit unit=null;
+    
     public TurnCache() {
 
     }
@@ -101,9 +103,9 @@ public class AIPlayer{
 	        cards = gameState.board.getAiCards();
 	        nextAiMove = null;
 	        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
-	        aiCastCard(out, gameState, gameStateMachine);
 	        markEnemy();
 	        pursueEnemy();
+	        aiCastCard(out, gameState, gameStateMachine);
 	        gameState.AiMarkEnemy=true;
 		        
             for(AiAction action : aiActions) {
@@ -128,36 +130,6 @@ public class AIPlayer{
     public void pursueEnemy() {
         if(turnCache.aiUnits.isEmpty())
             return;
-//        Iterator<Unit> aiUnits=turnCache.aiUnits.iterator();
-//    	Iterator<Unit> markedUnits =turnCache.markedUnits.iterator();
-//   
-//        while(aiUnits.hasNext())
-//        {
-//        	Unit aiUnit = aiUnits.next();
-//        	
-//        	while(markedUnits.hasNext())
-//        	{
-//        		Unit markedUnit = markedUnits.next();
-//        		if(checkAvailableUnit(aiUnit,markedUnit))
-//        		{
-//        			AiAction action =null;
-//        			if(aiUnit.canAttack()&&aiUnit.withinDistance(markedUnit)) {
-//        				action = new UnitAttackAction(aiUnit,markedUnit);
-//        			}
-//        			else if(aiUnit.getMovement())
-//        			{
-//        				action = new PursueAction(markedUnit,aiUnit);
-//        			}
-//   
-//        			aiActions.add(action);
-//        			aiUnits.remove();
-//        			markedUnits.remove();
-//        			break;
-//        			
-//        		}
-//        	}
-//        	
-//        }
 
         for(Unit markedUnit : turnCache.markedUnits) {
             turnCache.aiUnits.sort(Comparator.comparingInt(a -> a.getDistance(markedUnit)));
