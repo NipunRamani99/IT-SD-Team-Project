@@ -10,13 +10,13 @@ import structures.statemachine.CardSelectedState;
 import structures.statemachine.DrawCardState;
 import structures.statemachine.State;
 import utils.Constants;
-import java.util.Random;
+
+import java.util.*;
 
 import akka.actor.ActorRef;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import commands.BasicCommands;
 
@@ -27,22 +27,31 @@ public class CastUnitAction implements AiAction {
 	private  List<Card> cards;   
     private List<Tile> tiles;
     private List<Unit> markedUnits;
-    private ActorRef out;
 
-    public CastUnitAction(ActorRef out,Card unitCard, Tile targetTile) {
+
+    public CastUnitAction(Card unitCard, Tile targetTile) {
         this.unitCard = unitCard;
         this.targetTile = targetTile;
-        this.out=out;
 
     }
     
-    public CastUnitAction(ActorRef out, List<Unit> units) {
-        this.out=out;
+    public CastUnitAction(List<Unit> units) {
+
         this.markedUnits=units;
     }
     
     public List<Tile> getAvailableTiles(GameState gameState) {
-        	return getSurroundingTiles(gameState);
+        //Check if unit has ability to summon anywhere
+        List<UnitAbility> abilityList= gameState.unitAbilityTable.getUnitAbilities(unitCard.getCardname());
+        if(abilityList.contains(UnitAbility.SUMMON_ANYWHERE)) {
+
+            //Return all empty tiles
+        	return getAllEmptyTiles(gameState);
+        }
+        else {
+            //return the available tiles for ai unit
+            return getSurroundingTiles(gameState);
+        }
     }
     
     /**
@@ -72,23 +81,21 @@ public class CastUnitAction implements AiAction {
     	List<Tile> tiles= new ArrayList<Tile>();
         List<Unit> unitList = gameState.board.getUnits();     
         for(Unit unit : unitList) {
-        	if(unit.isAi())
-        	{
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; j++) {
-                        if(i == 0 && j == 0) continue;;
-                        int x = unit.getPosition().getTilex() + i;
-                        int y = unit.getPosition().getTiley() + j;
-                        Tile surroundingTile = gameState.board.getTile(x, y);
-                        if (surroundingTile!= null ) {
-                        	if(surroundingTile.getUnit()==null)
-                                tiles.add(surroundingTile);
-                            }
-                        }                  
-                	}
-        	}
-       }
-       return tiles;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if(i == 0 && j == 0) continue;;
+                    int x = unit.getPosition().getTilex() + i;
+                    int y = unit.getPosition().getTiley() + j;
+                    Tile surroundingTile = gameState.board.getTile(x, y);
+                    if (surroundingTile != null && unit.isAi()) {
+                        if (surroundingTile.getUnit() == null) {
+                            tiles.add(surroundingTile);
+                        }
+                    }
+                }
+            }
+        }
+        return tiles;
     }
     
     /**
@@ -98,7 +105,7 @@ public class CastUnitAction implements AiAction {
      * @return  reachableTile /null
      */
     public Tile getClosestAvailableTile(GameState gameState, Unit markedUnit) {
-        List<Tile> reachableTiles = getAvailableTiles(gameState);
+        List<Tile> reachableTiles = getSurroundingTiles(gameState);
         reachableTiles.sort(Comparator.comparingInt((a)-> a.distanceToUnit(markedUnit)));
         for(Tile reachableTile : reachableTiles) {
             if(reachableTile.getUnit() == null) {
@@ -107,49 +114,16 @@ public class CastUnitAction implements AiAction {
         }
         return null;
     }
-    
-    /**
-     * Get the lowest health unit
-     * @param markedUnits
-     * @return unit
-     */
-    
+
     @Override
     public State processAction(GameState gameState) {
     	cards=gameState.board.getAiCards();
-    	Tile tile=null;
-    	Card card=null;
-    	List<Tile> tiles;
-    	Random rand = new Random();
-    	for(Card c:cards)
-    	{
-    		//only works on the unit card
-    		if(c.getBigCard()!=null)
-    		{
-    			if(gameState.AiPlayer.getMana()>=c.getManacost()
-    		       &&c.getBigCard().getHealth()>0)
-	    		{
-    				card=c;
-    				tiles=getAvailableTiles(gameState);
-    			    int index=rand.nextInt(tiles.size());
-    			    tile = tiles.get(index);
-	    		}
-    		}
-    		else
-    		{
-    			break;
-    		}
-    		
-    	}
-        if(gameState.unitAbilityTable.getUnitAbilities(card.getCardname()).contains(UnitAbility.DRAW_CARD_ON_SUMMON)) {
-            State s = new DrawCardState(false);
-            State s2 = new CardSelectedState(out,card.getCardPosition(), tile, gameState);
-            s2.setNextState(s);
-            return s;
-        }
-    	if(tile!=null)
-    		return new  CardSelectedState(out,card.getCardPosition(), tile, gameState);
+        Tile tile = getClosestAvailableTile(gameState, markedUnits.get(0));
+    	Optional<Card> unitCard = cards.stream().filter(card -> card.getBigCard() != null && card.getBigCard().getHealth() > 0).findFirst();
+        if(!unitCard.isPresent() || tile == null )
+            return null;
     	else
-    		return null;
+    		return new CardSelectedState(unitCard.get().getCardPosition(), tile, gameState);
     }
+
 }

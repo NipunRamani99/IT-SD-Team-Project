@@ -66,75 +66,24 @@ public class UnitMovingState extends State {
         	{
         		startTile.clearUnit();
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
-        		selectedUnit.setPositionByTile(targetTile);
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
         	    selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         	}
         	else if(null!=unit1&&null==unit2&&unit1.isAi())
         	{
             	//Depend on the unit is ai or not
         		startTile.clearUnit();
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
-                selectedUnit.setPositionByTile(targetTile);
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
                 selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null==unit1&&null==unit2)
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null!=unit1&&null!=unit2&&!unit1.isAi()&&!unit2.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-          	else if(null==unit1&&null!=unit2&&!unit2.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null!=unit1&&null==unit2&&!unit1.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         	}
         	else
         	{
         		//do not move
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
-        		selectedUnit.setPositionByTile(startTile);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
+        		gameState.moved=false;
         		System.out.println("Do not move");
+        		 selectedUnit.setMovement(false);
         		if(nextState==null)
         			new EndTurnState();
         	}
@@ -148,10 +97,7 @@ public class UnitMovingState extends State {
         	startTile.clearUnit();
         	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-        	selectedUnit.setPositionByTile(targetTile);
             selectedUnit.setMovement(false);
-            try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-            BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         }
     }
     
@@ -163,96 +109,35 @@ public class UnitMovingState extends State {
         //Get the start tile x, y position
         int startX = startTile.getTilex();
         int startY = startTile.getTiley();
-    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY)&&null==targetTile.getUnit())
+    	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY))
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
-        	if(null==unit1&&null!=unit2&&!unit2.isAi())
+        	if((unit1==null)||(unit1.isAi()))
         	{
-        		//Move horizontally first
+        		//Move vertically first
         		 startTile.clearUnit();
         		 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
-        	     selectedUnit.setPositionByTile(targetTile);
                  selectedUnit.setMovement(false);
-                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         	}
-        	else if(null!=unit1&&null==unit2&&!unit1.isAi())
+        	else if(unit2==null || unit2.isAi())
         	{
-        		//Move vertically first
+        		//Move horizontally first
         		startTile.clearUnit();
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
-        		selectedUnit.setPositionByTile(targetTile);
         	    selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null==unit1&&null==unit2)
-        	{
-        		
-        		//moving  normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null!=unit1&&null!=unit2&&unit1.isAi()&&unit2.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-          	else if(null==unit1&&null!=unit2&&unit2.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        	}
-        	else if(null!=unit1&&null==unit2&&unit1.isAi())
-        	{
-        		
-        		//move normally
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
-                selectedUnit.setPositionByTile(targetTile);
-                selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         	}
         	else
         	{
-        		//do not move
-        		this.targetTile=startTile;
-        		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
-        		selectedUnit.setPositionByTile(startTile);
-        		selectedUnit.setMovement(false);
-                try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-        		System.out.println("Do not move");
-        		exit(out, gameState);
+        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
+                selectedUnit.setMovement(false);
         	}
         }
-    	else if((Math.abs(targetX-startX)+Math.abs(targetY-startY))>2)
-    	{
-    		if(null==nextState) new EndTurnState();
-    	}
         else
         {
-        	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,gameState);
         	selectedUnit.setPositionByTile(targetTile);
             try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -273,9 +158,9 @@ public class UnitMovingState extends State {
             }
             else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.PLAYER)
             {
-            	gameStateMachine.setState(new NoSelectionState());
+            	gameStateMachine.setState(new NoSelectionState(), out, gameState);
             }         	
-            else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.AI)
+            else if(gameState.currentTurn==Turn.AI)
             {
             	if(nextState!=null)
             		gameStateMachine.setState(nextState, out, gameState);

@@ -1,9 +1,9 @@
 package ai.actions;
 
 import java.util.List;
+import java.util.Optional;
 
-import ai.Action;
-import akka.actor.ActorRef;
+import ai.AIActionUtils;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
@@ -13,68 +13,46 @@ import structures.statemachine.CastCard;
 import structures.statemachine.State;
 
 public class CastSpellAction implements AiAction{
-	
-	private ActorRef out;
-	private  List<Card> cards;
-    private Unit markedUnit = null;
-    private Unit aiUnit = null;
-    
-    private Tile tile=null;
-	
-	public CastSpellAction(ActorRef out,Unit AiUnit, Unit enemyUnit)
+
+	public CastSpellAction()
 	{
-		this.out=out;
-		this.aiUnit=AiUnit;
-		this.markedUnit=enemyUnit;
-	}
-	
-	public CastSpellAction(ActorRef out)
-	{
-		this.out=out;
+
 	}
 	
 	private Tile getSpellTile(Card card,GameState gameState)
 	{
-		Tile tile=null;
-		switch(card.getCardname())
-		{
+		Tile tile = null;
+		switch(card.getCardname()) {
 			case "Staff of Y'Kir'":
-				 tile= Action.searchAiAvatarTile(gameState);		
+				tile = AIActionUtils.searchLowestAiUnitAttack(gameState);
 				break;
 			case "Entropic Decay":
-				 tile =Action.searchHighestNonAvatarUnitHealth(gameState);
-				 break;		
+				tile = AIActionUtils.searchHighestNonAvatarUnitHealth(gameState);
+				break;
+
 		}
-		
 		return tile;
-			
 	}
 	
     @Override
     public State processAction(GameState gameState) {
-    	cards=gameState.board.getAiCards();
-    	Card card=null;
-    	for(Card c:cards)
-    	{
-    		//only works on the spell card
-    		if(c.getBigCard()!=null)
-    		{
-    			if(gameState.AiPlayer.getMana()>=c.getManacost()
-    		       &&c.getBigCard().getHealth()<0)
-	    		{
-    				card=c;
-    				tile=getSpellTile(c,gameState);
-	    		}
-    		}
-    		else
-    		{
-    			break;
-    		}
-    		
-    	}
-    	if(tile!=null&&card!=null)
-    		return new CardSelectedState(out,card.getCardPosition(), tile, gameState);
-    	else
-    		return null;
+    	List<Card> cards=gameState.board.getAiCards();
+    	Optional<Card> card = cards.stream().filter(c -> {
+			if(c.getBigCard() != null && c.getBigCard().getHealth() <0) {
+				if(gameState.AiPlayer.getMana() >= c.getManacost()) {
+					return true;
+				}
+			}
+			return false;
+		}).findFirst();
+
+		if(card.isEmpty())
+			return null;
+
+		Tile tile = getSpellTile(card.get(), gameState);
+		if(tile == null)
+			return null;
+		return new CardSelectedState(card.get().getCardPosition(), tile, gameState);
+
     }
 }

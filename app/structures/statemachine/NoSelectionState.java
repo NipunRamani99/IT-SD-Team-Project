@@ -39,7 +39,7 @@ public class NoSelectionState extends State{
     	}
     	else
     	{
-    		gameStateMachine.setState(this);
+    		gameStateMachine.setState(this, out, gameState);
     	}
         
     }

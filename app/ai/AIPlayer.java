@@ -1,5 +1,6 @@
 package ai;
 
+import ai.actions.AiAction;
 import ai.actions.PursueAction;
 import ai.actions.AiAction;
 import ai.actions.*;
@@ -60,8 +61,6 @@ class TurnCache {
         })).collect(Collectors.toList());
         return units;
     }
-    
-
 }
 
 /**
@@ -98,14 +97,13 @@ public class AIPlayer{
     public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
     	//Firstly, AI will search and attack
 		//get the all the ai hand card
-	        cards = gameState.board.getAiCards();
-	        nextAiMove = null;
-	        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
-	        aiCastCard(out, gameState, gameStateMachine);
-	        markEnemy();
-	        pursueEnemy();
-	        gameState.AiMarkEnemy=true;
-		        
+        cards = gameState.board.getAiCards();
+	    nextAiMove = null;
+        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+        markEnemy();
+        aiCastCard(out, gameState, gameStateMachine);
+        pursueEnemy();
+        gameState.AiMarkEnemy=true;
             for(AiAction action : aiActions) {
                 State s  = action.processAction(gameState);
                 if(s == null) continue;
@@ -178,9 +176,9 @@ public class AIPlayer{
     private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
     {
     	//check the card on hand
-       AiAction castSpell = new CastSpellAction(out);
-       AiAction castUnit = new CastUnitAction(out,turnCache.markedUnits);
-       aiActions.add(castSpell); 
+      // AiAction castSpell = new CastSpellAction(out);
+       AiAction castUnit = new CastUnitAction(turnCache.markedUnits);
+       //aiActions.add(castSpell);
        aiActions.add(castUnit);
     }
 
@@ -202,6 +200,10 @@ public class AIPlayer{
     public State getNextAiMove() {
         return nextAiMove;
     }
-    
 
+    public void drawCard(GameState gameState) {
+        CastSpellAction action = new CastSpellAction();
+        State state = action.processAction(gameState);
+        nextAiMove = state;
+    }
 }

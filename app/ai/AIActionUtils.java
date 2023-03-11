@@ -1,64 +1,17 @@
 package ai;
 
 
-import akka.actor.ActorRef;
-import commands.BasicCommands;
 import structures.GameState;
-import structures.basic.Board;
-import structures.basic.Player;
 import structures.basic.Tile;
-import structures.basic.Tile.Occupied;
-import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
-import utils.BasicObjectBuilders;
 import utils.Constants;
-import utils.StaticConfFiles;
+
 /**
- * Action class is used to implement the different actions an AI can perform while playing the game.
+ * AIActionUtils class is used to implement the different actions an AI can perform while playing the game.
  * Each action is defined by an action type, instances of tiles on the board,
  * and a hand position if the action involves casting a card from the AI's hand.
  */
-public class Action {
-    /**
-     * Define the action type
-     */
-    private ActionType actionType = ActionType.None;
-    /**
-     * The tile refer to the first clicked tile or friend unit tile
-     */
-    
-    /**
-     * The board
-     */
-    private Board board;
-    
-    /**
-     * The AI player
-     */
-    private Player playerAI;
-    
-    
-    private Tile startTile;
-    /**
-     * The tile refer to the destination tile or enemy unit tile
-     */
-    private Tile endTile;
-    /**
-     * To specify which card to use
-     */
-    private int handPosition = 0; //To specify which card to use
-    
-    /**
-     *  The actor Reference
-     */
-    private ActorRef out;
-    
-    /**
-     * Game state
-     */
-    private GameState gameState;
+public class AIActionUtils {
 
-    
   //Search for the unit lowest health
    public static Tile searchLowestUnitHealth(GameState gameState)
    {

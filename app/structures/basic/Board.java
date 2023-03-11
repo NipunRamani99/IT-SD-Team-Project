@@ -157,25 +157,17 @@ public class Board {
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit,20);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		Unit aiUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.id++, Unit.class);	
 		aiUnit.setAi(true);
 		aiUnit.setAvatar(true);
 		//Get related tiles
 		Tile aiTile = getTile(8, 2);
-       // Tile aiTile2 = getTile(8,1);
 		aiUnit.setPositionByTile(aiTile);
-      //  aiUnit2.setPositionByTile(aiTile2);
-
 		//The tile set the unit
 		aiTile.setUnit(aiUnit);
-        //aiTile2.setAiUnit(aiUnit2);
 	    addUnit(aiUnit);
-       // addUnit(aiUnit2);
 		//draw unit
 		BasicCommands.drawUnit(out, aiUnit, aiTile);
-       // BasicCommands.drawUnit(out, aiUnit2,aiTile2);
-
 		//unit attack and health
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitAttack(out, aiUnit, 2);

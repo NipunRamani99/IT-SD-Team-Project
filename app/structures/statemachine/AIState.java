@@ -14,7 +14,7 @@ public class AIState extends State{
 	
 	public AIState()
 	{
-		//BasicCommands.drawUnit(out, null, null);
+
 	}
 
 	@Override
@@ -39,4 +39,8 @@ public class AIState extends State{
 
 	}
     public void exit(ActorRef out, GameState gameState){}
+
+	public void drawCard(ActorRef out, GameState gameState) {
+		gameState.ai.drawCard(gameState);
+	}
 }
