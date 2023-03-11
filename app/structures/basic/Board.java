@@ -145,7 +145,7 @@ public class Board {
 		unit.setAvatar(true);
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
 		//Get related tiles
-		Tile tile = this.getTile(5, 2);
+		Tile tile = this.getTile(0, 2);
 		unit.setPositionByTile(tile); 
 		//The tile set the unit
 		this.addUnit(unit);

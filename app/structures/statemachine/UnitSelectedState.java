@@ -103,7 +103,10 @@ public class UnitSelectedState extends State{
                     	//X axis moving
                         if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
                             int diffX = tile.getTilex() - tileClicked.getTilex();
-                            diffX = diffX/2+1;
+                            if(diffX>=0)
+                            	diffX = diffX/2+1;
+                            else
+                            	diffX=diffX/2-1;
                             adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
                             if(adjacentTile.getUnit()==null)
                             {
@@ -118,7 +121,10 @@ public class UnitSelectedState extends State{
                         else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
                         {
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
-                            diffY = diffY/2+1;
+                            if(diffY>=0)
+                            	diffY = diffY/2+1;
+                            else
+                            	diffY=diffY/2-1;
                             adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
                             if(adjacentTile.getUnit()==null)
                             {
@@ -176,7 +182,10 @@ public class UnitSelectedState extends State{
                      	//X axis moving
                         if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
                             int diffX = tile.getTilex() - tileClicked.getTilex();
-                            diffX = diffX/2+1;
+                            if(diffX>=0)
+                            	diffX = diffX/2+1;
+                            else
+                            	diffX=diffX/2-1;
                             adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
                             if(adjacentTile.getUnit()==null)
                             {
@@ -192,7 +201,10 @@ public class UnitSelectedState extends State{
                         else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
                         {
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
-                            diffY = diffY/2+1;
+                            if(diffY>=0)
+                            	diffY = diffY/2+1;
+                            else
+                            	diffY=diffY/2-1;
                             adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
                             if(adjacentTile.getUnit()==null)
                             {
@@ -204,6 +216,21 @@ public class UnitSelectedState extends State{
                             }
                             
                         }
+                        else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                        {
+                        	int diffY= tile.getTiley()-tileClicked.getTiley();
+                        	int diffX= tile.getTilex()-tileClicked.getTilex();
+                        	diffY=diffY/2;
+                        	diffX=diffX/2;
+    	                	adjacentTile = gameState.board.getTile(tileClicked.getTilex()+diffX , tileClicked.getTiley()+ diffY);
+    	                    if(adjacentTile.getUnit()==null)
+    	                    {
+    	                     	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+    	                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+    	                         gameStateMachine.setState(moveState, out, gameState);
+    	                         try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+    	                         gameStateMachine.setState(attackState, out, gameState);
+    	                    }
                         else
                         {
                         	//do nothing
@@ -238,7 +265,7 @@ public class UnitSelectedState extends State{
         } 
         else if(gameState.currentTurn==Turn.AI)
         {
-        	Tile tile = gameState.board.getTile(unitClicked.getPosition());
+        	tile = gameState.board.getTile(unitClicked.getPosition());
         	Tile adjacentTile =null;
         	if(null!=tile.getUnit()&&tile.getUnit().isAi()&&null!=tileClicked.getUnit())
         	{
@@ -287,7 +314,10 @@ public class UnitSelectedState extends State{
                  	//X axis moving
                     if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
                         int diffX = tile.getTilex() - tileClicked.getTilex();
-                        diffX = diffX/2+1;
+                        if(diffX>=0)
+                        	diffX = diffX/2+1;
+                        else
+                        	diffX=diffX/2-1;
                         adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
                         if(adjacentTile.getUnit()==null)
                         {
@@ -302,7 +332,10 @@ public class UnitSelectedState extends State{
                     else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
                     {
                     	int diffY = tile.getTiley() - tileClicked.getTiley();
-                        diffY = diffY/2+1;
+                        if(diffY>=0)
+                        	diffY = diffY/2+1;
+                        else
+                        	diffY=diffY/2-1;
                         adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
                         if(adjacentTile.getUnit()==null)
                         {
@@ -351,14 +384,16 @@ public class UnitSelectedState extends State{
                     	State noSelectionState = new NoSelectionState();
                     	gameStateMachine.setState(noSelectionState, out, gameState);
                     }
-                }
-                
+                }              
                 else if(distance==4)
                 {
                  	//X axis moving
                     if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 3) {
                         int diffX = tile.getTilex() - tileClicked.getTilex();
-                        diffX = diffX/2+1;
+                        if(diffX>=0)
+                        	diffX = diffX/2+1;
+                        else
+                        	diffX=diffX/2-1;
                         adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
                         if(adjacentTile.getUnit()==null)
                         {
@@ -374,7 +409,10 @@ public class UnitSelectedState extends State{
                     else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 3)
                     {
                     	int diffY = tile.getTiley() - tileClicked.getTiley();
-                        diffY = diffY/2+1;
+                        if(diffY>=0)
+                        	diffY = diffY/2+1;
+                        else
+                        	diffY=diffY/2-1;
                         adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
                         if(adjacentTile.getUnit()==null)
                         {
@@ -385,6 +423,22 @@ public class UnitSelectedState extends State{
                             gameStateMachine.setState(attackState, out, gameState);
                         }
                         
+                    }
+                    else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
+                    {
+                    	int diffY= tile.getTiley()-tileClicked.getTiley();
+                    	int diffX= tile.getTilex()-tileClicked.getTilex();
+                    	diffY=diffY/2;
+                    	diffX=diffX/2;
+	                	adjacentTile = gameState.board.getTile(tileClicked.getTilex()+diffX , tileClicked.getTiley()+ diffY);
+	                    if(adjacentTile.getUnit()==null)
+	                    {
+	                     	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+	                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+	                         gameStateMachine.setState(moveState, out, gameState);
+	                         try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+	                         gameStateMachine.setState(attackState, out, gameState);
+	                    }
                     }
                     else
                     {
@@ -422,7 +476,7 @@ public class UnitSelectedState extends State{
         			gameStateMachine.setState(this.getNextState(),out, gameState);
         		}
         	}
-        	
+         }
         }
         else {
             System.out.println("UnitSelectedState: Invalid Event");
