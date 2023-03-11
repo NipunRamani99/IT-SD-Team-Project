@@ -1,5 +1,6 @@
 package ai.actions;
 
+import ai.AIActionUtils;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
@@ -16,8 +17,6 @@ import utils.Constants;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import ai.Action;
 
 public class PursueAction implements AiAction {
     private Unit markedUnit = null;
@@ -120,7 +119,7 @@ public class PursueAction implements AiAction {
     {
     	  int tilex = aiUnit.getPosition().getTilex();
           int tiley = aiUnit.getPosition().getTiley();
-          Tile highestHealthUnit= Action.searchHighestNonAvatarUnitHealth(gameState);
+          Tile highestHealthUnit= AIActionUtils.searchHighestNonAvatarUnitHealth(gameState);
           Tile aiUnitTile = gameState.board.getTile(aiUnit.getPosition().getTilex(), aiUnit.getPosition().getTiley());
           List<Tile> occupiedTiles = new ArrayList<Tile>();
           gameState.resetBoardState();

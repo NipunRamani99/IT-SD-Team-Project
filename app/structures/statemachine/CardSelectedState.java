@@ -243,21 +243,10 @@ public class CardSelectedState extends State{
                                 if (surroundingTile.getUnit() == null) {
                                     surroundingTile.setTileState(TileState.Reachable);
                                     BasicCommands.drawTile(out, surroundingTile, 1);
-                                    try {
-                                        Thread.sleep(5);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
                                 } else if (surroundingTile.getUnit() != null && surroundingTile.getUnit().isAi()) {
                                     surroundingTile.setTileState(TileState.Occupied);
                                     BasicCommands.drawTile(out, surroundingTile, 2);
-                                    try {
-                                        Thread.sleep(5);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
                                 }
-
                             }
                         }
                     }
@@ -290,7 +279,6 @@ public class CardSelectedState extends State{
                             if (surroundingTile.getUnit() == null) {
                                 surroundingTile.setTileState(TileState.Reachable);
                                 BasicCommands.drawTile(out, surroundingTile, 1);
-                                try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
                             }
                         }
                     }

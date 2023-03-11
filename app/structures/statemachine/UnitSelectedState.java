@@ -46,7 +46,7 @@ public class UnitSelectedState extends State{
             if(tile.getTileState() == TileState.None) {
                 gameState.resetBoardSelection(out);
                 System.out.println("UnitSelectedState: None Tile Clicked");
-                gameStateMachine.setState(new NoSelectionState());
+                gameStateMachine.setState(new NoSelectionState(), out, gameState);
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
@@ -256,12 +256,12 @@ public class UnitSelectedState extends State{
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
             System.out.println("UnitSelectedState: Card Clicked");
-            gameStateMachine.setState(new CardSelectedState(out, message, gameState));
+            gameStateMachine.setState(new CardSelectedState(out, message, gameState), out, gameState);
         }else if(event instanceof OtherClicked)
         {
         	 gameState.resetBoardSelection(out);
         	 gameState.resetCardSelection(out);
-        	 gameStateMachine.setState(new NoSelectionState());
+        	 gameStateMachine.setState(new NoSelectionState(), out, gameState);
         } 
         else if(gameState.currentTurn==Turn.AI)
         {
@@ -462,7 +462,7 @@ public class UnitSelectedState extends State{
         	}
         	else
         	{
-        		gameStateMachine.setState(new EndTurnState());
+        		gameStateMachine.setState(new EndTurnState(), out, gameState);
         	}
         	
         	if(adjacentTile.getUnit()!=null)
@@ -1026,8 +1026,6 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
   }
  /**
   * set the occupied tiles for User
-  * @param tilex
-  * @param tiley
   */
 	private void setOccupiedAiTiles(ActorRef out,int x, int y, GameState gameState, boolean highlight)
 	{

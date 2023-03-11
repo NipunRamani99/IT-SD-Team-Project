@@ -27,8 +27,7 @@ public class UnitMovingState extends State {
 		this.startTile = startTile;
 		this.targetTile = targetTile;
 	}
-//<<<<<<< HEAD
-	
+
     private void initiateMove(ActorRef out, GameState gameState ) {
      
         //Check the startTile has surrounding occupied tiles or not
@@ -65,7 +64,6 @@ public class UnitMovingState extends State {
         	if(null==unit1&&null!=unit2&&unit2.isAi())
         	{
         		startTile.clearUnit();
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
         	    selectedUnit.setMovement(false);
         	}
@@ -73,7 +71,6 @@ public class UnitMovingState extends State {
         	{
             	//Depend on the unit is ai or not
         		startTile.clearUnit();
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
                 selectedUnit.setMovement(false);
         	}
@@ -95,7 +92,6 @@ public class UnitMovingState extends State {
         else
         {	
         	startTile.clearUnit();
-        	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
             selectedUnit.setMovement(false);
         }
@@ -117,7 +113,6 @@ public class UnitMovingState extends State {
         	{
         		//Move vertically first
         		 startTile.clearUnit();
-        		 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
                  selectedUnit.setMovement(false);
         	}
@@ -130,7 +125,6 @@ public class UnitMovingState extends State {
         	}
         	else
         	{
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
                 selectedUnit.setMovement(false);
         	}
@@ -140,7 +134,6 @@ public class UnitMovingState extends State {
 
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,gameState);
         	selectedUnit.setPositionByTile(targetTile);
-            try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
             BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
             selectedUnit.setMovement(false);
         }
@@ -156,22 +149,6 @@ public class UnitMovingState extends State {
                 else
                 	gameStateMachine.setState( nextState != null? nextState : new EndTurnState(), out, gameState);
             }
-            else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.PLAYER)
-            {
-            	gameStateMachine.setState(new NoSelectionState(), out, gameState);
-            }         	
-            else if(gameState.currentTurn==Turn.AI)
-            {
-            	if(nextState!=null)
-            		gameStateMachine.setState(nextState, out, gameState);
-            	else
-            		gameStateMachine.setState(new EndTurnState(), out, gameState);
-            }
-            else
-            {
-            	gameStateMachine.setState(new EndTurnState(), out, gameState);
-            }
-            	
     }
 
 
