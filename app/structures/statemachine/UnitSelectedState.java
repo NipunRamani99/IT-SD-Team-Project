@@ -689,7 +689,7 @@ public class UnitSelectedState extends State{
                 
                 if(tilex-2>=0)
                 {
-                	if(gameState.board.getTile(tilex-1, y+1).getUnit()==null)
+                	if(gameState.board.getTile(tilex-1, y-1).getUnit()==null)
                 		setOccupiedUserTiles(out, tilex-2, y, gameState,false);
                 }
             }
