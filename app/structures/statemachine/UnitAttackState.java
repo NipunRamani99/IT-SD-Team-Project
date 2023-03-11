@@ -57,6 +57,10 @@ public class UnitAttackState extends State{
 			}
 			else 
 			{
+				if(this.selectedUnit!=null)
+					BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
+				if(this.enemyUnit!=null)
+					BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
 				gameStateMachine.setState(new EndTurnState());
 			}
 			if(gameState.currentTurn==Turn.PLAYER)

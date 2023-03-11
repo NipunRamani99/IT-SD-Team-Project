@@ -81,6 +81,9 @@ public class UnitMovingState extends State {
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
         		gameState.moved=false;
         		System.out.println("Do not move");
+        		 selectedUnit.setMovement(false);
+        		if(nextState==null)
+        			new EndTurnState();
         	}
         }
         else
@@ -131,6 +134,7 @@ public class UnitMovingState extends State {
         		//do not move
         		this.targetTile=startTile;
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
+        		selectedUnit.setMovement(false);
         		gameState.moved=false;
         		System.out.println("Do not move");
         		exit(out, gameState);
@@ -158,7 +162,7 @@ public class UnitMovingState extends State {
             {
             	gameStateMachine.setState(new NoSelectionState());
             }         	
-            else if(gameState.currentTurn==Turn.AI)
+            else if(!selectedUnit.getMovement()&&gameState.currentTurn==Turn.AI)
             {
             	if(nextState!=null)
             		gameStateMachine.setState(nextState, out, gameState);
