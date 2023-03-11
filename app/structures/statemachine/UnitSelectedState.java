@@ -570,12 +570,14 @@ public class UnitSelectedState extends State{
                //check the surrounding tiles
                if(tiley+2<Constants.BOARD_HEIGHT)
                {
-               	setOccupiedUserTiles(out, x, tiley+2, gameState,false);
+            	   if(gameState.board.getTile(x+1, tiley+1).getUnit()==null)
+            		   setOccupiedUserTiles(out, x, tiley+2, gameState,false);
                }
                
                if(tiley-2>=0)
                {
-               	setOccupiedUserTiles(out, x, tiley-2, gameState,false);
+            	   if(gameState.board.getTile(x+1, tiley-1).getUnit()==null)
+            		   setOccupiedUserTiles(out, x, tiley-2, gameState,false);
                }
            }
                       
@@ -603,12 +605,14 @@ public class UnitSelectedState extends State{
                 //check the surrounding tiles
                 if(tiley+2<Constants.BOARD_HEIGHT)
                 {
-                	setOccupiedUserTiles(out, x, tiley+2, gameState,false);
+                	if(gameState.board.getTile(x-1, tiley+1).getUnit()==null)
+                		setOccupiedUserTiles(out, x, tiley+2, gameState,false);
                 }
                 
                 if(tiley-2>=0)
                 {
-                	setOccupiedUserTiles(out, x, tiley-2, gameState,false);
+                	if(gameState.board.getTile(x-1, tiley-1).getUnit()==null)
+                		setOccupiedUserTiles(out, x, tiley-2, gameState,false);
                 }
             }
            
@@ -644,12 +648,14 @@ public class UnitSelectedState extends State{
                 
                 if(tilex+2<Constants.BOARD_WIDTH)
                 {
-                	setOccupiedUserTiles(out, tilex+2, y, gameState,false);
+                	if(gameState.board.getTile(tilex+1, y+1).getUnit()==null)
+                		setOccupiedUserTiles(out, tilex+2, y, gameState,false);
                 }
                 
                 if(tilex-2>=0)
                 {
-                	setOccupiedUserTiles(out, tilex-2, y, gameState,false);
+                	if(gameState.board.getTile(tilex-1, y+1).getUnit()==null)
+                		setOccupiedUserTiles(out, tilex-2, y, gameState,false);
                 }
             }
         }
@@ -677,12 +683,14 @@ public class UnitSelectedState extends State{
                 
                 if(tilex+2<Constants.BOARD_WIDTH)
                 {
-                	setOccupiedUserTiles(out, tilex+2, y, gameState,false);
+                	if(gameState.board.getTile(tilex+1, y-1).getUnit()==null)
+                		setOccupiedUserTiles(out, tilex+2, y, gameState,false);
                 }
                 
                 if(tilex-2>=0)
                 {
-                	setOccupiedUserTiles(out, tilex-2, y, gameState,false);
+                	if(gameState.board.getTile(tilex-1, y+1).getUnit()==null)
+                		setOccupiedUserTiles(out, tilex-2, y, gameState,false);
                 }
             }
         
@@ -822,12 +830,14 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
            //check the surrounding tiles
            if(tiley+2<Constants.BOARD_HEIGHT)
            {
-           	setOccupiedAiTiles(out, x, tiley+2, gameState,false);
+        	   if(gameState.board.getTile(x+1, tiley+1).getUnit()==null)
+        		   setOccupiedAiTiles(out, x, tiley+2, gameState,false);
            }
            
            if(tiley-2>=0)
            {
-           	setOccupiedAiTiles(out, x, tiley-2, gameState,false);
+        	   if(gameState.board.getTile(x+1, tiley-1).getUnit()==null)
+        		   setOccupiedAiTiles(out, x, tiley-2, gameState,false);
            }
        }
                   
@@ -855,12 +865,14 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
             //check the surrounding tiles
             if(tiley+2<Constants.BOARD_HEIGHT)
             {
-            	setOccupiedAiTiles(out, x, tiley+2, gameState,false);
+            	if(gameState.board.getTile(x-1, tiley+1).getUnit()==null)
+            		setOccupiedAiTiles(out, x, tiley+2, gameState,false);
             }
             
             if(tiley-2>=0)
             {
-            	setOccupiedAiTiles(out, x, tiley-2, gameState,false);
+            	if(gameState.board.getTile(x-1, tiley-1).getUnit()==null)
+            		setOccupiedAiTiles(out, x, tiley-2, gameState,false);
             }
         }
         
@@ -898,12 +910,14 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
             
             if(tilex+2<Constants.BOARD_WIDTH)
             {
-            	setOccupiedAiTiles(out, tilex+2, y, gameState,false);
+            	if(gameState.board.getTile(tilex+1, y+1).getUnit()==null)
+            		setOccupiedAiTiles(out, tilex+2, y, gameState,false);
             }
             
             if(tilex-2>=0)
             {
-            	setOccupiedAiTiles(out, tilex-2, y, gameState,false);
+            	if(gameState.board.getTile(tilex-1, y+1).getUnit()==null)
+            		setOccupiedAiTiles(out, tilex-2, y, gameState,false);
             }
         }
     }
@@ -931,12 +945,14 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
             
             if(tilex+2<Constants.BOARD_WIDTH)
             {
-            	setOccupiedAiTiles(out, tilex+2, y, gameState,false);
+            	if(gameState.board.getTile(tilex+1, y-1).getUnit()==null)
+            		setOccupiedAiTiles(out, tilex+2, y, gameState,false);
             }
             
             if(tilex-2>=0)
             {
-            	setOccupiedAiTiles(out, tilex-2, y, gameState,false);
+            	if(gameState.board.getTile(tilex-1, y-1).getUnit()==null)
+            		setOccupiedAiTiles(out, tilex-2, y, gameState,false);
             }
         }
     
