@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import ai.Action;
+
 public class PursueAction implements AiAction {
     private Unit markedUnit = null;
     private Unit aiUnit = null;
@@ -119,6 +121,7 @@ public class PursueAction implements AiAction {
     {
     	  int tilex = aiUnit.getPosition().getTilex();
           int tiley = aiUnit.getPosition().getTiley();
+          Tile highestHealthUnit= Action.searchHighestNonAvatarUnitHealth(gameState);
           Tile aiUnitTile = gameState.board.getTile(aiUnit.getPosition().getTilex(), aiUnit.getPosition().getTiley());
           List<Tile> occupiedTiles = new ArrayList<Tile>();
           gameState.resetBoardState();
@@ -133,6 +136,7 @@ public class PursueAction implements AiAction {
                   Tile surroundingTile = gameState.board.getTile(x, y);
                   if(surroundingTile == aiUnitTile)
                       continue;
+                  if(surroundingTile == highestHealthUnit) continue;
                   if (surroundingTile != null) {
                       if(surroundingTile.getUnit() == null ) {
                           surroundingTile.setTileState(TileState.Reachable);

@@ -103,9 +103,9 @@ public class AIPlayer{
 	        cards = gameState.board.getAiCards();
 	        nextAiMove = null;
 	        turnCache.aiUnits = turnCache.getAvailableUnits(gameState);
+	        aiCastCard(out, gameState);
 	        markEnemy();
 	        pursueEnemy();
-	        aiCastCard(out, gameState, gameStateMachine);
 	        gameState.AiMarkEnemy=true;
 		        
             for(AiAction action : aiActions) {
@@ -174,7 +174,7 @@ public class AIPlayer{
      * @param gameState
      * @param gameStateMachine
      */
-    private void aiCastCard(ActorRef out, GameState gameState, GameStateMachine gameStateMachine)
+    private void aiCastCard(ActorRef out, GameState gameState)
     {
     	//check the card on hand
        AiAction castSpell = new CastSpellAction(out);

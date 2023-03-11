@@ -38,10 +38,10 @@ public class CastSpellAction implements AiAction{
 		switch(card.getCardname())
 		{
 			case "Staff of Y'Kir'":
-				tile= Action.searchLowestAiUnitAttack(out, gameState);		
+				tile= Action.searchLowestAiUnitAttack(gameState);		
 				break;
 			case "Entropic Decay":
-				 tile =Action.searchHighestNonAvatarUnitHealth(out, gameState);
+				 tile =Action.searchHighestNonAvatarUnitHealth(gameState);
 				 break;		
 		}
 			

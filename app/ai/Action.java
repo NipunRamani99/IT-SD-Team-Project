@@ -60,7 +60,7 @@ public class Action {
 
     
   //Search for the unit lowest health
-   public static Tile searchLowestUnitHealth(ActorRef out, GameState gameState)
+   public static Tile searchLowestUnitHealth(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int health=20;
@@ -81,7 +81,7 @@ public class Action {
    }
    
    //Search for the Ai unit lowest health
-   public static Tile searchLowestAiUnitHealth(ActorRef out, GameState gameState)
+   public static Tile searchLowestAiUnitHealth(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int health=20;
@@ -102,7 +102,7 @@ public class Action {
    }
     
    //Search for the Ai unit lowest attack point
-   public static Tile searchLowestAiUnitAttack(ActorRef out, GameState gameState)
+   public static Tile searchLowestAiUnitAttack(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int attack=20;
@@ -124,7 +124,7 @@ public class Action {
 
    
    //Search for the Ai unit highest attack point
-   public static Tile searchHighestAiUnitAttack(ActorRef out, GameState gameState)
+   public static Tile searchHighestAiUnitAttack(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int attack=0;
@@ -145,7 +145,7 @@ public class Action {
    }
    
    //Search for the unit highest health point
-   public static Tile searchHighestUnitHealth(ActorRef out, GameState gameState)
+   public static Tile searchHighestUnitHealth(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int health=0;
@@ -166,7 +166,7 @@ public class Action {
    }
    
    //Search for the non-avator unit highest health point
-   public static Tile searchHighestNonAvatarAllUnitHealth(ActorRef out, GameState gameState)
+   public static Tile searchHighestNonAvatarAllUnitHealth(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int health=0;
@@ -187,7 +187,7 @@ public class Action {
    }
    
    //Search for the non-avator unit highest health point
-   public static Tile searchHighestNonAvatarUnitHealth(ActorRef out, GameState gameState)
+   public static Tile searchHighestNonAvatarUnitHealth(GameState gameState)
    {
 	   Tile selectedTile=null;
 	   int health=0;

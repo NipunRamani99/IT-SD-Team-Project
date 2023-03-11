@@ -55,6 +55,10 @@ public class UnitAttackState extends State{
 				BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
 				BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
 			}
+			else 
+			{
+				gameStateMachine.setState(new EndTurnState());
+			}
 			if(gameState.currentTurn==Turn.PLAYER)
 				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 			else
@@ -77,7 +81,10 @@ public class UnitAttackState extends State{
 			System.out.println("Unit attack");
 			getUnitOnTileAttack(out, gameState);
 		}
-		
+		if(null==enemyUnit)
+		{
+			nextState= new EndTurnState();
+		}
 		else
 		{
 			if(gameState.currentTurn==Turn.PLAYER)
@@ -112,7 +119,7 @@ public class UnitAttackState extends State{
 	private void getUnitOnTileAttack(ActorRef out, GameState gameState)
 	{
 		//Attack animation
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -135,6 +142,7 @@ public class UnitAttackState extends State{
     	
     	if(health <= 0)
 		{
+    	  enemyUnit.setAttackBack(false);
           Attack.deleteEnemyUnit(out, enemyUnit, gameState);
           Attack.setPlayerHealth(out, health, enemyUnit, gameState);
 

@@ -21,6 +21,9 @@ public class GameStateMachine {
     }
 
     public void setState(State newState, ActorRef out, GameState gameState) {
+    	try {Thread.sleep(10);} catch (InterruptedException e) {e.printStackTrace();}
+    	if(gameState.AiPlayer.getHealth()==0||gameState.humanPlayer.getHealth()==0)
+    		newState= new NoSelectionState();
         newState.enter(out, gameState);
         currentState = newState;
     }

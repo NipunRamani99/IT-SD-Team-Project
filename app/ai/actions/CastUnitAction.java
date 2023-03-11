@@ -79,7 +79,8 @@ public class CastUnitAction implements AiAction {
                         int x = unit.getPosition().getTilex() + i;
                         int y = unit.getPosition().getTiley() + j;
                         Tile surroundingTile = gameState.board.getTile(x, y);
-                        if (surroundingTile == null ) {
+                        if (surroundingTile!= null ) {
+                        	if(surroundingTile.getUnit()==null)
                                 tiles.add(surroundingTile);
                             }
                         }                  
