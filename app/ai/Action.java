@@ -204,6 +204,23 @@ public class Action {
 	   return selectedTile;
    }
 
+   //Search for the AI avatar unit highest health point
+   public static Tile searchAiAvatarTile(GameState gameState)
+   {
+	   Tile selectedTile=null;
+       for (int i =0; i <Constants.BOARD_WIDTH; i++) {
+           for (int j =0; j <Constants.BOARD_HEIGHT; j++) {
+               Tile surroundingTile = gameState.board.getTile(i, j);
+               {
+            	   if(null!=surroundingTile.getUnit())
+            		   if( surroundingTile.getUnit().getId()==1)
+            			   selectedTile=surroundingTile;
+               }
+           }
+       }
+       
+	   return selectedTile;
+   }
 
   
     
