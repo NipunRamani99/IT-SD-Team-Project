@@ -491,12 +491,12 @@ public class UnitSelectedState extends State{
         if(x>=0) {
         	setOccupiedUserTiles(out, x, tiley, gameState,false);
 
-    	    if(tilex-1>=0)
+    	    if(tiley-1>=0)
     	    {
     	    	setOccupiedUserTiles(out, x, tiley-1, gameState,false);
     	    }
     	    
-    	    if(tilex+1<Constants.BOARD_WIDTH)
+    	    if(tiley+1<Constants.BOARD_HEIGHT)
     	    {
     	     	setOccupiedUserTiles(out, x, tiley+1, gameState,false);
     	    }
@@ -505,12 +505,12 @@ public class UnitSelectedState extends State{
         if(x<Constants.BOARD_WIDTH) {
         	setOccupiedUserTiles(out, x, tiley, gameState,false);
 
-    	    if(tilex-1>=0)
+    	    if(tiley-1>=0)
     	    {
     	    	setOccupiedUserTiles(out, x, tiley-1, gameState,false);
     	    }
     	    
-    	    if(tilex+1<Constants.BOARD_WIDTH)
+    	    if(tiley+1<Constants.BOARD_HEIGHT)
     	    {
     	     	setOccupiedUserTiles(out, x, tiley+1, gameState,false);
     	    }
@@ -611,8 +611,16 @@ public class UnitSelectedState extends State{
                 	setOccupiedUserTiles(out, x, tiley-2, gameState,false);
                 }
             }
-            
            
+        }
+        x = tilex+1;
+        if(x<Constants.BOARD_WIDTH) {
+       	 setOccupiedUserTiles(out,x,tiley,gameState,true);
+        }
+        
+        x=tilex-1;
+        if(x>=0) {
+        	setOccupiedUserTiles(out, x, tiley, gameState,true);
         }
         
         y = tiley - 2;
@@ -679,6 +687,18 @@ public class UnitSelectedState extends State{
             }
         
          }
+        
+        y=tiley-1;
+        if(y>0)
+        {
+        	setOccupiedUserTiles(out, tilex, y, gameState,true);
+        }
+        
+        y=tiley+1;
+        if(y<Constants.BOARD_HEIGHT)
+        {
+        	setOccupiedUserTiles(out,tilex,y,gameState,true);
+        }
     }
     
     
@@ -724,12 +744,12 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
     if(x>=0) {
     	setOccupiedAiTiles(out, x, tiley, gameState,false);
 
-	    if(tilex-1>=0)
+	    if(tiley-1>=0)
 	    {
 	    	setOccupiedAiTiles(out, x, tiley-1, gameState,false);
 	    }
 	    
-	    if(tilex+1<Constants.BOARD_WIDTH)
+	    if(tiley+1<Constants.BOARD_HEIGHT)
 	    {
 	     	setOccupiedAiTiles(out, x, tiley+1, gameState,false);
 	    }
@@ -738,12 +758,12 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
     if(x<Constants.BOARD_WIDTH) {
     	setOccupiedAiTiles(out, x, tiley, gameState,false);
 
-	    if(tilex-1>=0)
+	    if(tiley-1>=0)
 	    {
 	    	setOccupiedAiTiles(out, x, tiley-1, gameState,false);
 	    }
 	    
-	    if(tilex+1<Constants.BOARD_WIDTH)
+	    if(tiley+1<Constants.BOARD_HEIGHT)
 	    {
 	     	setOccupiedAiTiles(out, x, tiley+1, gameState,false);
 	    }
@@ -847,6 +867,16 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
        
     }
     
+    x=tilex+1;
+    if(x<Constants.BOARD_WIDTH) {
+    	 setOccupiedAiTiles(out, x, tiley, gameState,true);
+    }
+    
+    x=tilex-1;
+    if(x>=0) {
+    	 setOccupiedAiTiles(out, x, tiley, gameState,true);
+    }
+    
     y = tiley - 2;
     if(y >= 0) {
     	boolean occupied = gameState.board.getTile(tilex, y+1 ).getUnit() != null&&
@@ -912,7 +942,18 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
     
      }
 
-	}
+    y=tiley+1;
+    if(y<Constants.BOARD_HEIGHT)
+    {
+    	setOccupiedAiTiles(out, tilex, y, gameState,true);
+    }
+    
+    y=tiley-1;
+    if(y>=0)
+    {
+    	setOccupiedAiTiles(out,tilex,y,gameState, true);
+    }
+  }
  /**
   * set the occupied tiles for User
   * @param tilex
