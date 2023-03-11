@@ -27,6 +27,8 @@ public class UnitMoving implements EventProcessor {
 	private ActorRef out;
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+		gameState.resetBoardSelection(out);
+		gameState.resetBoardState();
 		gameStateMachine.processInput(out, gameState, message, this);
 	}
 }

@@ -65,7 +65,7 @@ public class TileClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 		
-	
+		gameState.resetCardSelection(out);
 		BasicCommands.addPlayer1Notification(out, "Tile Clicked ",1);
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();

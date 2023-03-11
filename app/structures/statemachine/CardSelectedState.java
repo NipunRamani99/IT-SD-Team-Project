@@ -30,18 +30,13 @@ public class CardSelectedState extends State{
     private CardType cardType;
 
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
-        gameState.resetCardSelection(out);
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
-        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-
         if(cardSelected.getBigCard().getHealth() < 0) {
             cardType = CardType.SPELL;
         } else {
             cardType = CardType.UNIT;
         }
-        
-        cardClickedTilesHighlight(out, gameState);
         	
     }
     
@@ -92,10 +87,8 @@ public class CardSelectedState extends State{
                 gameStateMachine.setState(new NoSelectionState());
             }
         } else if(event instanceof CardClicked) {
-            gameState.resetBoardSelection(out);
             System.out.println("CardSelectedState: Card Clicked");
-            cardClickedTilesHighlight(out, gameState);
-            gameStateMachine.setState(new CardSelectedState(out, message, gameState));
+            gameStateMachine.setState(new CardSelectedState(out, message, gameState),out,gameState);
         }else if(event instanceof OtherClicked)
         {
         	  gameState.resetBoardSelection(out);
@@ -136,8 +129,20 @@ public class CardSelectedState extends State{
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
-        BasicCommands.drawCard(out, cardSelected, handPosition, 1);
-        cardClickedTilesHighlight(out, gameState);   
+    	gameState.resetBoardSelection(out);
+		gameState.resetBoardState();
+		if(gameState.currentTurn==Turn.PLAYER&&gameState.humanPlayer.getMana()>=cardSelected.getManacost())
+		{
+			BasicCommands.drawCard(out, cardSelected, handPosition, 1);
+	        cardClickedTilesHighlight(out, gameState);
+		}
+		
+		if(gameState.currentTurn==Turn.AI&&gameState.AiPlayer.getMana()>=cardSelected.getManacost())
+		{
+			BasicCommands.drawCard(out, cardSelected, handPosition, 1);
+	        cardClickedTilesHighlight(out, gameState);
+		}
+           
           
     }
     
