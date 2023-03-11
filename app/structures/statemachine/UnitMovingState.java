@@ -88,7 +88,6 @@ public class UnitMovingState extends State {
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         		System.out.println("Do not move");
-        		 selectedUnit.setMovement(false);
         		if(nextState==null)
         			new EndTurnState();
         	}
@@ -153,7 +152,6 @@ public class UnitMovingState extends State {
         		//do not move
         		this.targetTile=startTile;
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
-        		selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         		System.out.println("Do not move");
