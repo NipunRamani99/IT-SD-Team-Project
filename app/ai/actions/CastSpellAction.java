@@ -33,8 +33,9 @@ public class CastSpellAction implements AiAction{
 		this.out=out;
 	}
 	
-	private void getSpellTile(Card card,GameState gameState)
+	private Tile getSpellTile(Card card,GameState gameState)
 	{
+		Tile tile=null;
 		switch(card.getCardname())
 		{
 			case "Staff of Y'Kir'":
@@ -44,6 +45,8 @@ public class CastSpellAction implements AiAction{
 				 tile =Action.searchHighestNonAvatarUnitHealth(gameState);
 				 break;		
 		}
+		
+		return tile;
 			
 	}
 	
@@ -60,7 +63,7 @@ public class CastSpellAction implements AiAction{
     		       &&c.getBigCard().getHealth()<0)
 	    		{
     				card=c;
-    				getSpellTile(c,gameState);
+    				tile=getSpellTile(c,gameState);
 	    		}
     		}
     		else

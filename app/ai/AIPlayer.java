@@ -123,7 +123,9 @@ public class AIPlayer{
     }
 
     public void markEnemy() {
+    
         turnCache.markedUnits = turnCache.playerUnits;
+        turnCache.markedUnits.removeIf(unit->unit.getName().contains("Hailstone Golem"));
         turnCache.markedUnits.sort(Comparator.comparingInt(a->a.getHealth()));
     }
 
