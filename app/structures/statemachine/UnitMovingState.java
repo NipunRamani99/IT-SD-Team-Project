@@ -66,7 +66,8 @@ public class UnitMovingState extends State {
         	{
         		startTile.clearUnit();
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+        		selectedUnit.setPositionByTile(targetTile);
         	    selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -76,7 +77,8 @@ public class UnitMovingState extends State {
             	//Depend on the unit is ai or not
         		startTile.clearUnit();
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+                selectedUnit.setPositionByTile(targetTile);
                 selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -85,6 +87,7 @@ public class UnitMovingState extends State {
         	{
         		//do not move
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
+        		selectedUnit.setPositionByTile(startTile);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         		System.out.println("Do not move");
@@ -101,6 +104,7 @@ public class UnitMovingState extends State {
         	startTile.clearUnit();
         	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
+        	selectedUnit.setPositionByTile(targetTile);
             selectedUnit.setMovement(false);
             try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
             BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -125,6 +129,7 @@ public class UnitMovingState extends State {
         		 startTile.clearUnit();
         		 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	     BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+        	     selectedUnit.setPositionByTile(targetTile);
                  selectedUnit.setMovement(false);
                  try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                  BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -135,6 +140,7 @@ public class UnitMovingState extends State {
         		startTile.clearUnit();
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+        		selectedUnit.setPositionByTile(targetTile);
         	    selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -143,6 +149,7 @@ public class UnitMovingState extends State {
         	{
         		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
+                selectedUnit.setPositionByTile(targetTile);
                 selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
@@ -152,6 +159,8 @@ public class UnitMovingState extends State {
         		//do not move
         		this.targetTile=startTile;
         		BasicCommands.moveUnitToTile(out, selectedUnit, startTile, gameState);
+        		selectedUnit.setPositionByTile(startTile);
+        		selectedUnit.setMovement(false);
                 try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
                 BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
         		System.out.println("Do not move");
@@ -166,6 +175,7 @@ public class UnitMovingState extends State {
         {
         	try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,gameState);
+        	selectedUnit.setPositionByTile(targetTile);
             try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
             BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
             selectedUnit.setMovement(false);
