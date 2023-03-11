@@ -131,6 +131,12 @@ public class CardSelectedState extends State{
     public void enter(ActorRef out, GameState gameState) {
     	gameState.resetBoardSelection(out);
 		gameState.resetBoardState();
+		
+		if(gameState.currentTurn==Turn.PLAYER)
+			gameState.resetCardSelection(out);
+		else
+			gameState.resetAiCardSelection(out);
+		
 		if(gameState.currentTurn==Turn.PLAYER&&gameState.humanPlayer.getMana()>=cardSelected.getManacost())
 		{
 			BasicCommands.drawCard(out, cardSelected, handPosition, 1);

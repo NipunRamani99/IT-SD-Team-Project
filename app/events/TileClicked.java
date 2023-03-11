@@ -10,6 +10,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import org.checkerframework.checker.signedness.qual.Constant;
 import structures.GameState;
+import structures.Turn;
 import structures.basic.*;
 import structures.basic.Tile.Occupied;
 import structures.statemachine.CastCard;
@@ -65,7 +66,11 @@ public class TileClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 		
-		gameState.resetCardSelection(out);
+		if(gameState.currentTurn==Turn.PLAYER)
+			gameState.resetCardSelection(out);
+		else
+			gameState.resetAiCardSelection(out);
+		
 		BasicCommands.addPlayer1Notification(out, "Tile Clicked ",1);
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();

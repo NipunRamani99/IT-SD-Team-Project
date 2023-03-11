@@ -93,6 +93,14 @@ public class GameState {
 		}
 	}
 
+	public void resetAiCardSelection(ActorRef out)
+	{
+		List<Card> cards = board.getAiCards();
+		for(int i = 0; i < cards.size(); i++) {
+			BasicCommands.drawCard(out, cards.get(i),i+1,0);
+		}
+	}
+	
 	public void resetCardSelection(ActorRef out) {
 		List<Card> cards = board.getCards();
 		for(int i = 0; i < cards.size(); i++) {
