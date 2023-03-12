@@ -94,20 +94,14 @@ public class EndTurnState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		if(nextState!=null)
+		if(nextState!=null) {
+			System.out.println("Exiting EndTurnState");
 			gameStateMachine.setState(nextState, out, gameState);
-		else if(gameState.currentTurn==Turn.AI)
-		{
-			endTurn(out, gameState);
 		}
-		else if(gameState.currentTurn==Turn.PLAYER)
-		{
-			nextState= new NoSelectionState();
-		}
-			
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
+		System.out.println("Entering EndTurnState");
 		endTurn(out, gameState);
 	}
 

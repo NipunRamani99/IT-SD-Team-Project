@@ -1,16 +1,14 @@
 package ai.actions;
 
-import java.util.List;
-import java.util.Optional;
-
 import ai.AIActionUtils;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
-import structures.basic.Unit;
 import structures.statemachine.CardSelectedState;
-import structures.statemachine.CastCard;
 import structures.statemachine.State;
+
+import java.util.List;
+import java.util.Optional;
 
 public class CastSpellAction implements AiAction{
 
@@ -45,10 +43,8 @@ public class CastSpellAction implements AiAction{
 			}
 			return false;
 		}).findFirst();
-
 		if(card.isEmpty())
 			return null;
-
 		Tile tile = getSpellTile(card.get(), gameState);
 		if(tile == null)
 			return null;

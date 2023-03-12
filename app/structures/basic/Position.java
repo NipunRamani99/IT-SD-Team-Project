@@ -59,8 +59,7 @@ public class Position {
 		this.tiley = tilexy;
 	}
 	
-	
-	
-	
-	
+	public static Position getDisplacement(Position a, Position b) {
+		return new Position(a.tilex - b.tilex, a.tiley - b.tiley);
+	}
 }

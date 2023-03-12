@@ -50,33 +50,21 @@ public class UnitAttackState extends State{
 		// Try to get the unit and attack
 		if(event instanceof Heartbeat)
 		{
-			if(this.selectedUnit!=null&& this.enemyUnit!=null)
-			{
-				BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
-				BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
-			}
-			else 
-			{
-				if(this.selectedUnit!=null)
-					BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
-				if(this.enemyUnit!=null)
-					BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
-				gameStateMachine.setState(new EndTurnState(), out, gameState);
-			}
+			BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.idle);
+			BasicCommands.playUnitAnimation(out, this.enemyUnit, UnitAnimationType.idle);
+			System.out.println("Exiting UnitAttackState");
 			if(gameState.currentTurn==Turn.PLAYER)
 				gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
 			else
 			{
 				gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
-				if(nextState!=null) {}
-					//enter(out,gameState);
 			}
 		}
 	}
 
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
-	
+		System.out.println("Entering UnitAttackState");
 		if(selectedUnit.canAttack()&&null!=enemyUnit)
 		{
 			//make sure every unit can attack once

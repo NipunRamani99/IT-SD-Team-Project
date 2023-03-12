@@ -29,9 +29,9 @@ public class CastUnitAction implements AiAction {
     private List<Unit> markedUnits;
 
 
-    public CastUnitAction(Card unitCard, Tile targetTile) {
+    public CastUnitAction(Card unitCard, List<Unit> markedUnits) {
         this.unitCard = unitCard;
-        this.targetTile = targetTile;
+        this.markedUnits = markedUnits;
 
     }
     
@@ -119,11 +119,10 @@ public class CastUnitAction implements AiAction {
     public State processAction(GameState gameState) {
     	cards=gameState.board.getAiCards();
         Tile tile = getClosestAvailableTile(gameState, markedUnits.get(0));
-    	Optional<Card> unitCard = cards.stream().filter(card -> card.getBigCard() != null && card.getBigCard().getHealth() > 0).findFirst();
-        if(!unitCard.isPresent() || tile == null )
+        if(unitCard == null || tile == null )
             return null;
     	else
-    		return new CardSelectedState(unitCard.get().getCardPosition(), tile, gameState);
+    		return new CardSelectedState(unitCard.getCardPosition(), tile, gameState);
     }
 
 }

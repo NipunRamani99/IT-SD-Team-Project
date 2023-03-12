@@ -23,14 +23,18 @@ public class NoSelectionState extends State{
                 int tilex = message.get("tilex").asInt();
                 int tiley = message.get("tiley").asInt();
                 Tile tile = gameState.board.getTile(tilex, tiley);
-                if(tile.getUnit() != null)
+                if(tile.getUnit() != null) {
+                    System.out.println("Exiting NoSelectionState 27");
                     gameStateMachine.setState(new UnitSelectedState(out, message, gameState), out, gameState);
+                }
             } else if (event instanceof CardClicked) {
                 System.out.println("NoSelectionState: Card clicked");
+                System.out.println("Exiting NoSelectionState 32");
                 gameStateMachine.setState(new CardSelectedState(out, message, gameState), out, gameState);
             } else if (event instanceof Heartbeat) {
                 System.out.println("Heartbeat");
             } else if (event instanceof EndTurnClicked) {
+                System.out.println("Exiting NoSelectionState 37");
                 gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             else {
@@ -66,7 +70,7 @@ public class NoSelectionState extends State{
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
-
+        System.out.println("Entering NoSelectionState");
     }
 
     @Override

@@ -64,6 +64,7 @@ public class CardSelectedState extends State{
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
                 System.out.println("CardSelectedState: None Tile Clicked");
+                System.out.println("Exiting CardSelectedState");
                 gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
             } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
                 //if the tile is reachable and card is a unit card
@@ -84,6 +85,7 @@ public class CardSelectedState extends State{
                
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
+                System.out.println("Exiting CardSelectedState");
                 gameStateMachine.setState(nextState != null? nextState : new NoSelectionState(), out, gameState);
             }
         } else if(event instanceof CardClicked) {
@@ -91,12 +93,14 @@ public class CardSelectedState extends State{
             cardClickedTilesHighlight(out, gameState);
             State s = new CardSelectedState(out, message, gameState);
             s.setNextState(nextState);
+            System.out.println("Exiting CardSelectedState");
             gameStateMachine.setState(s, out, gameState);
         }else if(event instanceof OtherClicked)
         {
         	  gameState.resetBoardSelection(out);
         	  gameState.resetCardSelection(out);
-        	  gameStateMachine.setState(new NoSelectionState(), out, gameState);
+            System.out.println("Exiting CardSelectedState");
+            gameStateMachine.setState(new NoSelectionState(), out, gameState);
         }
         else if(gameState.currentTurn==Turn.AI) 
         {
@@ -121,7 +125,8 @@ public class CardSelectedState extends State{
       	    
         	gameState.resetBoardSelection(out);
         	gameState.resetBoardState();
-        	gameStateMachine.setState(nextState,out, gameState);         
+            System.out.println("Exiting CardSelectedState");
+            gameStateMachine.setState(nextState,out, gameState);
         } 
         else {
             System.out.println("CardSelectedState: Invalid Event");
@@ -129,7 +134,8 @@ public class CardSelectedState extends State{
             {
             	gameState.resetBoardSelection(out);
             	gameState.resetBoardState();
-            	gameStateMachine.setState(new EndTurnState(), out, gameState);
+                System.out.println("Exiting CardSelectedState");
+                gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             	
         }
@@ -137,6 +143,7 @@ public class CardSelectedState extends State{
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
+        System.out.println("Entering CardSelectedState");
     	gameState.resetBoardSelection(out);
 		gameState.resetBoardState();
 
@@ -156,8 +163,6 @@ public class CardSelectedState extends State{
 			BasicCommands.drawCard(out, cardSelected, handPosition, 1);
 	        cardClickedTilesHighlight(out, gameState);
 		}
-
-          
     }
     
     /**
@@ -173,7 +178,8 @@ public class CardSelectedState extends State{
 	            cardType = CardType.UNIT;
 	      }
     	
-    	  if(gameState.humanMana>=cardSelected.getManacost())
+    	  if(gameState.currentTurn == Turn.PLAYER && gameState.humanMana>=cardSelected.getManacost() ||
+                  gameState.currentTurn == Turn.AI && gameState.AiMana>=cardSelected.getManacost())
           {
 	       	  if(cardType == CardType.UNIT)
 	       	  {
@@ -279,6 +285,7 @@ public class CardSelectedState extends State{
                             if (surroundingTile.getUnit() == null) {
                                 surroundingTile.setTileState(TileState.Reachable);
                                 BasicCommands.drawTile(out, surroundingTile, 1);
+
                             }
                         }
                     }

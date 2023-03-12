@@ -27,12 +27,15 @@ public class DrawCardState extends State {
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
                             GameStateMachine gameStateMachine) {
         if(cardCasted) {
+            System.out.println("Exiting DrawCardState");
+
             gameState.currentTurn = Turn.AI;
             AIState aiState = new AIState();
             aiState.drawCard(out, gameState);
             nextState = aiState;
             gameStateMachine.setState(nextState, out,gameState);
         } else if(event instanceof CardClicked) {
+            System.out.println("Exiting DrawCardState");
             gameState.currentTurn = Turn.PLAYER;
             State state = new CardSelectedState(out, message, gameState);
             state.setNextState(new DrawCardState(true));
@@ -42,6 +45,7 @@ public class DrawCardState extends State {
 
     @Override
     public void enter(ActorRef out, GameState gameState) {
+        System.out.println("Entering DrawCardState");
         if(cardCasted) {
             BasicCommands.addPlayer1Notification(out, "AI Draw A Card", 1);
             List<Card> cards = gameState.board.getAiCards();

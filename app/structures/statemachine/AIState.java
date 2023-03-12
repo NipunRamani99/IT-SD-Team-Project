@@ -21,12 +21,13 @@ public class AIState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
+		System.out.println("Exiting AIState");
 		gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
 		this.gameStateMachine=gameStateMachine;
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
-
+		System.out.println("Entering AIState");
 		boolean canPlay = gameState.ai.searchAction(out, gameState, gameStateMachine);
 		State aiMove = gameState.ai.getNextAiMove();
 		if(canPlay && aiMove != null) {

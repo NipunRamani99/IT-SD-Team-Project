@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.EventProcessor;
+import events.Heartbeat;
 import events.UnitMoving;
 import events.UnitStopped;
 import structures.GameState;
@@ -43,10 +44,6 @@ public class UnitMovingState extends State {
         		aiUnitMove(out, gameState);
         	}
         }
-        else
-        {
-        	//do nothing
-        }
     }
     
     private void unitMove(ActorRef out,GameState gameState)
@@ -61,17 +58,17 @@ public class UnitMovingState extends State {
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
         	Unit unit2=gameState.board.getTile(targetX,startY).getUnit();
-        	if(null==unit1&&null!=unit2&&unit2.isAi())
+        	if((unit1==null)||(!unit1.isAi()))
         	{
         		startTile.clearUnit();
-        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
         	    selectedUnit.setMovement(false);
         	}
-        	else if(null!=unit1&&null==unit2&&unit1.isAi())
+        	else if((unit2==null)||(!unit2.isAi()))
         	{
             	//Depend on the unit is ai or not
         		startTile.clearUnit();
-                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+                BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
                 selectedUnit.setMovement(false);
         	}
         	else
@@ -144,17 +141,24 @@ public class UnitMovingState extends State {
             	//Check the unit is moved or not
 				targetTile.setUnit(selectedUnit);
                 selectedUnit.setPositionByTile(targetTile);
+				System.out.println("Exiting UnitMovingState");
                 if(gameState.currentTurn==Turn.PLAYER)
                 	gameStateMachine.setState( nextState != null? nextState : new NoSelectionState(), out, gameState);
                 else
                 	gameStateMachine.setState( nextState != null? nextState : new EndTurnState(), out, gameState);
-            }
+            } else if(event instanceof Heartbeat) {
+				if(targetTile.getUnit() != null && targetTile.getUnit() != selectedUnit) {
+					if(gameState.currentTurn == Turn.AI)
+						gameStateMachine.setState(nextState != null? nextState : new EndTurnState(), out, gameState);
+				}
+			}
     }
 
 
 
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
+		System.out.println("Entering UnitMovingState");
 		if(selectedUnit.getMovement())
 			initiateMove(out,gameState);
 			

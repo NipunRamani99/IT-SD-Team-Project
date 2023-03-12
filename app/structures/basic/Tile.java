@@ -224,4 +224,10 @@ public class Tile {
 	public Position getPosition() {
 		return new Position(tilex, tiley);
 	}
+
+	public boolean withinDistance(Unit unit) {
+		Position displacement = Position.getDisplacement(new Position(tilex, tiley), unit.getPosition());
+		if(Math.abs(displacement.tilex)<=1&&Math.abs(displacement.tiley)<=1) return true;
+		return false;
+	}
 }

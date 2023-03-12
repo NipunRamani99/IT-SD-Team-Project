@@ -1,17 +1,15 @@
 package ai.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
 import structures.statemachine.State;
 import structures.statemachine.UnitAttackState;
-import structures.statemachine.UnitSelectedState;
 import utils.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnitAttackAction implements AiAction{
 
