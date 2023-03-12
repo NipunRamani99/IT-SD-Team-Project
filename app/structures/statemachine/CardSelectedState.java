@@ -5,17 +5,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
-import events.Heartbeat;
 import events.OtherClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.*;
 
-import structures.basic.Units.Unit;
-import utils.BasicObjectBuilders;
+import structures.basic.Unit;
 import utils.Constants;
-import utils.StaticConfFiles;
 
 import java.util.List;
 

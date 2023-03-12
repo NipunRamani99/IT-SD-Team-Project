@@ -11,7 +11,7 @@ import structures.GameState;
 import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
-import structures.basic.Units.Unit;
+import structures.basic.Unit;
 import utils.Constants;
 
 import java.util.Comparator;

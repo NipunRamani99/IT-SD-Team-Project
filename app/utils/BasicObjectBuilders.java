@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import structures.basic.*;
-import structures.basic.Units.Unit;
+import structures.basic.Unit;
 
 /**
  * This class contains methods for producing basic objects from configuration files
