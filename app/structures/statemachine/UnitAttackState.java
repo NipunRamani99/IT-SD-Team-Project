@@ -69,14 +69,13 @@ public class UnitAttackState extends State{
 			System.out.println("Unit attack");
 			getUnitOnTileAttack(out, gameState);
 		}
-		else if(selectedUnit.getAttackTimes()<2&&null!=enemyUnit&&selectedUnit.getName().contains("Azurite Lion"))
+		else if(selectedUnit.getAttackTimes()<2&&null!=enemyUnit&&(selectedUnit.getName().contains("Azurite Lion")))
 		{
 			//unit can attack twice		
 			//The attack time will add
 			this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
 			if(selectedUnit.getAttackTimes()>1)
 				this.selectedUnit.setCanAttack(false);
-			
 			System.out.println("Unit attack twice");
 			getUnitOnTileAttack(out, gameState);
 		}
@@ -98,6 +97,10 @@ public class UnitAttackState extends State{
 			}
 			
 		}
+		gameState.resetBoardSelection(out);
+		gameState.resetBoardSelection(out);
+		gameState.resetCardSelection(out);
+		gameState.resetAiCardSelection(out);
 
 	}
 

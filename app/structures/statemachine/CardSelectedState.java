@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
+import events.EndTurnClicked;
 import events.EventProcessor;
 import events.OtherClicked;
 import events.TileClicked;
@@ -98,6 +99,14 @@ public class CardSelectedState extends State{
         	  gameState.resetCardSelection(out);
             System.out.println("Exiting CardSelectedState");
             gameStateMachine.setState(new NoSelectionState(), out, gameState);
+        }
+        else if(event instanceof EndTurnClicked)
+        {
+        	 gameState.resetBoardSelection(out);
+             gameState.resetCardSelection(out);
+             gameState.resetCardSelection(out);
+             if(gameState.currentTurn==Turn.PLAYER)
+            	 gameStateMachine.setState(new EndTurnState(), out, gameState);
         }
         else if(gameState.currentTurn==Turn.AI) 
         {

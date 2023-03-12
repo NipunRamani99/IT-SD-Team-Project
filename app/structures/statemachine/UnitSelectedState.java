@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
+import events.EndTurnClicked;
 import events.EventProcessor;
 import events.OtherClicked;
 import events.TileClicked;
@@ -87,7 +88,15 @@ public class UnitSelectedState extends State{
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
                 gameStateMachine.setState(new NoSelectionState(), out, gameState);
-            } else {
+            } 
+            else if(event instanceof EndTurnClicked)
+            {
+            	 gameState.resetBoardSelection(out);
+                 gameState.resetCardSelection(out);
+                 gameState.resetCardSelection(out);
+                 if(gameState.currentTurn==Turn.PLAYER)
+                	 gameStateMachine.setState(new EndTurnState(), out, gameState);
+            }else {
                 System.out.println("UnitSelectedState: Invalid Event");
             }
         }
@@ -101,7 +110,7 @@ public class UnitSelectedState extends State{
             skip = true;
             return;
         }
-    	if(gameState.currentTurn==Turn.PLAYER)
+        if(gameState.currentTurn==Turn.PLAYER)
             if(null!=this.tileClicked.getUnit()&&!this.tileClicked.getUnit().isAi())
     	    	highlightSurroundingTiles(out, this.tileClicked.getTilex(), this.tileClicked.getTiley(), tileClicked, gameState);
 
@@ -216,6 +225,7 @@ public class UnitSelectedState extends State{
             return false;
         })).forEach((unit -> {
             gameState.board.getTile(unit.getPosition()).setTileState(TileState.Occupied);
+            BasicCommands.drawTile(out, gameState.board.getTile(unit.getPosition()),2);
         }));
 }
 }  
