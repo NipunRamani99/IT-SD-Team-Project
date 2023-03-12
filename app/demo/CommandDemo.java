@@ -1,12 +1,5 @@
 package demo;
 
-import akka.actor.ActorRef;
-import commands.BasicCommands;
-import structures.basic.*;
-import structures.basic.Units.Unit;
-import utils.BasicObjectBuilders;
-import utils.StaticConfFiles;
-
 /**
  * This class contains an illustration of calling all of the commands provided
  * in the ITSD Card Game Template

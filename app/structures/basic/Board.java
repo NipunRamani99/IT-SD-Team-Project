@@ -1,5 +1,4 @@
 package structures.basic;
-import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -244,4 +243,27 @@ public class Board {
     public List<Tile> getTiles() {
         return tiles;
     }
+
+	public boolean hasAiUnitAtTile(int tileX, int tileY) {
+		Unit unit = getTile(tileX, tileY).getUnit();
+		return unit != null && unit.isAi();
+	}
+
+	public boolean hasPlayerUnitAtTile(int tileX, int tileY) {
+		Unit unit = getTile(tileX, tileY).getUnit();
+		return unit != null && !unit.isAi();
+	}
+
+	public boolean isTileEmpty(int tileX, int tileY) {
+		return getTile(tileX, tileY).getUnit() == null;
+	}
+
+	public boolean playerCanTraverse(int tileX, int tileY) {
+		return isTileEmpty(tileX, tileY) || hasPlayerUnitAtTile(tileX, tileY);
+	}
+
+	public boolean aiCanTraverse(int tileX, int tileY) {
+		return isTileEmpty(tileX, tileY) || hasAiUnitAtTile(tileX, tileY);
+	}
+
 }

@@ -5,17 +5,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
-import events.Heartbeat;
 import events.OtherClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.*;
 
-import structures.basic.Units.Unit;
-import utils.BasicObjectBuilders;
+import structures.basic.Unit;
 import utils.Constants;
-import utils.StaticConfFiles;
 
 import java.util.List;
 
@@ -91,7 +88,6 @@ public class CardSelectedState extends State{
             }
         } else if(event instanceof CardClicked) {
             System.out.println("CardSelectedState: Card Clicked");
-            cardClickedTilesHighlight(out, gameState);
             State s = new CardSelectedState(out, message, gameState);
             s.setNextState(nextState);
             System.out.println("Exiting CardSelectedState");
@@ -250,9 +246,6 @@ public class CardSelectedState extends State{
                                 if (surroundingTile.getUnit() == null) {
                                     surroundingTile.setTileState(TileState.Reachable);
                                     BasicCommands.drawTile(out, surroundingTile, 1);
-                                } else if (surroundingTile.getUnit() != null && surroundingTile.getUnit().isAi()) {
-                                    surroundingTile.setTileState(TileState.Occupied);
-                                    BasicCommands.drawTile(out, surroundingTile, 2);
                                 }
                             }
                         }

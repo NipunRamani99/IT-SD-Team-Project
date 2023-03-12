@@ -11,7 +11,7 @@ import structures.GameState;
 import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
-import structures.basic.Units.Unit;
+import structures.basic.Unit;
 import utils.Constants;
 
 import java.util.Comparator;
@@ -97,7 +97,7 @@ public class UnitSelectedState extends State{
     public void enter(ActorRef out, GameState gameState) {
         gameState.resetBoardSelection(out);
         gameState.resetCardSelection(out);
-        if(!unitClicked.getMovement() && !unitClicked.canAttack() ) {
+        if((!unitClicked.getMovement() && !unitClicked.canAttack()) || unitClicked.isAi()) {
             skip = true;
             return;
         }
@@ -115,12 +115,12 @@ public class UnitSelectedState extends State{
     public void highlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile tileClicked, GameState gameState) {
         if(!unitClicked.getMovement() && unitClicked.canAttack()) {
             gameState.board.getUnits().stream()
-                    .filter(unit -> { return unit.withinDistance(unitClicked);})
+                    .filter(unit -> { return unit.isAi() && unit.withinDistance(unitClicked);})
                     .map(Unit::getPosition)
                     .map(pos -> { return gameState.board.getTile(pos);})
                     .forEach(tile -> {
                         tile.setTileState(TileState.Occupied);
-                        BasicCommands.drawTile(out, tile, 1);
+                        BasicCommands.drawTile(out, tile, 2);
                     });
             return;
         }
@@ -152,44 +152,56 @@ public class UnitSelectedState extends State{
 
         int x = tilex - 2;
         if(x >= 0) {
-            boolean occupied = gameState.board.getTile(x + 1, tiley).getUnit() != null;
-            if(!occupied) {
+            if(gameState.board.playerCanTraverse(x + 1, tiley)) {
                 TileState tileState = TileState.Reachable;
-                if(gameState.board.getTile(x, tiley).getUnit() != null)
+                if(gameState.board.hasAiUnitAtTile(x, tiley)) {
                     tileState = TileState.Occupied;
+                }
+                if(gameState.board.hasPlayerUnitAtTile(x, tiley)) {
+                    tileState = TileState.None;
+                }
                 gameState.board.getTile(x, tiley).setTileState(tileState);
-                BasicCommands.drawTile(out, gameState.board.getTile(x,tiley), tileState.ordinal());
+                BasicCommands.drawTile(out, gameState.board.getTile(x, tiley), tileState.ordinal());
             }
         }
         x = tilex + 2;
         if(x < Constants.BOARD_WIDTH) {
-            boolean occupied = gameState.board.getTile(x - 1, tiley).getUnit() != null;
-            if(!occupied) {
+            if(gameState.board.playerCanTraverse(x - 1, tiley)) {
                 TileState tileState = TileState.Reachable;
-                if(gameState.board.getTile(x, tiley).getUnit() != null)
+                if(gameState.board.hasAiUnitAtTile(x, tiley)) {
                     tileState = TileState.Occupied;
+                }
+                if(gameState.board.hasPlayerUnitAtTile(x, tiley)) {
+                    tileState = TileState.None;
+                }
                 gameState.board.getTile(x, tiley).setTileState(tileState);
-                BasicCommands.drawTile(out, gameState.board.getTile(x,tiley),tileState.ordinal());
+                BasicCommands.drawTile(out, gameState.board.getTile(x, tiley), tileState.ordinal());
             }
         }
         int y = tiley - 2;
         if(y >= 0) {
-            boolean occupied = gameState.board.getTile(tilex, y + 1).getUnit() != null;
-            if(!occupied) {
+            if(gameState.board.playerCanTraverse(tilex, y + 1)) {
                 TileState tileState = TileState.Reachable;
-                if(gameState.board.getTile(tilex, y).getUnit() != null)
+                if(gameState.board.hasAiUnitAtTile(tilex, y)) {
                     tileState = TileState.Occupied;
+                }
+                if(gameState.board.hasPlayerUnitAtTile(tilex, y)) {
+                    tileState = TileState.None;
+                }
                 gameState.board.getTile(tilex, y).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
             }
         }
         y = tiley + 2;
         if(y < Constants.BOARD_HEIGHT) {
-            boolean occupied = gameState.board.getTile(tilex, y - 1).getUnit() != null;
-            if(!occupied) {
+            if(gameState.board.playerCanTraverse(tilex, y - 1)) {
                 TileState tileState = TileState.Reachable;
-                if(gameState.board.getTile(tilex, y).getUnit() != null)
+                if(gameState.board.hasAiUnitAtTile(tilex, y)) {
                     tileState = TileState.Occupied;
+                }
+                if(gameState.board.hasPlayerUnitAtTile(tilex, y)) {
+                    tileState = TileState.None;
+                }
                 gameState.board.getTile(tilex, y).setTileState(tileState);
                 BasicCommands.drawTile(out, gameState.board.getTile(tilex, y), tileState.ordinal());
             }

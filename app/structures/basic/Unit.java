@@ -1,13 +1,7 @@
-package structures.basic.Units;
+package structures.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import structures.basic.*;
-
-import java.io.File;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is a representation of a Unit on the game board.
@@ -216,7 +210,7 @@ public class Unit {
 	public int getDistance(Unit unit) {
 		Position a = position;
 		Position b = unit.getPosition();
-		return Math.abs(a.tilex - b.tilex) + Math.abs(a.tiley - b.tiley);
+		return Math.abs(a.getTilex() - b.getTilex()) + Math.abs(a.getTiley() - b.getTiley());
 	}
 
 	public Position getDisplacement(Unit unit) {
@@ -239,16 +233,6 @@ public class Unit {
 	public void setCanAttack(boolean canAttack) {
 		this.canAttack = canAttack;
 	}
-	
-//	public boolean canMove()
-//	{
-//		return canMove;
-//	}
-//	
-//	public void setCanMove(boolean canMove)
-//	{
-//		this.canMove=canMove;
-//	}
 
 	public void setMovement(boolean movement) {
 		this.movement = movement;

@@ -7,7 +7,7 @@ import ai.AIPlayer;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Position;
-import structures.basic.Units.Unit;
+import structures.basic.Unit;
 import structures.statemachine.CastCard;
 import structures.basic.*;
 

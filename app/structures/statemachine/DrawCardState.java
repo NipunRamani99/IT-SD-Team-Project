@@ -6,6 +6,7 @@ import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
 import events.Heartbeat;
+import events.TileClicked;
 import org.checkerframework.checker.units.qual.C;
 import structures.GameState;
 import structures.Turn;
@@ -27,7 +28,7 @@ public class DrawCardState extends State {
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
                             GameStateMachine gameStateMachine) {
         if(cardCasted) {
-            System.out.println("Exiting DrawCardState");
+            System.out.println("Exiting DrawCardState 30");
 
             gameState.currentTurn = Turn.AI;
             AIState aiState = new AIState();
@@ -35,11 +36,16 @@ public class DrawCardState extends State {
             nextState = aiState;
             gameStateMachine.setState(nextState, out,gameState);
         } else if(event instanceof CardClicked) {
-            System.out.println("Exiting DrawCardState");
+            System.out.println("Exiting DrawCardState 38");
             gameState.currentTurn = Turn.PLAYER;
             State state = new CardSelectedState(out, message, gameState);
             state.setNextState(new DrawCardState(true));
             gameStateMachine.setState(state, out, gameState);
+        } else if(event instanceof TileClicked) {
+            BasicCommands.addPlayer1Notification(out, "Player Draws No Card", 1);
+            System.out.println("Exiting DrawCardState 46");
+            gameState.currentTurn = Turn.AI;
+            gameStateMachine.setState(new DrawCardState(true), out, gameState);
         }
     }
 

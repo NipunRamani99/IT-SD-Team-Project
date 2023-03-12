@@ -37,126 +37,133 @@ public class CastCard {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState){  	
-    	//Transform the card into units
-//    	Unit unit = null;
+    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+		//Transform the card into units
+		Unit unit = null;
 
-    	String cardName = card.getCardname();
-    	switch(cardName)
-    	{
-    	  case "Azure Herald":
-	    	  unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
-	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-    	  case "Azurite Lion":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id, Unit.class);
-	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion,gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-    	  case "Comodo Charger":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger,gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-    	  case "Fire Spitter":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter,gameState.id, Unit.class);
-	    	 // card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter,gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-    	  case "Hailstone Golem":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-    	  case "Ironcliff Guardian":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;	  
-    	  case "Pureblade Enforcer":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-     	  case "Silverguard Knight":
-	    	  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-	    	  break;
-     	  case "Blaze Hound":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_blaze_hound, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "Bloodshard Golem":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_bloodshard_golem, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "Planar Scout":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_planar_scout, gameState.id, Unit.class);
-	    	//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_planar_scout, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "Pyromancer":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, gameState.id, Unit.class);
-	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pyromancer, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "Rock Pulveriser":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_rock_pulveriser, gameState.id, Unit.class);
-	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "Serpenti":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_serpenti, gameState.id, Unit.class);
-	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_serpenti, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-     	  case "WindShrike":
-     		  unit=BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, gameState.id, Unit.class);
-	    //	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, gameState.id, Card.class);
-	    	  unit.setHealth(card.getBigCard().getHealth());
-	    	  unit.setAttack(card.getBigCard().getAttack());
-     		  break;
-	      default:
-	    	  break;	    
-    	}
+		String cardName = card.getCardname();
+		switch (cardName) {
+			case "Azure Herald":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azure_herald, gameState.id, Unit.class);
+				// card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Azurite Lion":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_azurite_lion, gameState.id, Unit.class);
+				// card = BasicObjectBuilders.loadCard(StaticConfFiles.c_azurite_lion,gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Comodo Charger":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_comodo_charger, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger,gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Fire Spitter":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter, gameState.id, Unit.class);
+				// card = BasicObjectBuilders.loadCard(StaticConfFiles.c_fire_spitter,gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Hailstone Golem":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golem, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_hailstone_golem, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Ironcliff Guardian":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_ironcliff_guardian, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian,gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Pureblade Enforcer":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Silverguard Knight":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_silverguard_knight, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Blaze Hound":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_blaze_hound, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_blaze_hound, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Bloodshard Golem":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_bloodshard_golem, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Planar Scout":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_planar_scout, gameState.id, Unit.class);
+				//  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_planar_scout, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Pyromancer":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, gameState.id, Unit.class);
+				//	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_pyromancer, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Rock Pulveriser":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_rock_pulveriser, gameState.id, Unit.class);
+				//	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "Serpenti":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_serpenti, gameState.id, Unit.class);
+				//	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_serpenti, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			case "WindShrike":
+				unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, gameState.id, Unit.class);
+				//	  card = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, gameState.id, Card.class);
+				unit.setHealth(card.getBigCard().getHealth());
+				unit.setAttack(card.getBigCard().getAttack());
+				break;
+			default:
+				break;
+		}
 
-    	gameState.id++;
+		gameState.id++;
 		unit.setName(cardName);
-    	placeUnit(gameState, unit, tile, out);
-    	tile.setTileState(TileState.Occupied);
-   	    //add attack and health to the unit
-    	try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+		placeUnit(gameState, unit, tile, out);
+		tile.setTileState(TileState.Occupied);
+		//add attack and health to the unit
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-    	
-    	
-    	//update the position
-    	updatePosition(out, card, gameState);
-    	//update the player mana;
-    	updatePlayerMana(out, card, gameState);
+
+
+		//update the position
+		updatePosition(out, card, gameState);
+		//update the player mana;
+		updatePlayerMana(out, card, gameState);
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-
+	}
     public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
     	//Transform the card into units
     	String spellName = null;
