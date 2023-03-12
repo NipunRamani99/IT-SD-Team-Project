@@ -45,7 +45,7 @@ public class PursueAction implements AiAction {
                 if(surroundingTile == aiUnitTile)
                     continue;
                 if (surroundingTile != null) {
-                    if(surroundingTile.getUnit() == null ) {
+                    if(surroundingTile.getUnit() == null) {
                         surroundingTile.setTileState(TileState.Reachable);
                         reachableTiles.add(surroundingTile);
                     }
@@ -70,32 +70,32 @@ public class PursueAction implements AiAction {
 
             int x = tilex - 2;
             if(x >= 0) {
-                boolean occupied = gameState.board.getTile(x + 1, tiley).getUnit() != null;
-                if(!occupied) {
+                boolean traversable = gameState.board.aiCanTraverse(x + 1, tiley);
+                if(traversable) {
                     if(gameState.board.getTile(x, tiley).getUnit() == null)
                         reachableTiles.add(gameState.board.getTile(x, tiley));
                 }
             }
             x = tilex + 2;
             if(x < Constants.BOARD_WIDTH) {
-                boolean occupied = gameState.board.getTile(x - 1, tiley).getUnit() != null;
-                if(!occupied) {
+                boolean traversable = gameState.board.aiCanTraverse(x - 1, tiley);
+                if(traversable) {
                     if(gameState.board.getTile(x, tiley).getUnit() == null)
                         reachableTiles.add(gameState.board.getTile(x, tiley));
                 }
             }
             int y = tiley - 2;
             if(y >= 0) {
-                boolean occupied = gameState.board.getTile(tilex, y + 1).getUnit() != null;
-                if(!occupied) {
+                boolean traversable = gameState.board.aiCanTraverse(tilex, y + 1);
+                if(!traversable) {
                     if(gameState.board.getTile(tilex, y).getUnit() == null)
                         reachableTiles.add(gameState.board.getTile(tilex, y));
                 }
             }
             y = tiley + 2;
             if(y < Constants.BOARD_HEIGHT) {
-                boolean occupied = gameState.board.getTile(tilex, y - 1).getUnit() != null;
-                if(!occupied) {
+                boolean traversable = gameState.board.aiCanTraverse(tilex, y - 1);
+                if(!traversable) {
                     if(gameState.board.getTile(tilex, y).getUnit() == null)
                         reachableTiles.add(gameState.board.getTile(tilex,y));
                 }

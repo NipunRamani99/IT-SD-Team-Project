@@ -27,35 +27,6 @@ import structures.statemachine.GameStateMachine;
  *
  */
 public class TileClicked implements EventProcessor{
-	/**
-	 * This method will search the neighboring tiles of a unit and returns a list of tile which are reachable by it.
-	 * @param unit
-	 * @param position
-	 * @param gameState
-	 * @return List of tiles that are reachable.
-	 */
-
-	//The position get when click the tile
-	private Position position= new Position(2,2);
-
-	//The tile that clicked;
-	private Tile tile;
-
-	//The x position of the clicked tile
-	private int tilex;
-
-	//The y position of the clicked tile
-	private int tiley;
-
-	//Get the position 
-	public Position getPosition()
-	{
-	    return this.position;
-	}
-
-	public List<Tile> getReachableTiles(Unit unit, Position position, GameState gameState) {
-		return Collections.emptyList();
-	}
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
@@ -72,21 +43,4 @@ public class TileClicked implements EventProcessor{
 		gameStateMachine.processInput(out, gameState, message,this);
 
 	}
-
-	//Get the tile
-	public Tile getClickedTile()
-	{
-		return this.tile;
-	}
-
-	public int getTileX()
-	{
-		return this.tilex;
-	}
-
-	public int getTileY()
-	{
-		return this.tiley;
-	}
-
 }

@@ -88,7 +88,6 @@ public class CardSelectedState extends State{
             }
         } else if(event instanceof CardClicked) {
             System.out.println("CardSelectedState: Card Clicked");
-            cardClickedTilesHighlight(out, gameState);
             State s = new CardSelectedState(out, message, gameState);
             s.setNextState(nextState);
             System.out.println("Exiting CardSelectedState");
@@ -247,9 +246,6 @@ public class CardSelectedState extends State{
                                 if (surroundingTile.getUnit() == null) {
                                     surroundingTile.setTileState(TileState.Reachable);
                                     BasicCommands.drawTile(out, surroundingTile, 1);
-                                } else if (surroundingTile.getUnit() != null && surroundingTile.getUnit().isAi()) {
-                                    surroundingTile.setTileState(TileState.Occupied);
-                                    BasicCommands.drawTile(out, surroundingTile, 2);
                                 }
                             }
                         }
