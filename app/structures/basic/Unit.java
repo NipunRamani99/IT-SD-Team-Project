@@ -41,7 +41,15 @@ public class Unit {
 
 	private boolean canAttack = true;	
 
-	private boolean secondAttackUsed = false;
+	private int attackTimes=0;
+
+	public int getAttackTimes() {
+		return attackTimes;
+	}
+
+	public void setAttackTimes(int attackTimes) {
+		this.attackTimes = attackTimes;
+	}
 
 	private boolean movement = true;
 	
@@ -250,11 +258,4 @@ public class Unit {
 		this.name = name;
 	}
 
-	public boolean isSecondAttackUsed() {
-		return secondAttackUsed;
-	}
-
-	public void setSecondAttackUsed(boolean secondAttackUsed) {
-		this.secondAttackUsed = secondAttackUsed;
-	}
 }

@@ -9,7 +9,7 @@ import events.EventProcessor;
 import events.Heartbeat;
 import structures.GameState;
 import structures.Turn;
-import structures.basic.Unit;
+import structures.basic.*;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
 
@@ -18,8 +18,6 @@ public class UnitAttackState extends State{
 	private Unit selectedUnit = null;
 
 	private Unit enemyUnit = null;
-	
-	private boolean counterAttack=true;
 
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
 	{
@@ -39,9 +37,6 @@ public class UnitAttackState extends State{
 
 		this.selectedUnit = selectedUnit;	
 		this.enemyUnit =targetTile.getUnit();
-		if(!reactAttack && selectedUnit.canAttack()) {
-			this.counterAttack=true;
-		}
 	}
 	
 	@Override
@@ -65,10 +60,25 @@ public class UnitAttackState extends State{
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 		System.out.println("Entering UnitAttackState");
-		if(selectedUnit.canAttack()&&null!=enemyUnit)
+		if(selectedUnit.getAttackTimes()<1&&null!=enemyUnit)
 		{
 			//make sure every unit can attack once
+			
+			//The attack time will add
+			this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
+			this.selectedUnit.setCanAttack(false);
 			System.out.println("Unit attack");
+			getUnitOnTileAttack(out, gameState);
+		}
+		else if(selectedUnit.getAttackTimes()<2&&null!=enemyUnit&&selectedUnit.getName().contains("Azurite Lion"))
+		{
+			//unit can attack twice		
+			//The attack time will add
+			this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
+			if(selectedUnit.getAttackTimes()>1)
+				this.selectedUnit.setCanAttack(false);
+			
+			System.out.println("Unit attack twice");
 			getUnitOnTileAttack(out, gameState);
 		}
 		if(null==enemyUnit)
@@ -113,9 +123,11 @@ public class UnitAttackState extends State{
 		BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
-		this.selectedUnit.setCanAttack(false);
+		
  		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
-		unitAttack(out, this.enemyUnit, attackHealth, gameState);		
+ 		
+ 		unitAttack(out, this.enemyUnit, attackHealth, gameState);	
+ 		//for attack back
 		if(this.enemyUnit.isAttackBack())
   		  attackBack(out, this.enemyUnit,this.selectedUnit, gameState);
 	}

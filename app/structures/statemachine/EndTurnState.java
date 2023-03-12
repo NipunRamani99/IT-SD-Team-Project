@@ -22,6 +22,7 @@ public class EndTurnState extends State{
 		 gameState.board.getUnits().forEach(unit -> {unit.setCanAttack(true);});
 		 gameState.board.getUnits().forEach(unit -> {unit.setMovement(true);});
 		 gameState.board.getUnits().forEach(unit -> {unit.setAttackBack(true);});
+		 gameState.board.getUnits().forEach(unit -> {unit.setAttackTimes(0);});
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {		 
 			 gameState.currentTurn = Turn.AI;
