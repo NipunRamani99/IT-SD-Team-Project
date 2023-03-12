@@ -62,8 +62,7 @@ public class UnitAttackState extends State{
 		System.out.println("Entering UnitAttackState");
 		if(selectedUnit.getAttackTimes()<1&&null!=enemyUnit)
 		{
-			//make sure every unit can attack once
-			
+			//make sure every unit can attack once			
 			//The attack time will add
 			this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
 			this.selectedUnit.setCanAttack(false);
