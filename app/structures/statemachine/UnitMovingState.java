@@ -25,7 +25,6 @@ public class UnitMovingState extends State {
 		this.startTile = startTile;
 		this.targetTile = targetTile;
 	}
-//<<<<<<< HEAD
 	
     private void initiateMove(ActorRef out, GameState gameState ) {
      

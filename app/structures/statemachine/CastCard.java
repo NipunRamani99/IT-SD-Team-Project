@@ -141,6 +141,7 @@ public class CastCard {
 
     	gameState.id++;
 		unit.setName(cardName);
+		AbilityCommands.useAbility(out, unit, gameState);
     	placeUnit(gameState, unit, tile, out);
     	tile.setTileState(TileState.Occupied);
    	    //add attack and health to the unit
@@ -249,10 +250,14 @@ public class CastCard {
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
     	//set the unit to the tile
+    	if(gameState.currentTurn==Turn.PLAYER) {
     	tile.setUnit(unit);   	
+    	}
 		gameState.board.addUnit(unit);
-		if(gameState.currentTurn==Turn.AI)
-			unit.setAi(true);	
+		if(gameState.currentTurn==Turn.AI) {
+			unit.setAi(true);
+			tile.setAiUnit(unit);
+		}
     	//when first placed, the unit can not attack and move
     	unit.setCanAttack(false);
     	unit.setCanMove(false);
@@ -269,6 +274,10 @@ public class CastCard {
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
 		
+		//use BUFF_UNIT_ON_ENEMY_SPELL
+		if(gameState.currentTurn==Turn.AI) {
+			AbilityCommands.BUFF_UNIT_ON_ENEMY_SPELL(out, gameState);
+		}
 		//update the position
     	updatePosition(out, card, gameState);
     	
@@ -336,12 +345,14 @@ public class CastCard {
     public static void updatePosition(ActorRef out, Card card, GameState gameState)
     {
     	int handPosition=0;
-    	handPosition=card.getCardPosition();
-        BasicCommands.deleteCard(out, handPosition);
-        if(gameState.currentTurn==Turn.AI)
-        	gameState.board.deleteAiCard(handPosition);
-        else
+    	handPosition=card.getCardPosition();        
+        if(gameState.currentTurn==Turn.PLAYER) {
         	gameState.board.deleteCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }else if(gameState.currentTurn==Turn.AI) {
+        	gameState.board.deleteAiCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }
         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     }
 }

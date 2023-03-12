@@ -2,6 +2,8 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EventProcessor;
@@ -12,6 +14,7 @@ import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
+import structures.basic.UnitAbility;
 import utils.Constants;
 
 public class UnitSelectedState extends State{
@@ -44,13 +47,20 @@ public class UnitSelectedState extends State{
             } else if (tile.getTileState() == TileState.Reachable) {
                 gameState.resetBoardSelection(out);
                 System.out.println("UnitSelectedState: Reachable Tile Clicked");
-                gameStateMachine.setState(new UnitMovingState(unitClicked, tileClicked, tile), out, gameState);
+                //check if the unit is provoked
+                AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                if(!unitClicked.isIsProvoked()) {
+                	gameStateMachine.setState(new UnitMovingState(unitClicked, tileClicked, tile), out, gameState);
+                }
             }
           
             else if(tile.getTileState()==TileState.Occupied)
             {
             	if(null!=tile.getAiUnit())
             	{
+            		if (unitClicked.isHasRanged()) {
+                        gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                        }else {
                     int distance = Tile.distance(tile, tileClicked);
                     if(distance == 2) {
                     	//X axis moving
@@ -58,10 +68,17 @@ public class UnitSelectedState extends State{
                             int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
+                            //check if the unit is provoked
+                            AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                            if(!unitClicked.isIsProvoked()) {
+                            	State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	moveState.setNextState(attackState);
+                            	gameStateMachine.setState(moveState, out, gameState);
+                            }else if(tile.getAiUnit().isHasProvoke()){
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	gameStateMachine.setState(attackState, out, gameState);
+                            }
                         }
                         //Y axis moving
                         else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
@@ -69,16 +86,27 @@ public class UnitSelectedState extends State{
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
+                            //check if the unit is provoked
+                            AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                            if(!unitClicked.isIsProvoked()) {
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            	moveState.setNextState(attackState);
+                            	gameStateMachine.setState(moveState, out, gameState);
+                            }else if(tile.getAiUnit().isHasProvoke()){
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	gameStateMachine.setState(attackState, out, gameState);
+                            }
                         }
                         else
                         {
                         	//Only attack without moving
+                        	//check if the unit is provoked
+                            AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                            if(!unitClicked.isIsProvoked() || tile.getAiUnit().isHasProvoke()) {
                         	State attackState = new UnitAttackState(unitClicked, tile, false, true);
                             gameStateMachine.setState(attackState, out, gameState);
+                            }
                         }                      
                     } 
                     else if(distance == 3)
@@ -88,20 +116,34 @@ public class UnitSelectedState extends State{
                         	int diffX = tile.getTilex() - tileClicked.getTilex();
                             diffX = diffX/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex()+ diffX , tileClicked.getTiley());
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
+                            //check if the unit is provoked
+                            AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                            if(!unitClicked.isIsProvoked()) {
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            	moveState.setNextState(attackState);
+                            	gameStateMachine.setState(moveState, out, gameState);
+                            }else if(tile.getAiUnit().isHasProvoke()){
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	gameStateMachine.setState(attackState, out, gameState);
+                            }
                         }
                         else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 1&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
                         {
                         	int diffY = tile.getTiley() - tileClicked.getTiley();
                             diffY = diffY/2;
                             Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
-                            State attackState = new UnitAttackState(unitClicked, tile, false, true);
-                            State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
-                            moveState.setNextState(attackState);
-                            gameStateMachine.setState(moveState, out, gameState);
+                            //check if the unit is provoked
+                            AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                            if(!unitClicked.isIsProvoked()) {
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
+                            	moveState.setNextState(attackState);
+                            	gameStateMachine.setState(moveState, out, gameState);
+                            }else if(tile.getAiUnit().isHasProvoke()){
+                            	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                            	gameStateMachine.setState(attackState, out, gameState);
+                            }
                         }
                         else
                         {
@@ -119,11 +161,15 @@ public class UnitSelectedState extends State{
                     }
                     else {
                         System.out.println("Get the Ai unit");
+                      //check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked() || tile.getAiUnit().isHasProvoke()) {
                         gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                        }
                     }
                     gameState.resetBoardSelection(out);
             	}
-
+            }
             }
         } else if(event instanceof CardClicked) {
             gameState.resetBoardSelection(out);
@@ -140,17 +186,27 @@ public class UnitSelectedState extends State{
         	Tile tile = gameState.board.getTile(unitClicked.getPosition());
         	if(null!=tile.getAiUnit())
         	{
+        		if (unitClicked.isHasRanged()) {
+                    gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                    }else {
                 int distance = Tile.distance(tile, tileClicked);
                 if(distance == 2) {
                 	//X axis moving
-                    if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2) {
+                    if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2) {                   
                         int diffX = tile.getTilex() - tileClicked.getTilex();
                         diffX = diffX/2;
                         Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() + diffX, tileClicked.getTiley());
+                        //check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked()) {
                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                         State attackState = new UnitAttackState(unitClicked, tile, false, true);
                         moveState.setNextState(attackState);
                         gameStateMachine.setState(moveState, out, gameState);
+                        }else if(tile.getUnit().isHasProvoke()){
+                        	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        	gameStateMachine.setState(attackState, out, gameState);
+                        }
                     }
                     //Y axis moving
                     else if(Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
@@ -158,39 +214,64 @@ public class UnitSelectedState extends State{
                     	int diffY = tile.getTiley() - tileClicked.getTiley();
                         diffY = diffY/2;
                         Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                      //check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked()) {
                         State attackState = new UnitAttackState(unitClicked, tile, false, true);
                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                         moveState.setNextState(attackState);
                         gameStateMachine.setState(moveState, out, gameState);
+                        }else if(tile.getUnit().isHasProvoke()){
+                        	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        	gameStateMachine.setState(attackState, out, gameState);
+                        }
                     }
                     else
                     {
                     	//Only attack without moving
+                    	//check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked() || tile.getUnit().isHasProvoke()) {
                     	State attackState = new UnitAttackState(unitClicked, tile, false, true);
                         gameStateMachine.setState(attackState, out, gameState);
+                        }
                     }                      
                 } 
-                else if(distance == 3)
+                else if(distance == 3)                	
                 {
                     if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 2&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 1)
                     {
                     	int diffX = tile.getTilex() - tileClicked.getTilex();
                         diffX = diffX/2;
                         Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex()+ diffX , tileClicked.getTiley());
+                      //check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked()) {
                         State attackState = new UnitAttackState(unitClicked, tile, false, true);
                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                         moveState.setNextState(attackState);
                         gameStateMachine.setState(moveState, out, gameState);
+                        }else if(tile.getUnit().isHasProvoke()){
+                        	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        	gameStateMachine.setState(attackState, out, gameState);
+                        }
                     }
                     else if(Math.abs(tile.getTilex() - tileClicked.getTilex()) == 1&&Math.abs(tile.getTiley() - tileClicked.getTiley()) == 2)
                     {
                     	int diffY = tile.getTiley() - tileClicked.getTiley();
                         diffY = diffY/2;
                         Tile adjacentTile = gameState.board.getTile(tileClicked.getTilex() , tileClicked.getTiley()+ diffY);
+                      //check if the unit is provoked
+                        AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                        if(!unitClicked.isIsProvoked()) {
                         State attackState = new UnitAttackState(unitClicked, tile, false, true);
                         State moveState = new UnitMovingState(unitClicked, tileClicked, adjacentTile);
                         moveState.setNextState(attackState);
                         gameStateMachine.setState(moveState, out, gameState);
+                        }else if(tile.getUnit().isHasProvoke()){
+                        	State attackState = new UnitAttackState(unitClicked, tile, false, true);
+                        	gameStateMachine.setState(attackState, out, gameState);
+                        }
                     }
                     else
                     {
@@ -208,10 +289,15 @@ public class UnitSelectedState extends State{
                 }
                 else {
                     System.out.println("Get the unit");
+                  //check if the unit is provoked
+                    AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                    if(!unitClicked.isIsProvoked() || tile.getUnit().isHasProvoke()) {
                     gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                    }
                 }
                 gameState.resetBoardSelection(out);
         	}
+        }
         }
         else {
             System.out.println("UnitSelectedState: Invalid Event");
@@ -241,7 +327,7 @@ public class UnitSelectedState extends State{
     }
 
     public void highlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile tileClicked, GameState gameState) {
-
+    	if(!unitClicked.isHasFlying()) {
         for(int i = -1; i <=1; i++ ) {
             for(int j = -1; j <= 1; j++) {
                 int x = tilex + i;
@@ -269,7 +355,32 @@ public class UnitSelectedState extends State{
                 }
             }
         }
-
+    	}else if(unitClicked.isHasFlying()) {
+    		for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+        		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {   		
+                    Tile surroundingTile = gameState.board.getTile(i, j);
+                    if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                    	 surroundingTile.setTileState(TileState.Reachable);
+                         BasicCommands.drawTile(out, surroundingTile, 1);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+        		}
+        	}
+        }
+    	}
+       
+        //check if has ranged ability
+        if(unitClicked.isHasRanged()) {
+            for (int i = 0; i < Constants.BOARD_WIDTH; i++) {
+                for (int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+                    Tile aiTile = gameState.board.getTile(i, j);
+                    if (null != aiTile.getAiUnit()) {
+                        aiTile.setTileState(TileState.Occupied);
+                        BasicCommands.drawTile(out, aiTile, 2);
+                    }
+                }
+            }
+        }
+       if(!unitClicked.isHasFlying()) {
         int x = tilex - 2;
         if(x >= 0) {
             boolean occupied = gameState.board.getTile(x + 1, tiley).getAiUnit() != null;
@@ -394,7 +505,7 @@ public class UnitSelectedState extends State{
             		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
             	}
             }
-        }
+        }}
     }
     
     
@@ -407,6 +518,7 @@ public class UnitSelectedState extends State{
  * @param gameState
  */
 public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile tileClicked, GameState gameState) {
+	if(!unitClicked.isHasFlying()) {
     for(int i = -1; i <=1; i++ ) {
         for(int j = -1; j <= 1; j++) {
             int x = tilex + i;
@@ -434,7 +546,35 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
             }
         }
     }
+	}else if(unitClicked.isHasFlying()) {
+		for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+    		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {   		
+                Tile surroundingTile = gameState.board.getTile(i, j);
+                if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                	 surroundingTile.setTileState(TileState.Reachable);
+                     BasicCommands.drawTile(out, surroundingTile, 1);
+                     try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    		}
+    	}
+    }
+	}
+    
+  //check if has ranged ability
+    if(unitClicked.isHasRanged()) {
 
+        for (int i = 0; i < Constants.BOARD_WIDTH; i++) {
+            for (int j = 0; j < Constants.BOARD_HEIGHT; j++) {
+                Tile aiTile = gameState.board.getTile(i, j);
+                if (null != aiTile.getAiUnit()) {
+                    aiTile.setTileState(TileState.Occupied);
+                    BasicCommands.drawTile(out, aiTile, 2);
+                }
+            }
+        }
+
+    }
+    
+    if(!unitClicked.isHasFlying()) {
     int x = tilex - 2;
     if(x >= 0) {
         boolean occupied = gameState.board.getTile(x + 1, tiley).getAiUnit() != null;
@@ -559,7 +699,7 @@ public void aiHighlightSurroundingTiles(ActorRef out, int tilex, int tiley, Tile
         		BasicCommands.drawTile(out, gameState.board.getTile(tilex-1, y),2);
         	}
         }
-     }
+     }}
 
 	}
 }  

@@ -3,6 +3,7 @@ package structures.statemachine;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.Attack;
 import events.EventProcessor;
@@ -33,7 +34,8 @@ public class UnitAttackState extends State{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = enemyUnit;
 		this.enemyUnit.setAttackBack(false);
-		this.selectedUnit.setAttackBack(false);
+		if(this.selectedUnit!=null) {
+		this.selectedUnit.setAttackBack(false);}
 	}
 
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
@@ -42,7 +44,9 @@ public class UnitAttackState extends State{
 		this.selectedUnit = selectedUnit;	
 		this.selectedUnit.setAttackBack(false);
 		this.enemyUnit = isPlayer ? targetTile.getAiUnit() : targetTile.getUnit();
+		if(this.enemyUnit!=null) {
 		this.enemyUnit.setAttackBack(false);
+		}
 		if(!reactAttack && selectedUnit.canAttack()) {
 			State reactState = new UnitAttackState(isPlayer ? targetTile.getAiUnit() : targetTile.getUnit(), selectedUnit);
 			if (nextState != null) {
@@ -110,6 +114,10 @@ public class UnitAttackState extends State{
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
 		unitAttack(out, enemyUnit, attackHealth, gameState);
+		//BUFF_UNIT_ON_AVATAR_DAMAGE
+		if(!selectedUnit.isAi() && selectedUnit.isAvatar()) {
+			AbilityCommands.BUFF_UNIT_ON_AVATAR_DAMAGE(out, gameState);
+		}
 	}
 	
 

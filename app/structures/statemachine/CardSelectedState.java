@@ -202,11 +202,12 @@ public class CardSelectedState extends State{
     private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
-        List<Unit> unitList = gameState.board.getUnits();
-        
+        List<Unit> unitList = gameState.board.getUnits(); 
+        //check the SUMMON_ANYWHERE ability
+        if(!AbilityCommands.checkSUMMON_ANYWHERE(cardSelected)){              
         for(Unit unit : unitList) {
         	if(!unit.isAi())
-        	{
+        	{        		
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         if(i == 0 && j == 0) continue;;
@@ -232,6 +233,23 @@ public class CardSelectedState extends State{
         	}
 
         }
+    }else {
+    	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+    		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {   		
+                Tile surroundingTile = gameState.board.getTile(i, j);
+                if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                	 surroundingTile.setTileState(TileState.Reachable);
+                     BasicCommands.drawTile(out, surroundingTile, 1);
+                     try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+    		}else if(surroundingTile.getAiUnit()!=null)
+            {
+           	 surroundingTile.setTileState(TileState.Occupied);
+                BasicCommands.drawTile(out, surroundingTile, 2);
+                try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+           }
+    	}
+    }
+    }
     }
  
     /**
@@ -243,7 +261,8 @@ public class CardSelectedState extends State{
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
-        
+      //check the SUMMON_ANYWHERE ability
+        if(!AbilityCommands.checkSUMMON_ANYWHERE(cardSelected)) {
         for(Unit unit : unitList) {
         	if(unit.isAi())
         	{
@@ -263,7 +282,19 @@ public class CardSelectedState extends State{
                     }
                 }	
         	}
-
+        }        
+    }
+        else {
+        	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+        		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {   		
+                    Tile surroundingTile = gameState.board.getTile(i, j);
+                    if(surroundingTile.getUnit() == null&&surroundingTile.getAiUnit()==null) {
+                    	 surroundingTile.setTileState(TileState.Reachable);
+                         BasicCommands.drawTile(out, surroundingTile, 1);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+        		}
+        	}
+        }
         }
     }
 

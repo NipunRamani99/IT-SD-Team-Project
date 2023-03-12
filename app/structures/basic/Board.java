@@ -132,7 +132,7 @@ public class Board {
 		}
 		
 		//Ai draw cards
-		for(int i=0;i<2;i++)
+		for(int i=0;i<0;i++)
 		{
 			aiDrawCard();
 		}
@@ -193,13 +193,8 @@ public class Board {
 		BasicCommands.setUnitAttack(out, aiUnit, 2);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, aiUnit,20);
-//<<<<<<< HEAD
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-//=======
-    //    BasicCommands.setUnitAttack(out, aiUnit2, 4);
-    //    BasicCommands.setUnitHealth(out, aiUnit2,3);
 
-//>>>>>>> origin/dev/nipun
         gameState.aiUnit = aiUnit;
     }
     

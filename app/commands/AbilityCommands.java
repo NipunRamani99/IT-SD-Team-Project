@@ -14,6 +14,7 @@ import structures.basic.UnitAbility;
 import structures.basic.UnitAbilityTable;
 import structures.basic.UnitAnimationType;
 import utils.BasicObjectBuilders;
+import utils.Constants;
 import utils.StaticConfFiles;
 
 /**
@@ -24,21 +25,62 @@ public class AbilityCommands {
     /**
      * Provoke ability
      */
-    public static void Provoke(ActorRef out, Unit unit, GameState gameState){
+    public static void checkIsProvoked(Unit unit,GameState gameState){
+    	unit.setIsProvoked(false);
+    	if (!unit.isAi()) {
+    		for (int i = -1; i <= 1; i++){
+				for (int j = -1; j <= 1; j++){
+					if (i == 0 && j == 0) continue;
+					int x = unit.getPosition().getTilex() + i;
+					int y = unit.getPosition().getTiley() + j;
+					Tile surroundingTile = gameState.board.getTile(x, y);
+					if (surroundingTile!=null) {
+					if (surroundingTile.getAiUnit() != null && surroundingTile.getAiUnit().isHasProvoke()) {
+						unit.setIsProvoked(true);
+						break;
+					}}
+				}
+			}
+    	}else if (unit.isAi()) {
+    		for (int i = -1; i <= 1; i++){
+				for (int j = -1; j <= 1; j++){
+					if (i == 0 && j == 0) continue;
+					int x = unit.getPosition().getTilex() + i;
+					int y = unit.getPosition().getTiley() + j;
+					Tile surroundingTile = gameState.board.getTile(x, y);
+					if (surroundingTile!=null) {
+					if (surroundingTile.getUnit() != null && surroundingTile.getUnit().isHasProvoke()) {
+						unit.setIsProvoked(true);
+						break;
+					}}
+				}
+			}
+    	}
+
     }
+   
 
     /**
      * Ranged ability
      */
-    public static void Ranged(){
+    public static boolean checkSUMMON_ANYWHERE(Card card){
+    	boolean hasAirDrop = false;
+    	 UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
+         List<UnitAbility> unitAbilityList = unitAbilityTable.getUnitAbilities(card.getCardname());
+         for(UnitAbility unitAbility:unitAbilityList) {
+        	 if(unitAbility==UnitAbility.SUMMON_ANYWHERE) {
+        		 hasAirDrop = true;
+        	 }
+         }
+         return hasAirDrop;
     }
 
     /**
      * HEAL_AVATAR_ON_SUMMON ability
      */
     public static void Heal_Avatar_On_Summon(ActorRef out, GameState gameState){
-    	for(int i=0;i<9;i++) {
-    		for(int j=0;j<5;j++) {
+    	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+    		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {
      			Tile tile = gameState.board.getTile(i, j);
     			Unit unit = tile.getUnit();
     			boolean isAvatar = false;
@@ -96,24 +138,67 @@ public class AbilityCommands {
     }
 
     /**
-     * Plannar Scout ability
+     * BUFF_UNIT_ON_AVATAR_DAMAGE ability
      */
-    public static void scoutAbility(){
-
+    public static void BUFF_UNIT_ON_AVATAR_DAMAGE(ActorRef out, GameState gameState){
+    	UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
+    	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+    		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {
+     			Tile tile = gameState.board.getTile(i, j);
+    			Unit unit = tile.getUnit();
+    			if(unit != null) {
+    				if(!unit.isAvatar()) {
+    					List<UnitAbility> unitAbilityList = unitAbilityTable.getUnitAbilities(unit.getName());
+    					for(UnitAbility unitAbility:unitAbilityList) {
+    						if(unitAbility == UnitAbility.BUFF_UNIT_ON_AVATAR_DAMAGE) {
+    							int attack = unit.getAttack();
+    							attack = attack+2;
+    							EffectAnimation ef = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff);
+    							BasicCommands.playEffectAnimation(out, ef, tile);
+    							unit.setAttack(attack);
+    							BasicCommands.setUnitAttack(out, unit, attack);
+    							break;
+    						}
+    					}
+    				}
+    			}   			
+    		}
+    	}
     }
 
     /**
-     * Pyromancer ability
+     * BUFF_UNIT_ON_ENEMY_SPELL ability
      */
-    public static void pyromancerAbility(){
-
+    public static void BUFF_UNIT_ON_ENEMY_SPELL(ActorRef out, GameState gameState){
+    	UnitAbilityTable unitAbilityTable = new UnitAbilityTable();
+    	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+    		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {
+     			Tile tile = gameState.board.getTile(i, j);
+    			Unit unit = tile.getUnit();
+    			if(unit != null) {
+    				if(!unit.isAvatar()) {
+    					List<UnitAbility> unitAbilityList = unitAbilityTable.getUnitAbilities(unit.getName());
+    					for(UnitAbility unitAbility:unitAbilityList) {
+    						if(unitAbility == UnitAbility.BUFF_UNIT_ON_ENEMY_SPELL) {
+    							int attack = unit.getAttack();
+    							int health = unit.getHealth();
+    							attack = attack+1;
+    							health = health+1;
+    							EffectAnimation ef = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff);
+    							BasicCommands.playEffectAnimation(out, ef, tile);
+    							unit.setAttack(attack);
+    							unit.setHealth(health);
+    							BasicCommands.setUnitAttack(out, unit, attack);
+    							BasicCommands.setUnitHealth(out, unit, health);
+    							break;
+    						}
+    					}
+    				}
+    			}   			
+    		}
+    	}
     }
-    /**
-     * Blaze Hound ability
-     */
-    public static void houndAbility(){
-
-    }
+    
     /**
      * Staff of Y'Kir spell
      */
@@ -153,15 +238,23 @@ public class AbilityCommands {
     		}else if(unitAbility == UnitAbility.DRAW_CARD_ON_SUMMON) {
     			
     		}else if(unitAbility == UnitAbility.FLYING) {
-    			
+    			if(unit!=null) {
+    				unit.setHasFlying(true);
+    			}
     		}else if(unitAbility == UnitAbility.HEAL_AVATAR_ON_SUMMON) {
     			Heal_Avatar_On_Summon(out, gameState);
     		}else if(unitAbility == UnitAbility.PROVOKE) {
-    			
+    			if(unit!=null) {
+    				unit.setHasProvoke(true);
+    			}
     		}else if(unitAbility == UnitAbility.RANGED) {
-    			
+    			if(unit!=null) {
+    				unit.setHasRanged(true);
+    			}
     		}else if(unitAbility == UnitAbility.SUMMON_ANYWHERE) {
-    			
+    			if(unit!=null) {
+    				unit.setHasAirDrop(true);
+    			}
     		}
     	}
     }

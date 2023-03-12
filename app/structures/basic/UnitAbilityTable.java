@@ -13,7 +13,7 @@ public class UnitAbilityTable {
     }
 
     private void generateTable() {
-        unitAbilities.put("Comodo Charger", Collections.emptyList());
+        unitAbilities.put("Comodo Charger",Collections.emptyList());
         unitAbilities.put("Hailstone Golem", Collections.emptyList());
         unitAbilities.put("Pureblade Enforcer", List.of(UnitAbility.BUFF_UNIT_ON_ENEMY_SPELL));
         unitAbilities.put("Azure Herald", List.of(UnitAbility.HEAL_AVATAR_ON_SUMMON));
