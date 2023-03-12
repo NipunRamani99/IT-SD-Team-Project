@@ -1,4 +1,5 @@
 package structures.basic;
+import structures.basic.Units.Unit;
 import utils.BasicObjectBuilders;
 import utils.Constants;
 import utils.StaticConfFiles;
@@ -7,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ai.AIPlayer;
-import ai.ActionType;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
@@ -44,9 +43,7 @@ public class Board {
     
     static Deck deck2 = new Deck(2);
 
-
     static ArrayList<Unit> units = new ArrayList<>();
-
 
     /**
      * Board constructor to create a board of given width and height.

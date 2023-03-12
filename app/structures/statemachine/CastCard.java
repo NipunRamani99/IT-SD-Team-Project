@@ -1,5 +1,5 @@
 package structures.statemachine;
-
+import java.util.ArrayList;
 import structures.basic.*;
 
 import java.util.List;
@@ -10,12 +10,10 @@ import akka.actor.ActorRef;
 import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
-import events.EventProcessor;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
 import utils.BasicObjectBuilders;
-import utils.Constants;
 import utils.StaticConfFiles;
 
 /**
@@ -41,7 +39,8 @@ public class CastCard {
      */
     public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState){  	
     	//Transform the card into units
-    	Unit unit = null;
+//    	Unit unit = null;
+
     	String cardName = card.getCardname();
     	switch(cardName)
     	{
@@ -158,8 +157,6 @@ public class CastCard {
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
 
-    }
-    
     public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
     	//Transform the card into units
     	String spellName = null;

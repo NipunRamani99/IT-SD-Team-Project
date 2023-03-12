@@ -1,11 +1,11 @@
 package structures.basic;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import structures.basic.Units.Unit;
 
 /**
  * A basic representation of a tile on the game board. Tiles have both a pixel position

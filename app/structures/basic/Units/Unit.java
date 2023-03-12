@@ -1,7 +1,10 @@
-package structures.basic;
+package structures.basic.Units;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import structures.basic.*;
+
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +26,11 @@ public class Unit {
 	@JsonIgnore
 	protected static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
 	
-	int id;
-	UnitAnimationType animation;
-	Position position;
-	UnitAnimationSet animations;
-	ImageCorrection correction;
+	private int id;
+	private UnitAnimationType animation;
+	private Position position;
+	private UnitAnimationSet animations;
+	private ImageCorrection correction;
 
 
 	String name = "";
