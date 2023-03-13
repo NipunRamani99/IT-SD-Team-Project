@@ -24,6 +24,11 @@ public class UnitAttackState extends State{
 	{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = targetTile.getUnit();
+        if(this.selectedUnit.getName().contains("Azurite Lion")||this.selectedUnit.getName().contains("Serpenti"))
+        {
+        	if(this.selectedUnit.getAttackTimes()<2)
+        		this.selectedUnit.setCanAttack(true);
+        }
 	}
 
 	public UnitAttackState(Unit selectedUnit, Unit enemyUnit)
@@ -65,23 +70,13 @@ public class UnitAttackState extends State{
 
 		AbilityCommands.checkIsProvoked(selectedUnit, gameState);
         if(!selectedUnit.isIsProvoked()||enemyUnit.isHasProvoke()) {
-			if(selectedUnit.getAttackTimes()<1&&null!=enemyUnit)
+			if(null!=enemyUnit&&selectedUnit.canAttack())
 			{
 				//make sure every unit can attack once			
 				//The attack time will add
 				this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
 				this.selectedUnit.setCanAttack(false);
 				System.out.println("Unit attack");
-				getUnitOnTileAttack(out, gameState);
-			}
-			else if(selectedUnit.getAttackTimes()<2&&null!=enemyUnit&&(gameState.unitAbilityTable.getUnitAbilities(selectedUnit.getName()).contains(UnitAbility.ATTACK_TWICE)))
-			{
-				//unit can attack twice		
-				//The attack time will add
-				this.selectedUnit.setAttackTimes(this.selectedUnit.getAttackTimes()+1);
-				if(selectedUnit.getAttackTimes()>1)
-					this.selectedUnit.setCanAttack(false);
-				System.out.println("Unit attack twice");
 				getUnitOnTileAttack(out, gameState);
 			}
 			if(null==enemyUnit)
@@ -126,16 +121,17 @@ public class UnitAttackState extends State{
 	{
 		//Attack animation
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
+		
 		if(this.selectedUnit.isHasRanged())
 		{
-			EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
-			BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
+			EffectAnimation projecttile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
+			BasicCommands.playProjectileAnimation(out, projecttile,1,gameState.board.getTile(this.selectedUnit.getPosition()), gameState.board.getTile(this.enemyUnit.getPosition()));
 		}
 		else 	
 			BasicCommands.playUnitAnimation(out, this.selectedUnit, UnitAnimationType.attack);
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-
-		BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
 		
  		int attackHealth = this.enemyUnit.getHealth() - this.selectedUnit.getAttack();
  		

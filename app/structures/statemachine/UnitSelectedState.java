@@ -72,10 +72,18 @@ public class UnitSelectedState extends State{
                 } else if (tile.getTileState() == TileState.Occupied) {
                     if (unitClicked.withinDistance(tile.getUnit())||unitClicked.isHasRanged()) {
                     	AbilityCommands.checkIsProvoked(unitClicked, gameState);
+                    	if(unitClicked.getName().contains("Azurite Lion")||unitClicked.getName().contains("Serpenti"))
+                        {
+                        	if(unitClicked.getAttackTimes()<2)
+                        		unitClicked.setCanAttack(true);
+                        	else 
+                        		unitClicked.setCanAttack(false);
+                        }
                         if(!unitClicked.isIsProvoked()) {
                         	gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
                         }
-                        gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
+                        if(unitClicked.isIsProvoked()&&tile.getUnit().isHasProvoke())
+                        	gameStateMachine.setState(new UnitAttackState(unitClicked, tile, false, true), out, gameState);
                     } else {
                         List<Tile> reachableTiles = gameState.board.getTiles().stream().filter((t) -> {
                             return t.getTileState() == TileState.Reachable;
