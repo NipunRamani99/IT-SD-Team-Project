@@ -170,7 +170,7 @@ public class AIPlayer{
         //check the card on hand
         // AiAction castSpell = new CastSpellAction(out);
         Optional<Card> unitCard =  cards.stream().filter(card -> card.getBigCard() != null && card.getBigCard().getHealth() > 0)
-                .filter(card -> {return card.getManacost() <= gameState.AiMana;})
+                .filter(card -> {return card.getManacost() <= gameState.AiPlayer.getMana();})
                 .findFirst();
         if(unitCard.isPresent()) {
             AiAction castUnit = new CastUnitAction(unitCard.get(), this.turnCache.markedUnits);
@@ -199,9 +199,4 @@ public class AIPlayer{
         return nextAiMove;
     }
 
-    public void drawCard(GameState gameState) {
-        CastSpellAction action = new CastSpellAction();
-        State state = action.processAction(gameState);
-        nextAiMove = state;
-    }
 }

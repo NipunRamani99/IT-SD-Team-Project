@@ -205,7 +205,7 @@ public class UnitAttackAction implements AiAction{
         	{
         		if(tile.getUnit()!=null&&!tile.getUnit().isAi()&&tile.getUnit().getHealth()<=health)
         		{
-        			lowestHealthTile=tile;
+        			lowestHealthTile = tile;
         		}
         	}
         	

@@ -56,51 +56,39 @@ public class PursueAction implements AiAction {
             }
         }
 
-        //highlight the Ai occupied tiles
-        for(int i=0;i<Constants.BOARD_WIDTH;i++)
-        {
-            for(int j=0;j<Constants.BOARD_HEIGHT;j++)
-            {
-                Tile aiTile=gameState.board.getTile(i, j);
-                if(null!=aiTile.getUnit())
-                {
-                    aiTile.setTileState(TileState.Occupied);;
-                }
-            }
-
-            int x = tilex - 2;
-            if(x >= 0) {
-                boolean traversable = gameState.board.aiCanTraverse(x + 1, tiley);
-                if(traversable) {
-                    if(gameState.board.getTile(x, tiley).getUnit() == null)
-                        reachableTiles.add(gameState.board.getTile(x, tiley));
-                }
-            }
-            x = tilex + 2;
-            if(x < Constants.BOARD_WIDTH) {
-                boolean traversable = gameState.board.aiCanTraverse(x - 1, tiley);
-                if(traversable) {
-                    if(gameState.board.getTile(x, tiley).getUnit() == null)
-                        reachableTiles.add(gameState.board.getTile(x, tiley));
-                }
-            }
-            int y = tiley - 2;
-            if(y >= 0) {
-                boolean traversable = gameState.board.aiCanTraverse(tilex, y + 1);
-                if(!traversable) {
-                    if(gameState.board.getTile(tilex, y).getUnit() == null)
-                        reachableTiles.add(gameState.board.getTile(tilex, y));
-                }
-            }
-            y = tiley + 2;
-            if(y < Constants.BOARD_HEIGHT) {
-                boolean traversable = gameState.board.aiCanTraverse(tilex, y - 1);
-                if(!traversable) {
-                    if(gameState.board.getTile(tilex, y).getUnit() == null)
-                        reachableTiles.add(gameState.board.getTile(tilex,y));
-                }
+        int x = tilex - 2;
+        if(x >= 0) {
+            boolean traversable = gameState.board.aiCanTraverse(x + 1, tiley);
+            if(traversable) {
+                if(gameState.board.getTile(x, tiley).getUnit() == null)
+                    reachableTiles.add(gameState.board.getTile(x, tiley));
             }
         }
+        x = tilex + 2;
+        if(x < Constants.BOARD_WIDTH) {
+            boolean traversable = gameState.board.aiCanTraverse(x - 1, tiley);
+            if(traversable) {
+                if(gameState.board.getTile(x, tiley).getUnit() == null)
+                    reachableTiles.add(gameState.board.getTile(x, tiley));
+            }
+        }
+        int y = tiley - 2;
+        if(y >= 0) {
+            boolean traversable = gameState.board.aiCanTraverse(tilex, y + 1);
+            if(!traversable) {
+                if(gameState.board.getTile(tilex, y).getUnit() == null)
+                    reachableTiles.add(gameState.board.getTile(tilex, y));
+            }
+        }
+        y = tiley + 2;
+        if(y < Constants.BOARD_HEIGHT) {
+            boolean traversable = gameState.board.aiCanTraverse(tilex, y - 1);
+            if(!traversable) {
+                if(gameState.board.getTile(tilex, y).getUnit() == null)
+                    reachableTiles.add(gameState.board.getTile(tilex,y));
+            }
+        }
+
         return reachableTiles;
     }
 
