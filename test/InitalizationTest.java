@@ -11,6 +11,7 @@ import events.Initalize;
 import play.libs.Json;
 import structures.GameState;
 import structures.basic.Tile;
+import structures.statemachine.GameStateMachine;
 import utils.BasicObjectBuilders;
 
 /**
@@ -38,13 +39,14 @@ public class InitalizationTest {
 		// As we are not starting the front-end, we have no GameActor, so lets manually create
 		// the components we want to test
 		GameState gameState = new GameState(); // create state storage
+		GameStateMachine gameStateMachine = new GameStateMachine();
 		Initalize initalizeProcessor =  new Initalize(); // create an initalize event processor
 		
 		assertFalse(gameState.gameInitalised); // check we have not initalized
 		
 		// lets simulate recieveing an initalize message
 		ObjectNode eventMessage = Json.newObject(); // create a dummy message
-		initalizeProcessor.processEvent(null, gameState, eventMessage, null); // send it to the initalize event processor
+		initalizeProcessor.processEvent(null, gameState, eventMessage, gameStateMachine); // send it to the initalize event processor
 		
 		assertTrue(gameState.gameInitalised); // check that this updated the game state
 		

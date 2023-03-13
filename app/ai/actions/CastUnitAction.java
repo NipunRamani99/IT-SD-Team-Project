@@ -3,23 +3,19 @@ package ai.actions;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
-import structures.basic.TileState;
 import structures.basic.Unit;
 import structures.basic.UnitAbility;
 import structures.statemachine.CardSelectedState;
-import structures.statemachine.DrawCardState;
 import structures.statemachine.State;
 import utils.Constants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-import akka.actor.ActorRef;
-
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import commands.BasicCommands;
-
+/**
+ * CastSpellAction creates the state change required to cast a unit card.
+ */
 public class CastUnitAction implements AiAction {
 
     private Card unitCard;
@@ -29,17 +25,31 @@ public class CastUnitAction implements AiAction {
     private List<Unit> markedUnits;
 
 
+    /**
+     *
+     * @param unitCard
+     * @param markedUnits
+     */
     public CastUnitAction(Card unitCard, List<Unit> markedUnits) {
         this.unitCard = unitCard;
         this.markedUnits = markedUnits;
 
     }
-    
+
+    /**
+     *
+     * @param units
+     */
     public CastUnitAction(List<Unit> units) {
 
         this.markedUnits=units;
     }
-    
+
+    /**
+     *
+     * @param gameState
+     * @return
+     */
     public List<Tile> getAvailableTiles(GameState gameState) {
         //Check if unit has ability to summon anywhere
         List<UnitAbility> abilityList= gameState.unitAbilityTable.getUnitAbilities(unitCard.getCardname());
@@ -115,6 +125,11 @@ public class CastUnitAction implements AiAction {
         return null;
     }
 
+    /**
+     * This method generates the state change required to cast the unit card selected by the AI.
+     * @param gameState
+     * @return CardSelectedState
+     */
     @Override
     public State processAction(GameState gameState) {
     	cards=gameState.board.getAiCards();

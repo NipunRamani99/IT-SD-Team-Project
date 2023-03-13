@@ -41,11 +41,30 @@ public class Unit {
 
 	private boolean canAttack = true;	
 
-	private boolean secondAttackUsed = false;
+	private int attackTimes=0;
+
+	public int getAttackTimes() {
+		return attackTimes;
+	}
+
+	public void setAttackTimes(int attackTimes) {
+		this.attackTimes = attackTimes;
+	}
 
 	private boolean movement = true;
 	
 	private boolean canAttackBack=true;
+	
+	private boolean hasProvoke = false;
+	
+	private boolean isProvoked = false;
+	
+	private boolean hasRanged = false;
+	
+	private boolean hasFlying = false;
+	
+	private boolean hasAirDrop = false;
+
 
 	//Choose the unit
 	public boolean isChosed() {
@@ -214,9 +233,14 @@ public class Unit {
 	}
 
 	public Position getDisplacement(Unit unit) {
-		Position a = position;
-		Position b = unit.getPosition();
-		Position p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		Position p=null;
+		if(unit!=null)
+		{
+			Position a = position;
+			Position b = unit.getPosition();
+			p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		}
+
 		return p;
 	}
 
@@ -250,11 +274,45 @@ public class Unit {
 		this.name = name;
 	}
 
-	public boolean isSecondAttackUsed() {
-		return secondAttackUsed;
+
+	
+	public boolean isIsProvoked() {
+		return isProvoked;
+	}
+	public void setIsProvoked(boolean isProvoked) {
+		this.isProvoked = isProvoked;
 	}
 
-	public void setSecondAttackUsed(boolean secondAttackUsed) {
-		this.secondAttackUsed = secondAttackUsed;
+	public boolean isHasProvoke() {
+		return hasProvoke;
 	}
+
+	public void setHasProvoke(boolean hasProvoke) {
+		this.hasProvoke = hasProvoke;
+	}
+
+	public boolean isHasRanged() {
+		return hasRanged;
+	}
+
+	public void setHasRanged(boolean hasRanged) {
+		this.hasRanged = hasRanged;
+	}
+
+	public boolean isHasFlying() {
+		return hasFlying;
+	}
+
+	public void setHasFlying(boolean hasFlying) {
+		this.hasFlying = hasFlying;
+	}
+
+	public boolean isHasAirDrop() {
+		return hasAirDrop;
+	}
+
+	public void setHasAirDrop(boolean hasAirDrop) {
+		this.hasAirDrop = hasAirDrop;
+	}
+
 }

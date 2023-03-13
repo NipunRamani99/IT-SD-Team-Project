@@ -72,8 +72,7 @@ public class AIPlayer{
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-
-    public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
+    public boolean searchAction(GameState gameState) {
         //Firstly, AI will search and attack
         //get the all the ai hand card
         cards = gameState.board.getAiCards();
@@ -89,11 +88,6 @@ public class AIPlayer{
             } else {
                 nextAiMove.appendState(s);
             }
-        }
-        canPlay = !aiActions.isEmpty();
-        if(canPlay) {
-            aiActions.clear();
-            return canPlay;
         }
         pursueEnemy();
         gameState.AiMarkEnemy=true;
@@ -144,31 +138,16 @@ public class AIPlayer{
 
     }
 
-    /**
-     * Check the available unit
-     * @param unit
-     * @param markedUnit
-     * @return boolean value
-     */
-//    private boolean checkAvailableUnit(Unit unit,Unit markedUnit)
-//    {
-//    	if((unit.canAttack()&&unit.withinDistance(markedUnit))||unit.getMovement())
-//    	{
-//    		return true;
-//    	}
-//    	else
-//    	{
-//    		return false;
-//    	}
-//    }
 
     /**
      * Ai cast the card from the hand
      */
     private void aiCastCard(GameState gameState)
     {
+    	//place the spell firstly
+    	 AiAction castSpell = new CastSpellAction();
+         aiActions.add(castSpell);
         //check the card on hand
-        // AiAction castSpell = new CastSpellAction(out);
         Optional<Card> unitCard =  cards.stream().filter(card -> card.getBigCard() != null && card.getBigCard().getHealth() > 0)
                 .filter(card -> {return card.getManacost() <= gameState.AiPlayer.getMana();})
                 .findFirst();
@@ -176,27 +155,10 @@ public class AIPlayer{
             AiAction castUnit = new CastUnitAction(unitCard.get(), this.turnCache.markedUnits);
             aiActions.add(castUnit);
         }
-        //aiActions.add(castSpell);
 
-    }
-
-
-    private int chooseAiCardPosition(GameState gameState)
-    {
-
-        for(int i=1;i<=cards.size();i++)
-        {
-            Card aiCard=cards.get(i-1);
-            if(null!=aiCard&&gameState.AiPlayer.getMana()>=aiCard.getManacost())
-            {
-                return i;
-            }
-        }
-        return 0;
     }
 
     public State getNextAiMove() {
         return nextAiMove;
     }
-
 }

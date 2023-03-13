@@ -3,11 +3,8 @@ package structures.statemachine;
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
-import events.CardClicked;
 import events.EventProcessor;
 import events.Heartbeat;
-import events.TileClicked;
-import org.checkerframework.checker.units.qual.C;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.Card;
@@ -25,9 +22,9 @@ public class DrawCardState extends State {
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
                             GameStateMachine gameStateMachine) {
-            if(event instanceof Heartbeat) {
-                gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
-            }
+        if(event instanceof Heartbeat) {
+            gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
+        }
     }
 
     @Override
@@ -76,11 +73,4 @@ public class DrawCardState extends State {
             }
         }
     }
-
-    @Override
-    public void exit(ActorRef out, GameState gameState) {
-
-
-    }
-
 }

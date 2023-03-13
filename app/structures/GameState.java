@@ -60,6 +60,9 @@ public class GameState {
 	//The mana for Ai player
 	public int AiMana=2;
 	
+	public boolean humanRunOut=false;
+	public boolean AiRunout=false;
+	
 	public AIPlayer ai;
 	
 	public Player AiPlayer;
@@ -75,7 +78,7 @@ public class GameState {
 			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
 				Tile tile = board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
-				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}	
 				if(tile.getTileState() != TileState.Occupied) {
 					tile.setTileState(TileState.None);
 				}

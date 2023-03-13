@@ -171,6 +171,7 @@ public class Board {
 		BasicCommands.setUnitHealth(out, aiUnit,20);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
         gameState.aiUnit = aiUnit;
+
     }
     
     

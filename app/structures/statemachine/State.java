@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import events.EventProcessor;
 import structures.GameState;
 
+/**
+ * State base class which will be extended into specific game states.
+ */
 public abstract class State {
 
     protected State nextState  = null;
@@ -12,9 +15,6 @@ public abstract class State {
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) throws Exception {}
 
     public void enter(ActorRef out, GameState gameState) {}
-
-    public void exit(ActorRef out, GameState gameState){}
-
 
     public void setNextState(State nextState) {
         this.nextState = nextState;

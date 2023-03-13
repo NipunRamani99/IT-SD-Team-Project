@@ -1,10 +1,4 @@
 package structures.statemachine;
-import java.util.ArrayList;
-import structures.basic.*;
-
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.AbilityCommands;
@@ -13,6 +7,7 @@ import events.CardClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -22,7 +17,7 @@ import utils.StaticConfFiles;
  * If it is a spell card then this class will cast the spell on the unit which occupies the target tile.
  */
 public class CastCard {
-    /**
+
  
     
 
@@ -34,10 +29,16 @@ public class CastCard {
      */
     public CastCard(CardClicked cardclick,TileClicked tileclick){}
 
-    /**
-     * The function will transform the card into unit or spell according to the card type
-     */
-    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+	/**
+	 * The function will transform the unit card into a unit on the board
+	 * @param out
+	 * @param card
+	 * @param tile
+	 * @param gameState
+	 * @return
+	 * @throws Exception
+	 */
+    public static Unit castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
 		//Transform the card into units
 		Unit unit = null;
 
@@ -139,14 +140,10 @@ public class CastCard {
 
 		gameState.id++;
 		unit.setName(cardName);
-		placeUnit(gameState, unit, tile, out);
-		tile.setTileState(TileState.Occupied);
-		//add attack and health to the unit
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		AbilityCommands.useAbility(out, unit, gameState);
+    	placeUnit(gameState, unit, tile, out);
+    	tile.setTileState(TileState.Occupied);
+   	    //add attack and health to the unit
 		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
 		try {
 			Thread.sleep(200);
@@ -163,8 +160,20 @@ public class CastCard {
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-	}
-    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+
+		
+		return unit;
+    }
+
+	/**
+	 * Cast spell card
+	 * @param out
+	 * @param card
+	 * @param tile
+	 * @param gameState
+	 * @throws Exception
+	 */
+    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
     	//Transform the card into units
     	String spellName = null;
     	String cardName = card.getCardname();
@@ -185,7 +194,7 @@ public class CastCard {
      		  }
      		  break;
      	  case "Sundrop Elixir":
-    		  spellName = StaticConfFiles.f1_summon;
+    		  spellName = StaticConfFiles.f1_buff;
     		  placeSpell(out, gameState,spellName,card, tile);
     		  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
     		  break;
@@ -238,7 +247,6 @@ public class CastCard {
     private static void placeUnit(GameState gameState, Unit unit, Tile tile, ActorRef out){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
-    	 	
 		gameState.board.addUnit(unit);
 		//set the unit according to the user
 		if(gameState.currentTurn==Turn.AI)
@@ -253,22 +261,35 @@ public class CastCard {
     }
 	
 
-    /**
-     * The function will place the spell on a unit, and perform an action on that unit
-     * @param unit The unit is the destination unit that the spell card will cast to
-     */
+	/**
+	 * The function will place the spell on a unit, and perform an action on that unit
+	 * @param out
+	 * @param gameState
+	 * @param spellName
+	 * @param card
+	 * @param tile
+	 */
     private static void placeSpell(ActorRef out, GameState gameState,String spellName, Card card, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		//use BUFF_UNIT_ON_ENEMY_SPELL
+		if(gameState.currentTurn==Turn.AI) {
+			AbilityCommands.BUFF_UNIT_ON_ENEMY_SPELL(out, gameState);
+		}
 		//update the position
     	updatePosition(out, card, gameState);
     	
     	//update the player mana;
     	updatePlayerMana(out, card, gameState);
     }
-    
-    //this method will check if this card is a unit card
+
+	/**
+	 * This method will check if this card is a unit card
+	 * @param card
+	 * @return
+	 */
     public static boolean isUnitCard(Card card) {
     	boolean isUnitCard = false;
     	String cardName = card.getCardname();
@@ -304,8 +325,13 @@ public class CastCard {
     	return isUnitCard;
     }
 
-    
-    public static void updatePlayerMana(ActorRef out,Card card,GameState gameState)
+	/**
+	 * Updates player mana based on the card which was cast.
+	 * @param out
+	 * @param card
+	 * @param gameState
+	 */
+	public static void updatePlayerMana(ActorRef out,Card card,GameState gameState)
     {
     	if(gameState.currentTurn==Turn.AI)
     	{
@@ -324,16 +350,24 @@ public class CastCard {
     	
     	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     }
-    
+
+	/**
+	 * Updates the card position in the deck
+	 * @param out
+	 * @param card
+	 * @param gameState
+	 */
     public static void updatePosition(ActorRef out, Card card, GameState gameState)
     {
     	int handPosition=0;
-    	handPosition=card.getCardPosition();
-        BasicCommands.deleteCard(out, handPosition);
-        if(gameState.currentTurn==Turn.AI)
-        	gameState.board.deleteAiCard(handPosition);
-        else
+    	handPosition=card.getCardPosition();        
+        if(gameState.currentTurn==Turn.PLAYER) {
         	gameState.board.deleteCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }else if(gameState.currentTurn==Turn.AI) {
+        	gameState.board.deleteAiCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }
         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     }
 }

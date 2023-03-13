@@ -6,14 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * UnitAbilityTable provides a simple look up table to get all the abilities of a unit based on its name.
+ */
 public class UnitAbilityTable {
     private Map<String, List<UnitAbility>> unitAbilities = new HashMap<>();
     public UnitAbilityTable() {
         generateTable();
     }
 
+    /**
+     * Generates the hashmap which is used to look up unit abilities.
+     */
     private void generateTable() {
-        unitAbilities.put("Comodo Charger", Collections.emptyList());
+        unitAbilities.put("Comodo Charger",Collections.emptyList());
         unitAbilities.put("Hailstone Golem", Collections.emptyList());
         unitAbilities.put("Pureblade Enforcer", List.of(UnitAbility.BUFF_UNIT_ON_ENEMY_SPELL));
         unitAbilities.put("Azure Herald", List.of(UnitAbility.HEAL_AVATAR_ON_SUMMON));
@@ -26,14 +32,24 @@ public class UnitAbilityTable {
         unitAbilities.put("Pyromancer", List.of(UnitAbility.RANGED));
         unitAbilities.put("Bloodshard Golem", Collections.emptyList());
         unitAbilities.put("Blaze Hound", List.of(UnitAbility.DRAW_CARD_ON_SUMMON));
-        unitAbilities.put("Windshirke", List.of(UnitAbility.FLYING, UnitAbility.DRAW_CARD_ON_DEATH));
+        unitAbilities.put("WindShrike", List.of(UnitAbility.FLYING, UnitAbility.DRAW_CARD_ON_DEATH));
         unitAbilities.put("Serpenti", List.of(UnitAbility.ATTACK_TWICE));
     }
 
+    /**
+     * Returns a list unit abilities
+     * @param unit
+     * @return List of unit abilities
+     */
     public List<UnitAbility> getUnitAbilities(Unit unit) {
         return unitAbilities.get(unit.getName());
     }
 
+    /**
+     * Returns a list unit abilities
+     * @param name unit name
+     * @return List of unit abilities
+     */
     public List<UnitAbility> getUnitAbilities(String name) {
         return unitAbilities.get(name);
     }

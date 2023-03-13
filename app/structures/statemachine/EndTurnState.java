@@ -1,16 +1,14 @@
 package structures.statemachine;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
 import akka.actor.ActorRef;
+import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
-import events.EndTurnClicked;
 import events.EventProcessor;
-import events.Heartbeat;
-import structures.*;
+import structures.GameState;
+import structures.Turn;
 import structures.basic.Card;
+
+import java.util.List;
 
 public class EndTurnState extends State{
 
@@ -23,6 +21,7 @@ public class EndTurnState extends State{
 		 gameState.board.getUnits().forEach(unit -> {unit.setCanAttack(true);});
 		 gameState.board.getUnits().forEach(unit -> {unit.setMovement(true);});
 		 gameState.board.getUnits().forEach(unit -> {unit.setAttackBack(true);});
+		 gameState.board.getUnits().forEach(unit -> {unit.setAttackTimes(0);});
 		 if(gameState.currentTurn == Turn.PLAYER)
 		 {		 
 			 gameState.currentTurn = Turn.AI;
@@ -32,15 +31,14 @@ public class EndTurnState extends State{
 			 //add mana+1 each turn
 			 if(gameState.AiMana<9)
 			 {
-				 gameState.AiMana++;
-				 gameState.AiPlayer.setMana( gameState.AiMana);
+				 gameState.AiMana++;				
 			 }
 			 else
 			 {
 				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
-			
+			 gameState.AiPlayer.setMana( gameState.AiMana);
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 gameState.ai.beginTurn(gameState);
 			 nextState = new AIState();
@@ -56,6 +54,9 @@ public class EndTurnState extends State{
 			 for(int i = 0; i < aiCards.size(); i++) {
 				BasicCommands.drawCard(out, aiCards.get(i),i+1,0);
 			 }
+			 //check AI run out the cards or not
+			 if(aiCards.size()==0)
+					gameState.humanRunOut=true;
 		 }
 		 else
 		 {   			 
@@ -65,13 +66,13 @@ public class EndTurnState extends State{
 			 if(gameState.humanMana<9)
 			 {
 				 gameState.humanMana++;
-				 gameState.humanPlayer.setMana( gameState.humanMana);
+				
 			 }
 			 else
 			 {
 				 gameState.humanMana=9;
 			 }
-
+			 gameState.humanPlayer.setMana( gameState.humanMana);
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
  			 nextState = new NoSelectionState();
  			 
@@ -88,6 +89,10 @@ public class EndTurnState extends State{
 			for(int i = 0; i < cards.size(); i++) {
 				BasicCommands.drawCard(out, cards.get(i),i+1,0);
 			}
+			
+			//check human run out the cards or not
+			if(cards.size()==0)
+				gameState.humanRunOut=true;
 		 }
 	 }
 
@@ -95,12 +100,9 @@ public class EndTurnState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		if(event instanceof Heartbeat) {
-			System.out.println("Heartbeat: EndTurnState");
-			if(nextState!=null) {
-				System.out.println("Exiting EndTurnState");
-				gameStateMachine.setState(nextState, out, gameState);
-			}
+		if(nextState!=null) {
+			System.out.println("Exiting EndTurnState");
+			gameStateMachine.setState(nextState, out, gameState);
 		}
 	}
 	
@@ -108,8 +110,4 @@ public class EndTurnState extends State{
 		System.out.println("Entering EndTurnState");
 		endTurn(out, gameState);
 	}
-
-    public void exit(ActorRef out, GameState gameState){}
-
-
 }

@@ -9,10 +9,11 @@ import events.Heartbeat;
 import structures.GameState;
 import ai.*;
 
+/**
+ *
+ */
 public class AIState extends State{
-	
-	private GameStateMachine gameStateMachine;
-	
+
 	public AIState()
 	{
 
@@ -25,22 +26,23 @@ public class AIState extends State{
 		if(event instanceof Heartbeat) {
 			System.out.println("Exiting AIState");
 			gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
-			this.gameStateMachine = gameStateMachine;
 		}
 	}
-	
+
+	/**
+	 *
+	 * @param out
+	 * @param gameState
+	 */
 	public void enter(ActorRef out, GameState gameState) {
 		System.out.println("Entering AIState");
-		boolean canPlay = gameState.ai.searchAction(out, gameState, gameStateMachine);
+		boolean canPlay = gameState.ai.searchAction(gameState);
 		State aiMove = gameState.ai.getNextAiMove();
 		if(canPlay && aiMove != null) {
 			aiMove.appendState(new AIState());
-//			nextState = aiMove;
 			nextState=aiMove;
 		} else {
 			nextState = new EndTurnState();
 		}
-
 	}
-    public void exit(ActorRef out, GameState gameState){}
 }

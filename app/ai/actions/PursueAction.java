@@ -1,23 +1,21 @@
 package ai.actions;
 
 import ai.AIActionUtils;
-import akka.actor.ActorRef;
-import commands.BasicCommands;
 import structures.GameState;
-import structures.basic.Position;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
 import structures.statemachine.State;
-import structures.statemachine.UnitAttackState;
 import structures.statemachine.UnitMovingState;
-import structures.statemachine.UnitSelectedState;
 import utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * PursueAction will find the closest tile to a marked unit and create the state change required to move the AI unit closer to the enemy unit.
+ */
 public class PursueAction implements AiAction {
     private Unit markedUnit = null;
     private Unit aiUnit = null;
@@ -27,6 +25,11 @@ public class PursueAction implements AiAction {
         this.aiUnit = aiUnit;
     }
 
+    /**
+     * Creates a list of tiles which are reachable by the AI.
+     * @param gameState
+     * @return List of reachable tiles
+     */
     public List<Tile> getReachableTiles(GameState gameState) {
         int tilex = aiUnit.getPosition().getTilex();
         int tiley = aiUnit.getPosition().getTiley();
@@ -92,6 +95,12 @@ public class PursueAction implements AiAction {
         return reachableTiles;
     }
 
+
+    /**
+     * Find the reachable tile which is closest to the marked unit.
+     * @param gameState
+     * @return Tile
+     */
     public Tile getClosestTile(GameState gameState) {
         List<Tile> reachableTiles = getReachableTiles(gameState);
         reachableTiles.sort(Comparator.comparingInt((a)-> a.distanceToUnit(markedUnit)));
@@ -138,6 +147,11 @@ public class PursueAction implements AiAction {
           return occupiedTiles;
     }
 
+    /**
+     * Method to generate the state change
+     * @param gameState
+     * @return UnitMovingState
+     */
     @Override
     public State processAction(GameState gameState) {
         Tile closestTile = getClosestTile(gameState);

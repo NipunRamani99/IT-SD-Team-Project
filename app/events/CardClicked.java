@@ -23,6 +23,9 @@ public class CardClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
+    	gameState.resetBoardSelection(out);
+		gameState.resetBoardState();
+        gameState.resetCardSelection(out);
 		gameStateMachine.processInput(out, gameState, message,this);
 	}
 

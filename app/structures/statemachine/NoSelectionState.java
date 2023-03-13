@@ -1,9 +1,8 @@
 package structures.statemachine;
 
 import akka.actor.ActorRef;
-import commands.BasicCommands;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import commands.BasicCommands;
 import events.*;
 import structures.GameState;
 import structures.basic.Tile;
@@ -32,7 +31,7 @@ public class NoSelectionState extends State{
                 System.out.println("Exiting NoSelectionState 32");
                 gameStateMachine.setState(new CardSelectedState(out, message, gameState), out, gameState);
             } else if (event instanceof Heartbeat) {
-                System.out.println("Heartbeat: NoSelectionState");
+                System.out.println("Heartbeat");
             } else if (event instanceof EndTurnClicked) {
                 System.out.println("Exiting NoSelectionState 37");
                 gameStateMachine.setState(new EndTurnState(), out, gameState);
@@ -53,15 +52,15 @@ public class NoSelectionState extends State{
   * @param out
   * @param gameState
   */
-	private boolean checkWinner(ActorRef out, GameState gameState) {
-		if(0==gameState.AiPlayer.getHealth())
+	private boolean checkWinner(ActorRef out,GameState gameState) {
+		if(0==gameState.AiPlayer.getHealth()||gameState.AiRunout)
 		{
 		  BasicCommands.addPlayer1Notification(out, "Congratulations!You win the game:)", 5);
 		  return true;
 		}
-		else if(0 ==gameState.humanPlayer.getHealth())
+		else if(0 ==gameState.humanPlayer.getHealth()||gameState.humanRunOut)
 		{
-			 BasicCommands.addPlayer1Notification(out, "Oops!You lose game:(", 5);
+			 BasicCommands.addPlayer1Notification(out, "Ops!You lose game:(", 5);
 			 return true;
 		}
 		
@@ -71,10 +70,5 @@ public class NoSelectionState extends State{
     @Override
     public void enter(ActorRef out, GameState gameState) {
         System.out.println("Entering NoSelectionState");
-    }
-
-    @Override
-    public void exit(ActorRef out, GameState gameState) {
-
     }
 }
