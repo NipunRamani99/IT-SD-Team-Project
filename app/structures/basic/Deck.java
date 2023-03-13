@@ -23,32 +23,21 @@ public class Deck {
 	
 	public void loadDeck1(ArrayList<Card> cardDeck) {
 		ArrayList<String> deck = new ArrayList<String>();
+
 		// creates two of each card for player deck
-		for(int i=0; i<2; i++)
+		for(int i=0; i<1; i++)
 		{
+			deck.add(StaticConfFiles.c_fire_spitter);
+			deck.add(StaticConfFiles.c_azurite_lion);
+			deck.add(StaticConfFiles.c_ironcliff_guardian);
+			deck.add(StaticConfFiles.c_comodo_charger);
 			deck.add(StaticConfFiles.c_truestrike);
 			deck.add(StaticConfFiles.c_sundrop_elixir);
-			deck.add(StaticConfFiles.c_comodo_charger);
-			deck.add(StaticConfFiles.c_azure_herald);
-			deck.add(StaticConfFiles.c_azurite_lion);
-			deck.add(StaticConfFiles.c_fire_spitter);
-			deck.add(StaticConfFiles.c_hailstone_golem);
-			deck.add(StaticConfFiles.c_ironcliff_guardian);
+			deck.add(StaticConfFiles.c_azure_herald);			
+			deck.add(StaticConfFiles.c_hailstone_golem);		
 			deck.add(StaticConfFiles.c_pureblade_enforcer);
 			deck.add(StaticConfFiles.c_silverguard_knight);
 		}
-		
-		deck.add(StaticConfFiles.c_truestrike);
-		deck.add(StaticConfFiles.c_sundrop_elixir);
-		deck.add(StaticConfFiles.c_comodo_charger);
-		deck.add(StaticConfFiles.c_azure_herald);	
-		deck.add(StaticConfFiles.c_azurite_lion);	
-		deck.add(StaticConfFiles.c_fire_spitter);
-		deck.add(StaticConfFiles.c_hailstone_golem);		
-		deck.add(StaticConfFiles.c_ironcliff_guardian);	
-		deck.add(StaticConfFiles.c_pureblade_enforcer);		
-		deck.add(StaticConfFiles.c_silverguard_knight);
-		
 		for(int i = 0; i < deck.size(); i++) {
 			Card card = BasicObjectBuilders.loadCard(deck.get(i), i, Card.class);
 			this.cardDeck.add(card);
@@ -57,11 +46,13 @@ public class Deck {
 	
 	public void loadDeck2(ArrayList<Card> cardDeck) {
 		ArrayList<String> deck = new ArrayList<String>();
+
 		// creates two of each card for AI deck
-		for(int i=0; i<2; i++)
+		for(int i=0; i<1; i++)
 		{
 			deck.add(StaticConfFiles.c_staff_of_ykir);
 			deck.add(StaticConfFiles.c_entropic_decay);
+			deck.add(StaticConfFiles.c_windshrike);
 			deck.add(StaticConfFiles.c_blaze_hound);
 			deck.add(StaticConfFiles.c_bloodshard_golem);
 			deck.add(StaticConfFiles.c_planar_scout);
@@ -69,19 +60,8 @@ public class Deck {
 			deck.add(StaticConfFiles.c_hailstone_golem);
 			deck.add(StaticConfFiles.c_rock_pulveriser);
 			deck.add(StaticConfFiles.c_serpenti);
-			deck.add(StaticConfFiles.c_windshrike);
-		}
 		
-		deck.add(StaticConfFiles.c_staff_of_ykir);
-		deck.add(StaticConfFiles.c_entropic_decay);
-		deck.add(StaticConfFiles.c_blaze_hound);	
-		deck.add(StaticConfFiles.c_bloodshard_golem);	
-		deck.add(StaticConfFiles.c_planar_scout);	
-		deck.add(StaticConfFiles.c_pyromancer);
-		deck.add(StaticConfFiles.c_hailstone_golem);	
-		deck.add(StaticConfFiles.c_rock_pulveriser);	
-		deck.add(StaticConfFiles.c_serpenti);	
-		deck.add(StaticConfFiles.c_windshrike);
+		}
 		
 		for(int i = 0; i < deck.size(); i++) {
 			Card card = BasicObjectBuilders.loadCard(deck.get(i), i, Card.class);

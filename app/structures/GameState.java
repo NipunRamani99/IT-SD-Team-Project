@@ -56,7 +56,7 @@ public class GameState {
 	public int id=0;
 	//public ActionType type;
 	//The mana for human player
-	public int humanMana=2;
+	public int humanMana=8;
 	//The mana for Ai player
 	public int AiMana=2;
 	
@@ -75,7 +75,7 @@ public class GameState {
 			for(int j = 0; j < Constants.BOARD_HEIGHT; j++) {
 				Tile tile = board.getTile(i, j);
 				BasicCommands.drawTile(out, tile, 0);
-				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+				try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}	
 				if(tile.getTileState() != TileState.Occupied) {
 					tile.setTileState(TileState.None);
 				}

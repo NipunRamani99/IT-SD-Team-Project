@@ -1,5 +1,7 @@
 package ai.actions;
 
+import commands.AbilityCommands;
+import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.TileState;
@@ -217,7 +219,11 @@ public class UnitAttackAction implements AiAction{
 
     public State processAction(GameState gameState) {  
         if(aiUnit.withinDistance(markedUnit) && aiUnit.canAttack()) {
-            return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);
+        	//check if the unit is provoked
+        	AbilityCommands.checkIsProvoked(aiUnit, gameState);
+        	if(!aiUnit.isIsProvoked() || gameState.board.getTile(markedUnit.getPosition()).getUnit().isHasProvoke()) {
+            return new UnitAttackState(aiUnit, gameState.board.getTile(markedUnit.getPosition()), false, false);}
+        	//return new UnitSelectedState(aiUnit, markedUnit,gameState);
         }
         return null;
     }

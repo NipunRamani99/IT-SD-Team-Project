@@ -2,9 +2,14 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import commands.AbilityCommands;
 import commands.BasicCommands;
+import events.CardClicked;
+import events.EndTurnClicked;
 import events.EventProcessor;
 import events.Heartbeat;
+import events.TileClicked;
 import events.UnitMoving;
 import events.UnitStopped;
 import structures.GameState;
@@ -54,6 +59,7 @@ public class UnitMovingState extends State {
         //Get the start tile x, y position
         int startX = startTile.getTilex();
         int startY = startTile.getTiley();
+        
     	if(1==Math.abs(targetX-startX)&&1==Math.abs(targetY-startY)&&null==targetTile.getUnit())
         {
         	Unit unit1=gameState.board.getTile(startX,targetY).getUnit();
@@ -66,6 +72,14 @@ public class UnitMovingState extends State {
         	}
         	else if((unit2==null)||(!unit2.isAi()))
         	{
+        		//Move vertically first
+        		startTile.clearUnit();;
+        		BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,true,gameState);
+        	}
+        	else if(null==gameState.board.getTile(startX,targetY).getUnit()
+            		&&null==gameState.board.getTile(targetX, startY).getUnit())
+        	{
+        		startTile.clearUnit();;
             	//Depend on the unit is ai or not
         		startTile.clearUnit();
                 BasicCommands.moveUnitToTile(out, selectedUnit, targetTile,false,gameState);
@@ -82,15 +96,12 @@ public class UnitMovingState extends State {
         			new EndTurnState();
         	}
         }
-    	else if((Math.abs(targetX-startX)+Math.abs(targetY-startY))>2)
-    	{
-    		if(null==nextState) new EndTurnState();
-    	}
         else
         {	
         	startTile.clearUnit();
         	BasicCommands.moveUnitToTile(out, selectedUnit, targetTile, gameState);
             selectedUnit.setMovement(false);
+
         }
     }
     
@@ -152,6 +163,22 @@ public class UnitMovingState extends State {
 						gameStateMachine.setState(nextState != null? nextState : new EndTurnState(), out, gameState);
 				}
 			}
+             else if(event instanceof CardClicked && gameState.currentTurn==Turn.PLAYER) {
+                gameStateMachine.setState(new NoSelectionState(), out, gameState);
+            }
+             else if(event instanceof EndTurnClicked&& gameState.currentTurn==Turn.PLAYER) {
+                 gameStateMachine.setState(new NoSelectionState(), out, gameState);
+             }
+             else if(event instanceof TileClicked&& gameState.currentTurn==Turn.PLAYER) {
+                 gameStateMachine.setState(new NoSelectionState(), out, gameState);
+             }
+             else if(gameState.currentTurn==Turn.AI)
+             {
+            	 if(nextState==null)
+            		  gameStateMachine.setState(new EndTurnState(), out, gameState);
+            	 else 
+            		 gameStateMachine.setState(nextState, out, gameState);
+             }
     }
 
 
@@ -159,21 +186,26 @@ public class UnitMovingState extends State {
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 		System.out.println("Entering UnitMovingState");
-		if(selectedUnit.getMovement())
-			initiateMove(out,gameState);
+		AbilityCommands.checkIsProvoked(selectedUnit, gameState);
+        if(!selectedUnit.isIsProvoked()) {
+        	if(selectedUnit.getMovement())
+    			initiateMove(out,gameState);
+        }
+        else 
+        {
+        	exit(out, gameState);
+        }
+		
 			
 	}
 
 	@Override
-	public void exit(ActorRef out, GameState gameState) {
-		
-		if(gameState.currentTurn==Turn.AI)
-		{
-			if(nextState==null)
-			{
-				nextState=new EndTurnState();
-			}
-		}
+	public void exit(ActorRef out, GameState gameState) {		
+			System.out.println("Can not move");
+			BasicCommands.moveUnitToTile(out, selectedUnit, startTile,gameState);
+        	selectedUnit.setPositionByTile(startTile);
+            BasicCommands.playUnitAnimation(out, selectedUnit, UnitAnimationType.idle);
+            selectedUnit.setMovement(false);
 
 	}
 

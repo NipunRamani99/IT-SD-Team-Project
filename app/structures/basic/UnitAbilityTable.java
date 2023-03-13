@@ -13,7 +13,7 @@ public class UnitAbilityTable {
     }
 
     private void generateTable() {
-        unitAbilities.put("Comodo Charger", Collections.emptyList());
+        unitAbilities.put("Comodo Charger",List.of(UnitAbility.FLYING, UnitAbility.DRAW_CARD_ON_DEATH));
         unitAbilities.put("Hailstone Golem", Collections.emptyList());
         unitAbilities.put("Pureblade Enforcer", List.of(UnitAbility.BUFF_UNIT_ON_ENEMY_SPELL));
         unitAbilities.put("Azure Herald", List.of(UnitAbility.HEAL_AVATAR_ON_SUMMON));
@@ -26,7 +26,7 @@ public class UnitAbilityTable {
         unitAbilities.put("Pyromancer", List.of(UnitAbility.RANGED));
         unitAbilities.put("Bloodshard Golem", Collections.emptyList());
         unitAbilities.put("Blaze Hound", List.of(UnitAbility.DRAW_CARD_ON_SUMMON));
-        unitAbilities.put("Windshirke", List.of(UnitAbility.FLYING, UnitAbility.DRAW_CARD_ON_DEATH));
+        unitAbilities.put("WindShrike", List.of(UnitAbility.FLYING, UnitAbility.DRAW_CARD_ON_DEATH));
         unitAbilities.put("Serpenti", List.of(UnitAbility.ATTACK_TWICE));
     }
 

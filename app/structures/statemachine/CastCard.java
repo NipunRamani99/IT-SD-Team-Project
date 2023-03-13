@@ -37,7 +37,7 @@ public class CastCard {
     /**
      * The function will transform the card into unit or spell according to the card type
      */
-    public static void castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+    public static Unit castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
 		//Transform the card into units
 		Unit unit = null;
 
@@ -139,14 +139,10 @@ public class CastCard {
 
 		gameState.id++;
 		unit.setName(cardName);
-		placeUnit(gameState, unit, tile, out);
-		tile.setTileState(TileState.Occupied);
-		//add attack and health to the unit
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		AbilityCommands.useAbility(out, unit, gameState);
+    	placeUnit(gameState, unit, tile, out);
+    	tile.setTileState(TileState.Occupied);
+   	    //add attack and health to the unit
 		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
 		try {
 			Thread.sleep(200);
@@ -163,8 +159,12 @@ public class CastCard {
 
 		//Stop the animation
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
-	}
-    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) {
+
+		
+		return unit;
+    }
+    
+    public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
     	//Transform the card into units
     	String spellName = null;
     	String cardName = card.getCardname();
@@ -185,7 +185,7 @@ public class CastCard {
      		  }
      		  break;
      	  case "Sundrop Elixir":
-    		  spellName = StaticConfFiles.f1_summon;
+    		  spellName = StaticConfFiles.f1_buff;
     		  placeSpell(out, gameState,spellName,card, tile);
     		  AbilityCommands.sundropElixir(out, tile.getUnit(),gameState);
     		  break;
@@ -238,7 +238,6 @@ public class CastCard {
     private static void placeUnit(GameState gameState, Unit unit, Tile tile, ActorRef out){
     	//The unit will display on the board with animation
     	unit.setPositionByTile(tile);
-    	 	
 		gameState.board.addUnit(unit);
 		//set the unit according to the user
 		if(gameState.currentTurn==Turn.AI)
@@ -261,6 +260,11 @@ public class CastCard {
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
 		try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		//use BUFF_UNIT_ON_ENEMY_SPELL
+		if(gameState.currentTurn==Turn.AI) {
+			AbilityCommands.BUFF_UNIT_ON_ENEMY_SPELL(out, gameState);
+		}
 		//update the position
     	updatePosition(out, card, gameState);
     	
@@ -328,12 +332,14 @@ public class CastCard {
     public static void updatePosition(ActorRef out, Card card, GameState gameState)
     {
     	int handPosition=0;
-    	handPosition=card.getCardPosition();
-        BasicCommands.deleteCard(out, handPosition);
-        if(gameState.currentTurn==Turn.AI)
-        	gameState.board.deleteAiCard(handPosition);
-        else
+    	handPosition=card.getCardPosition();        
+        if(gameState.currentTurn==Turn.PLAYER) {
         	gameState.board.deleteCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }else if(gameState.currentTurn==Turn.AI) {
+        	gameState.board.deleteAiCard(handPosition);
+        	BasicCommands.deleteCard(out, handPosition);
+        }
         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     }
 }

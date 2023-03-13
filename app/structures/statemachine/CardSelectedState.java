@@ -2,6 +2,8 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import commands.AbilityCommands;
 import commands.BasicCommands;
 import events.CardClicked;
 import events.EndTurnClicked;
@@ -73,12 +75,24 @@ public class CardSelectedState extends State{
             		 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
                          //Cast card
             			 System.out.println("CardSelectedState: Reachable Tile Clicked");  
-                         CastCard.castUnitCard(out, cardSelected, tile, gameState);                                          
-                
+                         Unit unit;
+                         try {
+							unit = CastCard.castUnitCard(out, cardSelected, tile, gameState);
+							AbilityCommands.useAbility(out, unit, gameState);
+                         } catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+                         }                                          
+                         
                      }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
                      	//Cast card
                     	 System.out.println("CardSelectedState: Occupied Tile Clicked");
-                         CastCard.castSpellCard(out, cardSelected, tile, gameState);	                       
+                         try {
+                        	 CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                         } catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+                         }	                       
                      }
             	}
                
@@ -97,8 +111,8 @@ public class CardSelectedState extends State{
         {
         	  gameState.resetBoardSelection(out);
         	  gameState.resetCardSelection(out);
-            System.out.println("Exiting CardSelectedState");
-            gameStateMachine.setState(new NoSelectionState(), out, gameState);
+             System.out.println("Exiting CardSelectedState");
+             gameStateMachine.setState(new NoSelectionState(), out, gameState);
         }
         else if(event instanceof EndTurnClicked)
         {
@@ -121,11 +135,21 @@ public class CardSelectedState extends State{
                         s.setNextState(nextState);
                         nextState = s;
                     }
-            		 CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
+            		 try {
+						CastCard.castUnitCard(out, cardSelected, aiTile, gameState);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             	}
             	else  //AI cast spell
             	{
-            		CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
+            		try {
+						CastCard.castSpellCard(out, cardSelected, aiTile, gameState);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             	}
         	}
       	    
@@ -231,13 +255,15 @@ public class CardSelectedState extends State{
     private void highlightUnitCardSelection(ActorRef out, GameState gameState)
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
+
         List<Unit> unitList = gameState.board.getUnits();
-        if(gameState.unitAbilityTable.getUnitAbilities(cardSelected.getCardname()).contains(UnitAbility.SUMMON_ANYWHERE))
+        if(AbilityCommands.checkSUMMON_ANYWHERE(cardSelected))
         {
             //highlight all empty tiles
             gameState.board.getTiles().forEach( tile -> {
                 if(tile.getUnit() == null) {
                     tile.setTileState(TileState.Reachable);
+                    BasicCommands.drawTile(out, tile, 1);
                 }
             });
         }
@@ -274,8 +300,9 @@ public class CardSelectedState extends State{
     {
         BasicCommands.addPlayer1Notification(out, "Card highlight ",1);
         List<Unit> unitList = gameState.board.getUnits();
-        
-        for(Unit unit : unitList) {
+      //check the SUMMON_ANYWHERE ability
+        if(!AbilityCommands.checkSUMMON_ANYWHERE(cardSelected)) {
+        	for(Unit unit : unitList) {
         	if(unit.isAi())
         	{
                 for (int i = -1; i <= 1; i++) {
@@ -294,7 +321,19 @@ public class CardSelectedState extends State{
                     }
                 }	
         	}
-
+        }        
+    }
+        else {
+        	for(int i=0;i<Constants.BOARD_WIDTH;i++) {
+        		for(int j=0;j<Constants.BOARD_HEIGHT;j++) {   		
+                    Tile surroundingTile = gameState.board.getTile(i, j);
+                    if(surroundingTile.getUnit() == null) {
+                    	 surroundingTile.setTileState(TileState.Reachable);
+                         BasicCommands.drawTile(out, surroundingTile, 1);
+                         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+        		}
+        	}
+        }
         }
     }
 

@@ -32,15 +32,14 @@ public class EndTurnState extends State{
 			 //add mana+1 each turn
 			 if(gameState.AiMana<9)
 			 {
-				 gameState.AiMana++;
-				 gameState.AiPlayer.setMana( gameState.AiMana);
+				 gameState.AiMana++;				
 			 }
 			 else
 			 {
 				 //Max mana is 9
 				 gameState.AiMana=9;
 			 }
-			
+			 gameState.AiPlayer.setMana( gameState.AiMana);
 			 BasicCommands.setPlayer2Mana(out, gameState.AiPlayer);
 			 gameState.ai.beginTurn(gameState);
 			 nextState = new AIState();
@@ -65,13 +64,13 @@ public class EndTurnState extends State{
 			 if(gameState.humanMana<9)
 			 {
 				 gameState.humanMana++;
-				 gameState.humanPlayer.setMana( gameState.humanMana);
+				
 			 }
 			 else
 			 {
 				 gameState.humanMana=9;
 			 }
-
+			 gameState.humanPlayer.setMana( gameState.humanMana);
 			 BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
  			 nextState = new NoSelectionState();
  			 

@@ -54,6 +54,17 @@ public class Unit {
 	private boolean movement = true;
 	
 	private boolean canAttackBack=true;
+	
+	private boolean hasProvoke = false;
+	
+	private boolean isProvoked = false;
+	
+	private boolean hasRanged = false;
+	
+	private boolean hasFlying = false;
+	
+	private boolean hasAirDrop = false;
+
 
 	//Choose the unit
 	public boolean isChosed() {
@@ -256,6 +267,47 @@ public class Unit {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	
+	public boolean isIsProvoked() {
+		return isProvoked;
+	}
+	public void setIsProvoked(boolean isProvoked) {
+		this.isProvoked = isProvoked;
+	}
+
+	public boolean isHasProvoke() {
+		return hasProvoke;
+	}
+
+	public void setHasProvoke(boolean hasProvoke) {
+		this.hasProvoke = hasProvoke;
+	}
+
+	public boolean isHasRanged() {
+		return hasRanged;
+	}
+
+	public void setHasRanged(boolean hasRanged) {
+		this.hasRanged = hasRanged;
+	}
+
+	public boolean isHasFlying() {
+		return hasFlying;
+	}
+
+	public void setHasFlying(boolean hasFlying) {
+		this.hasFlying = hasFlying;
+	}
+
+	public boolean isHasAirDrop() {
+		return hasAirDrop;
+	}
+
+	public void setHasAirDrop(boolean hasAirDrop) {
+		this.hasAirDrop = hasAirDrop;
 	}
 
 }
