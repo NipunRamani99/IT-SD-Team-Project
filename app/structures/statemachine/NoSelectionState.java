@@ -54,12 +54,12 @@ public class NoSelectionState extends State{
   * @param gameState
   */
 	private boolean checkWinner(ActorRef out,GameState gameState) {
-		if(0==gameState.AiPlayer.getHealth())
+		if(0==gameState.AiPlayer.getHealth()||gameState.AiRunout)
 		{
 		  BasicCommands.addPlayer1Notification(out, "Congratulations!You win the game:)", 5);
 		  return true;
 		}
-		else if(0 ==gameState.humanPlayer.getHealth())
+		else if(0 ==gameState.humanPlayer.getHealth()||gameState.humanRunOut)
 		{
 			 BasicCommands.addPlayer1Notification(out, "Ops!You lose game:(", 5);
 			 return true;

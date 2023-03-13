@@ -90,11 +90,11 @@ public class AIPlayer{
                 nextAiMove.appendState(s);
             }
         }
-        canPlay = !aiActions.isEmpty();
-        if(canPlay) {
-            aiActions.clear();
-            return canPlay;
-        }
+//        canPlay = !aiActions.isEmpty();
+//        if(canPlay) {
+//            aiActions.clear();
+//            return canPlay;
+//        }
         pursueEnemy();
         gameState.AiMarkEnemy=true;
         for(AiAction action : aiActions) {
@@ -167,16 +167,17 @@ public class AIPlayer{
      */
     private void aiCastCard(GameState gameState)
     {
+    	//place the spell firstly
+    	 AiAction castSpell = new CastSpellAction();
+         aiActions.add(castSpell);
         //check the card on hand
-        // AiAction castSpell = new CastSpellAction(out);
         Optional<Card> unitCard =  cards.stream().filter(card -> card.getBigCard() != null && card.getBigCard().getHealth() > 0)
-                .filter(card -> {return card.getManacost() <= gameState.AiMana;})
+                .filter(card -> {return card.getManacost() <= gameState.AiPlayer.getMana();})
                 .findFirst();
         if(unitCard.isPresent()) {
             AiAction castUnit = new CastUnitAction(unitCard.get(), this.turnCache.markedUnits);
             aiActions.add(castUnit);
         }
-        //aiActions.add(castSpell);
 
     }
 

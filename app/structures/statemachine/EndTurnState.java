@@ -55,6 +55,9 @@ public class EndTurnState extends State{
 			 for(int i = 0; i < aiCards.size(); i++) {
 				BasicCommands.drawCard(out, aiCards.get(i),i+1,0);
 			 }
+			 //check AI run out the cards or not
+			 if(aiCards.size()==0)
+					gameState.humanRunOut=true;
 		 }
 		 else
 		 {   			 
@@ -87,6 +90,10 @@ public class EndTurnState extends State{
 			for(int i = 0; i < cards.size(); i++) {
 				BasicCommands.drawCard(out, cards.get(i),i+1,0);
 			}
+			
+			//check human run out the cards or not
+			if(cards.size()==0)
+				gameState.humanRunOut=true;
 		 }
 	 }
 

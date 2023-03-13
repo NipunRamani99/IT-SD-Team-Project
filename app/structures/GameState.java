@@ -60,6 +60,9 @@ public class GameState {
 	//The mana for Ai player
 	public int AiMana=2;
 	
+	public boolean humanRunOut=false;
+	public boolean AiRunout=false;
+	
 	public AIPlayer ai;
 	
 	public Player AiPlayer;

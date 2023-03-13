@@ -56,6 +56,11 @@ public class Attack {
     public static void deleteEnemyUnit(ActorRef out,Unit enemyUnit, GameState gameState)
     {
         BasicCommands.setUnitHealth(out, enemyUnit,0 );
+        
+  	    if(enemyUnit.isHasProvoke())
+	    {
+		  Attack.setProvkedUnitsToFalse(out, enemyUnit, gameState);
+	    }
         try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
         BasicCommands.playUnitAnimation(out, enemyUnit, UnitAnimationType.death);
         try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -92,6 +97,23 @@ public class Attack {
         {
             //do nothing
         }
+    }
+    
+    /**
+     * set the provoked units to be false
+     * @param out
+     * @param health
+     * @param targetUnit
+     * @param gameState
+     */
+    public static void setProvkedUnitsToFalse(ActorRef out,Unit targetUnit, GameState gameState)
+    {
+    	gameState.board.getUnits().stream()
+        .filter(unit -> { return  unit.withinDistance(targetUnit);})
+       
+        .forEach(unit -> {
+            unit.setHasProvoke(false);
+        });
     }
 }
 

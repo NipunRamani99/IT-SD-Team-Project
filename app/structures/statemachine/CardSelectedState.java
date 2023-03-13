@@ -165,7 +165,6 @@ public class CardSelectedState extends State{
             	gameState.resetBoardSelection(out);
             	gameState.resetBoardState();
                 System.out.println("Exiting CardSelectedState");
-                gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             	
         }
