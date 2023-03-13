@@ -52,17 +52,16 @@ public class CardSelectedState extends State{
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine){
-        if(event instanceof TileClicked) {
+        if(event instanceof TileClicked && gameState.currentTurn == Turn.PLAYER) {
             int tilex = gameState.position.getTilex();
             int tiley = gameState.position.getTiley();
             Tile tile = gameState.board.getTile(tilex, tiley);
             System.out.println(String.format("tiles:%d,%d",tilex,tiley));
-            System.out.println("TileSelectedState: Tile Clicked");
             if(tile.getTileState() == TileState.None) {
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
                 System.out.println("CardSelectedState: None Tile Clicked");
-                System.out.println("Exiting CardSelectedState");
+                System.out.println("Exiting CardSelectedState (64)");
                 gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
             } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
                 //if the tile is reachable and card is a unit card
@@ -83,21 +82,26 @@ public class CardSelectedState extends State{
                
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
-                System.out.println("Exiting CardSelectedState");
+                System.out.println("Exiting CardSelectedState (85)");
                 gameStateMachine.setState(nextState != null? nextState : new NoSelectionState(), out, gameState);
             }
-        } else if(event instanceof CardClicked) {
+        } else if(event instanceof CardClicked && gameState.currentTurn == Turn.PLAYER) {
             System.out.println("CardSelectedState: Card Clicked");
             State s = new CardSelectedState(out, message, gameState);
             s.setNextState(nextState);
-            System.out.println("Exiting CardSelectedState");
+            System.out.println("Exiting CardSelectedState (92)");
             gameStateMachine.setState(s, out, gameState);
-        }else if(event instanceof OtherClicked)
+        }else if(event instanceof OtherClicked && gameState.currentTurn == Turn.PLAYER)
         {
         	  gameState.resetBoardSelection(out);
         	  gameState.resetCardSelection(out);
-            System.out.println("Exiting CardSelectedState");
+            System.out.println("Exiting CardSelectedState (98)");
             gameStateMachine.setState(new NoSelectionState(), out, gameState);
+        } else if(event instanceof EndTurnState && gameState.currentTurn == Turn.PLAYER) {
+            gameState.resetBoardSelection(out);
+            gameState.resetCardSelection(out);
+            System.out.println("Exiting CardSelectedState (103)");
+            gameStateMachine.setState(new EndTurnState(), out, gameState);
         }
         else if(gameState.currentTurn==Turn.AI) 
         {
@@ -108,7 +112,7 @@ public class CardSelectedState extends State{
             	if(cardType==CardType.UNIT)
             	{
                     if(gameState.unitAbilityTable.getUnitAbilities(cardSelected.getCardname()).contains(UnitAbility.DRAW_CARD_ON_SUMMON)) {
-                        State s = new DrawCardState(false);
+                        State s = new DrawCardState(UnitAbility.DRAW_CARD_ON_SUMMON);
                         s.setNextState(nextState);
                         nextState = s;
                     }
@@ -122,7 +126,7 @@ public class CardSelectedState extends State{
       	    
         	gameState.resetBoardSelection(out);
         	gameState.resetBoardState();
-            System.out.println("Exiting CardSelectedState");
+            System.out.println("Exiting CardSelectedState (129)");
             gameStateMachine.setState(nextState,out, gameState);
         } 
         else {
@@ -131,7 +135,7 @@ public class CardSelectedState extends State{
             {
             	gameState.resetBoardSelection(out);
             	gameState.resetBoardState();
-                System.out.println("Exiting CardSelectedState");
+                System.out.println("Exiting CardSelectedState (138)");
                 gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
             	

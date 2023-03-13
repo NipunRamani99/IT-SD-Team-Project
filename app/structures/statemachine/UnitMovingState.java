@@ -147,10 +147,7 @@ public class UnitMovingState extends State {
                 else
                 	gameStateMachine.setState( nextState != null? nextState : new EndTurnState(), out, gameState);
             } else if(event instanceof Heartbeat) {
-				if(targetTile.getUnit() != null && targetTile.getUnit() != selectedUnit) {
-					if(gameState.currentTurn == Turn.AI)
-						gameStateMachine.setState(nextState != null? nextState : new EndTurnState(), out, gameState);
-				}
+				System.out.println("Heartbeat: UnitMovingState");
 			}
     }
 

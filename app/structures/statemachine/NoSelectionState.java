@@ -32,7 +32,7 @@ public class NoSelectionState extends State{
                 System.out.println("Exiting NoSelectionState 32");
                 gameStateMachine.setState(new CardSelectedState(out, message, gameState), out, gameState);
             } else if (event instanceof Heartbeat) {
-                System.out.println("Heartbeat");
+                System.out.println("Heartbeat: NoSelectionState");
             } else if (event instanceof EndTurnClicked) {
                 System.out.println("Exiting NoSelectionState 37");
                 gameStateMachine.setState(new EndTurnState(), out, gameState);
@@ -53,7 +53,7 @@ public class NoSelectionState extends State{
   * @param out
   * @param gameState
   */
-	private boolean checkWinner(ActorRef out,GameState gameState) {
+	private boolean checkWinner(ActorRef out, GameState gameState) {
 		if(0==gameState.AiPlayer.getHealth())
 		{
 		  BasicCommands.addPlayer1Notification(out, "Congratulations!You win the game:)", 5);
@@ -61,7 +61,7 @@ public class NoSelectionState extends State{
 		}
 		else if(0 ==gameState.humanPlayer.getHealth())
 		{
-			 BasicCommands.addPlayer1Notification(out, "Ops!You lose game:(", 5);
+			 BasicCommands.addPlayer1Notification(out, "Oops!You lose game:(", 5);
 			 return true;
 		}
 		

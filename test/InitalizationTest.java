@@ -44,7 +44,7 @@ public class InitalizationTest {
 		
 		// lets simulate recieveing an initalize message
 		ObjectNode eventMessage = Json.newObject(); // create a dummy message
-		initalizeProcessor.processEvent(null, gameState, eventMessage); // send it to the initalize event processor
+		initalizeProcessor.processEvent(null, gameState, eventMessage, null); // send it to the initalize event processor
 		
 		assertTrue(gameState.gameInitalised); // check that this updated the game state
 		

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EventProcessor;
+import events.Heartbeat;
 import structures.GameState;
 import ai.*;
 
@@ -21,9 +22,11 @@ public class AIState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		System.out.println("Exiting AIState");
-		gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
-		this.gameStateMachine=gameStateMachine;
+		if(event instanceof Heartbeat) {
+			System.out.println("Exiting AIState");
+			gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
+			this.gameStateMachine = gameStateMachine;
+		}
 	}
 	
 	public void enter(ActorRef out, GameState gameState) {
@@ -40,8 +43,4 @@ public class AIState extends State{
 
 	}
     public void exit(ActorRef out, GameState gameState){}
-
-	public void drawCard(ActorRef out, GameState gameState) {
-		gameState.ai.drawCard(gameState);
-	}
 }

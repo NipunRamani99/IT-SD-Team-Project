@@ -10,6 +10,7 @@ import events.Heartbeat;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.Unit;
+import structures.basic.UnitAbility;
 import structures.basic.UnitAnimationType;
 import structures.basic.Tile;
 
@@ -133,6 +134,9 @@ public class UnitAttackState extends State{
     	if(health <= 0)
 		{
     	  enemyUnit.setAttackBack(false);
+		  if(gameState.unitAbilityTable.getUnitAbilities(enemyUnit).contains(UnitAbility.DRAW_CARD_ON_DEATH)) {
+			  State s = new DrawCardState(UnitAbility.DRAW_CARD_ON_DEATH);
+		  }
           Attack.deleteEnemyUnit(out, enemyUnit, gameState);
           Attack.setPlayerHealth(out, health, enemyUnit, gameState);
 

@@ -8,6 +8,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.EndTurnClicked;
 import events.EventProcessor;
+import events.Heartbeat;
 import structures.*;
 import structures.basic.Card;
 
@@ -94,9 +95,12 @@ public class EndTurnState extends State{
 	public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event,
 			GameStateMachine gameStateMachine) {
 		// TODO Auto-generated method stub
-		if(nextState!=null) {
-			System.out.println("Exiting EndTurnState");
-			gameStateMachine.setState(nextState, out, gameState);
+		if(event instanceof Heartbeat) {
+			System.out.println("Heartbeat: EndTurnState");
+			if(nextState!=null) {
+				System.out.println("Exiting EndTurnState");
+				gameStateMachine.setState(nextState, out, gameState);
+			}
 		}
 	}
 	
