@@ -1,5 +1,8 @@
 package structures.basic;
 
+/**
+ * Enum representing unit abilities.
+ */
 public enum UnitAbility {
     PROVOKE,
     RANGED,

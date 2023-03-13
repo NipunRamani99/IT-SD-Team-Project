@@ -1,10 +1,4 @@
 package structures.statemachine;
-import java.util.ArrayList;
-import structures.basic.*;
-
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.AbilityCommands;
@@ -13,6 +7,7 @@ import events.CardClicked;
 import events.TileClicked;
 import structures.GameState;
 import structures.Turn;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -22,7 +17,7 @@ import utils.StaticConfFiles;
  * If it is a spell card then this class will cast the spell on the unit which occupies the target tile.
  */
 public class CastCard {
-    /**
+
  
     
 
@@ -34,9 +29,15 @@ public class CastCard {
      */
     public CastCard(CardClicked cardclick,TileClicked tileclick){}
 
-    /**
-     * The function will transform the card into unit or spell according to the card type
-     */
+	/**
+	 * The function will transform the unit card into a unit on the board
+	 * @param out
+	 * @param card
+	 * @param tile
+	 * @param gameState
+	 * @return
+	 * @throws Exception
+	 */
     public static Unit castUnitCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
 		//Transform the card into units
 		Unit unit = null;
@@ -163,7 +164,15 @@ public class CastCard {
 		
 		return unit;
     }
-    
+
+	/**
+	 * Cast spell card
+	 * @param out
+	 * @param card
+	 * @param tile
+	 * @param gameState
+	 * @throws Exception
+	 */
     public static void castSpellCard(ActorRef out, Card card, Tile tile, GameState gameState) throws Exception {
     	//Transform the card into units
     	String spellName = null;
@@ -252,10 +261,14 @@ public class CastCard {
     }
 	
 
-    /**
-     * The function will place the spell on a unit, and perform an action on that unit
-     * @param unit The unit is the destination unit that the spell card will cast to
-     */
+	/**
+	 * The function will place the spell on a unit, and perform an action on that unit
+	 * @param out
+	 * @param gameState
+	 * @param spellName
+	 * @param card
+	 * @param tile
+	 */
     private static void placeSpell(ActorRef out, GameState gameState,String spellName, Card card, Tile tile){
     	EffectAnimation ef = BasicObjectBuilders.loadEffect(spellName);
 		BasicCommands.playEffectAnimation(out, ef, tile);
@@ -271,8 +284,12 @@ public class CastCard {
     	//update the player mana;
     	updatePlayerMana(out, card, gameState);
     }
-    
-    //this method will check if this card is a unit card
+
+	/**
+	 * This method will check if this card is a unit card
+	 * @param card
+	 * @return
+	 */
     public static boolean isUnitCard(Card card) {
     	boolean isUnitCard = false;
     	String cardName = card.getCardname();
@@ -308,8 +325,13 @@ public class CastCard {
     	return isUnitCard;
     }
 
-    
-    public static void updatePlayerMana(ActorRef out,Card card,GameState gameState)
+	/**
+	 * Updates player mana based on the card which was cast.
+	 * @param out
+	 * @param card
+	 * @param gameState
+	 */
+	public static void updatePlayerMana(ActorRef out,Card card,GameState gameState)
     {
     	if(gameState.currentTurn==Turn.AI)
     	{
@@ -328,7 +350,13 @@ public class CastCard {
     	
     	try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
     }
-    
+
+	/**
+	 * Updates the card position in the deck
+	 * @param out
+	 * @param card
+	 * @param gameState
+	 */
     public static void updatePosition(ActorRef out, Card card, GameState gameState)
     {
     	int handPosition=0;

@@ -4,15 +4,16 @@ import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
 import events.EventProcessor;
 import structures.GameState;
-import structures.Turn;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
+/**
+ * GameStateMachine provides encapsulates the current state of the game and provides method to switch between states.
+ */
 public class GameStateMachine {
     private State currentState;
-    private Queue<State> stateQueue;
     public GameStateMachine() {
-        stateQueue = new LinkedList<>();
         currentState = new NoSelectionState();
     }
 
@@ -24,10 +25,6 @@ public class GameStateMachine {
         currentState = newState;
     }
 
-    public void queueState(State state) {
-        stateQueue.add(state);
-    }
-
     public void processInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor eventProcessor) {
         try {
 			currentState.handleInput(out, gameState, message, eventProcessor,this);
@@ -37,7 +34,7 @@ public class GameStateMachine {
 		}
 
     }
-    
+
     public State getCurrState()
     {
     	return currentState;

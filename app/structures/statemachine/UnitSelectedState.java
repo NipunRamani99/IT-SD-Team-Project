@@ -2,30 +2,34 @@ package structures.statemachine;
 
 import akka.actor.ActorRef;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import commands.AbilityCommands;
 import commands.BasicCommands;
-import events.CardClicked;
-import events.EndTurnClicked;
-import events.EventProcessor;
-import events.OtherClicked;
-import events.TileClicked;
+import events.*;
 import structures.GameState;
 import structures.Turn;
 import structures.basic.Tile;
 import structures.basic.TileState;
 import structures.basic.Unit;
-import structures.basic.UnitAbility;
 import utils.Constants;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * UnitSelectedState is used to process any inputs that are provided after the player clicks on a unit.
+ */
 public class UnitSelectedState extends State{
     private Unit unitClicked = null;
     private Tile tileClicked = null;
     private boolean skip = false;
+
+    /**
+     * UnitSelectedState constructor
+     * @param out
+     * @param message
+     * @param gameState
+     */
     public UnitSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         int tilex = message.get("tilex").asInt();
         int tiley = message.get("tiley").asInt();
@@ -34,18 +38,38 @@ public class UnitSelectedState extends State{
         this.unitClicked = tile.getUnit();
 
     }
-    
+
+    /**
+     * UnitSelectedState constructor
+     * @param unit
+     * @param tile
+     */
     public UnitSelectedState(Unit unit,Tile tile)
     {
     	this.tileClicked = tile;
     	this.unitClicked = unit;
     }
-    
+
+    /**
+     * UnitSelectedState constructor
+     * @param unit
+     * @param enemyUnit
+     * @param gameState
+     */
     public UnitSelectedState(Unit unit,Unit enemyUnit,GameState gameState)
     {
     	this.tileClicked = gameState.board.getTile(enemyUnit.getPosition());
     	this.unitClicked = unit;
     }
+
+    /**
+     *
+     * @param out
+     * @param gameState
+     * @param message
+     * @param event
+     * @param gameStateMachine
+     */
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine) {
         if(skip) {
@@ -130,6 +154,11 @@ public class UnitSelectedState extends State{
         }
     }
 
+    /**
+     *
+     * @param out
+     * @param gameState
+     */
     @Override
     public void enter(ActorRef out, GameState gameState) {
         gameState.resetBoardSelection(out);
@@ -141,11 +170,6 @@ public class UnitSelectedState extends State{
         if(gameState.currentTurn==Turn.PLAYER)
             if(null!=this.tileClicked.getUnit()&&!this.tileClicked.getUnit().isAi())
     	    	highlightSurroundingTiles(out, this.tileClicked.getTilex(), this.tileClicked.getTiley(), tileClicked, gameState);
-
-    }
-
-    @Override
-    public void exit(ActorRef out, GameState gameState) {
 
     }
 

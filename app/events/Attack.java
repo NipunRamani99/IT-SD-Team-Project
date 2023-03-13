@@ -12,40 +12,6 @@ import structures.statemachine.GameStateMachine;
  * This class will define the action of the unit attack, player attack, and attack between unit and player
  */
 public class Attack {
-    /**
-     * This unit is for the friendly unit that will launch an attack
-     */
-    private Unit myUnit;
-    /**
-     * This unit is for the unit that will be attacked
-     */
-    private Unit enemyUnit;
-
-    /**
-     * This player is for the player 1 information
-     */
-    private Player player1;
-
-    /**
-     * This player is for the player 2 information
-     */
-    private Player player2;
-
-    /**
-     * The actor reference
-     */
-    private ActorRef out;
-
-    /**
-     * The gameState
-     */
-    private GameState gameState;
-
-    /**
-     * This constructor is for the attack between two units
-     * @param myUnit the unit refers to the attacking unit
-     * @param enemyUnit the unit refer to the attacked unit
-     */
 
     /**
      * delete the enemy unit
@@ -71,6 +37,13 @@ public class Attack {
     }
 
 
+    /**
+     * Updates the health of each player when the avatar is attacked
+     * @param out
+     * @param health
+     * @param targetUnit
+     * @param gameState
+     */
     public static void setPlayerHealth(ActorRef out,int health,Unit targetUnit, GameState gameState)
     {
         //for the human player
@@ -98,11 +71,10 @@ public class Attack {
             //do nothing
         }
     }
-    
+
     /**
-     * set the provoked units to be false
+     * Resets provoked units
      * @param out
-     * @param health
      * @param targetUnit
      * @param gameState
      */

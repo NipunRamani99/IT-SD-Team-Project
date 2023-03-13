@@ -1,15 +1,14 @@
 package structures.statemachine;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
 import akka.actor.ActorRef;
+import com.fasterxml.jackson.databind.JsonNode;
 import commands.BasicCommands;
-import events.EndTurnClicked;
 import events.EventProcessor;
-import structures.*;
+import structures.GameState;
+import structures.Turn;
 import structures.basic.Card;
+
+import java.util.List;
 
 public class EndTurnState extends State{
 
@@ -111,8 +110,4 @@ public class EndTurnState extends State{
 		System.out.println("Entering EndTurnState");
 		endTurn(out, gameState);
 	}
-
-    public void exit(ActorRef out, GameState gameState){}
-
-
 }

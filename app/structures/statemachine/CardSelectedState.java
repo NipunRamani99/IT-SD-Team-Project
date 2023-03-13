@@ -30,6 +30,8 @@ public class CardSelectedState extends State{
     private Tile aiTile =null;
     private CardType cardType;
 
+    private boolean skip = false;
+
     public CardSelectedState(ActorRef out, JsonNode message, GameState gameState) {
         handPosition = message.get("position").asInt();
         cardSelected=gameState.board.getCard(handPosition);
@@ -55,72 +57,77 @@ public class CardSelectedState extends State{
     }
     @Override
     public void handleInput(ActorRef out, GameState gameState, JsonNode message, EventProcessor event, GameStateMachine gameStateMachine){
-        if(event instanceof TileClicked) {
-            int tilex = gameState.position.getTilex();
-            int tiley = gameState.position.getTiley();
-            Tile tile = gameState.board.getTile(tilex, tiley);
-            System.out.println(String.format("tiles:%d,%d",tilex,tiley));
-            System.out.println("TileSelectedState: Tile Clicked");
-            if(tile.getTileState() == TileState.None) {
-                gameState.resetBoardSelection(out);
-                gameState.resetCardSelection(out);
-                System.out.println("CardSelectedState: None Tile Clicked");
-                System.out.println("Exiting CardSelectedState");
+        if(skip) {
+            if(gameState.currentTurn == Turn.PLAYER)
                 gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
-            } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
-                //if the tile is reachable and card is a unit card
-            	int mana=gameState.humanPlayer.getMana();
-            	if(mana>=cardSelected.getManacost())
-            	{
-            		 if(tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
-                         //Cast card
-            			 System.out.println("CardSelectedState: Reachable Tile Clicked");  
-                         Unit unit;
-                         try {
-							unit = CastCard.castUnitCard(out, cardSelected, tile, gameState);
-							AbilityCommands.useAbility(out, unit, gameState);
-                         } catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-                         }                                          
-                         
-                     }else if(tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
-                     	//Cast card
-                    	 System.out.println("CardSelectedState: Occupied Tile Clicked");
-                         try {
-                        	 CastCard.castSpellCard(out, cardSelected, tile, gameState);
-                         } catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-                         }	                       
-                     }
-            	}
-               
+            else
+                gameStateMachine.setState(nextState != null ? nextState : new EndTurnState(), out, gameState);
+
+        }
+        if(gameState.currentTurn == Turn.PLAYER) {
+            if (event instanceof TileClicked) {
+                int tilex = gameState.position.getTilex();
+                int tiley = gameState.position.getTiley();
+                Tile tile = gameState.board.getTile(tilex, tiley);
+                System.out.println(String.format("tiles:%d,%d", tilex, tiley));
+                System.out.println("TileSelectedState: Tile Clicked");
+                if (tile.getTileState() == TileState.None) {
+                    gameState.resetBoardSelection(out);
+                    gameState.resetCardSelection(out);
+                    System.out.println("CardSelectedState: None Tile Clicked");
+                    System.out.println("Exiting CardSelectedState");
+                    gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
+                } else if (tile.getTileState() == TileState.Reachable || tile.getTileState() == TileState.Occupied) {
+                    //if the tile is reachable and card is a unit card
+                    int mana = gameState.humanPlayer.getMana();
+                    if (mana >= cardSelected.getManacost()) {
+                        if (tile.getTileState() == TileState.Reachable && CastCard.isUnitCard(cardSelected)) {
+                            //Cast card
+                            System.out.println("CardSelectedState: Reachable Tile Clicked");
+                            Unit unit;
+                            try {
+                                unit = CastCard.castUnitCard(out, cardSelected, tile, gameState);
+                                AbilityCommands.useAbility(out, unit, gameState);
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                        } else if (tile.getTileState() == TileState.Occupied && !CastCard.isUnitCard(cardSelected)) {
+                            //Cast card
+                            System.out.println("CardSelectedState: Occupied Tile Clicked");
+                            try {
+                                CastCard.castSpellCard(out, cardSelected, tile, gameState);
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    gameState.resetBoardSelection(out);
+                    gameState.resetCardSelection(out);
+                    System.out.println("Exiting CardSelectedState");
+                    gameStateMachine.setState(nextState != null ? nextState : new NoSelectionState(), out, gameState);
+                }
+            } else if (event instanceof CardClicked) {
+                System.out.println("CardSelectedState: Card Clicked");
+                State s = new CardSelectedState(out, message, gameState);
+                s.setNextState(nextState);
+                System.out.println("Exiting CardSelectedState");
+                gameStateMachine.setState(s, out, gameState);
+            } else if (event instanceof OtherClicked) {
                 gameState.resetBoardSelection(out);
                 gameState.resetCardSelection(out);
                 System.out.println("Exiting CardSelectedState");
-                gameStateMachine.setState(nextState != null? nextState : new NoSelectionState(), out, gameState);
+                gameStateMachine.setState(new NoSelectionState(), out, gameState);
+            } else if (event instanceof EndTurnClicked) {
+                gameState.resetBoardSelection(out);
+                gameState.resetCardSelection(out);
+                gameState.resetCardSelection(out);
+                if (gameState.currentTurn == Turn.PLAYER)
+                    gameStateMachine.setState(new EndTurnState(), out, gameState);
             }
-        } else if(event instanceof CardClicked) {
-            System.out.println("CardSelectedState: Card Clicked");
-            State s = new CardSelectedState(out, message, gameState);
-            s.setNextState(nextState);
-            System.out.println("Exiting CardSelectedState");
-            gameStateMachine.setState(s, out, gameState);
-        }else if(event instanceof OtherClicked)
-        {
-        	  gameState.resetBoardSelection(out);
-        	  gameState.resetCardSelection(out);
-             System.out.println("Exiting CardSelectedState");
-             gameStateMachine.setState(new NoSelectionState(), out, gameState);
-        }
-        else if(event instanceof EndTurnClicked)
-        {
-        	 gameState.resetBoardSelection(out);
-             gameState.resetCardSelection(out);
-             gameState.resetCardSelection(out);
-             if(gameState.currentTurn==Turn.PLAYER)
-            	 gameStateMachine.setState(new EndTurnState(), out, gameState);
         }
         else if(gameState.currentTurn==Turn.AI) 
         {
@@ -131,7 +138,7 @@ public class CardSelectedState extends State{
             	if(cardType==CardType.UNIT)
             	{
                     if(gameState.unitAbilityTable.getUnitAbilities(cardSelected.getCardname()).contains(UnitAbility.DRAW_CARD_ON_SUMMON)) {
-                        State s = new DrawCardState(false);
+                        State s = new DrawCardState(UnitAbility.DRAW_CARD_ON_SUMMON);
                         s.setNextState(nextState);
                         nextState = s;
                     }
@@ -175,11 +182,15 @@ public class CardSelectedState extends State{
         System.out.println("Entering CardSelectedState");
     	gameState.resetBoardSelection(out);
 		gameState.resetBoardState();
+        if(gameState.currentTurn==Turn.PLAYER)
+            gameState.resetCardSelection(out);
+        else
+            gameState.resetAiCardSelection(out);
 
-		if(gameState.currentTurn==Turn.PLAYER)
-			gameState.resetCardSelection(out);
-		else
-			gameState.resetAiCardSelection(out);
+        if( aiTile != null && aiTile.getUnit()!= null) {
+            skip = true;
+            return;
+        }
 
 		if(gameState.currentTurn==Turn.PLAYER&&gameState.humanPlayer.getMana()>=cardSelected.getManacost())
 		{
@@ -229,7 +240,10 @@ public class CardSelectedState extends State{
 	       		  else if(cardSelected.getCardname().equals("Entropic Decay"))
 	       		  {
 	       			  highlightNoAvatarSelection(out, gameState);
-	       		  }
+	       		  } else if(cardSelected.getCardname().equals("Sundrop Elixir"))
+                  {
+
+                  }
 	       		  //highlight all the units
 	       		  else
 	       		  {
@@ -239,12 +253,6 @@ public class CardSelectedState extends State{
           }
     }
 
-    
-    
-    @Override
-    public void exit(ActorRef out, GameState gameState) {
-
-    }
 
     /**
      * Highlight tiles for the general Unit card
@@ -373,7 +381,7 @@ public class CardSelectedState extends State{
           }
         	 
     }
-    
+
     
     /**
      * High light the unit tiles selection

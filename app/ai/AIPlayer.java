@@ -72,8 +72,7 @@ public class AIPlayer{
      * The search action method will analyze the AI's position on the board and then find appropriate actions it should perform.
      * The actions it can perform will be stored in the class variable 'actions'.
      */
-
-    public boolean searchAction(ActorRef out,GameState gameState,GameStateMachine gameStateMachine) {
+    public boolean searchAction(GameState gameState) {
         //Firstly, AI will search and attack
         //get the all the ai hand card
         cards = gameState.board.getAiCards();
@@ -90,11 +89,6 @@ public class AIPlayer{
                 nextAiMove.appendState(s);
             }
         }
-//        canPlay = !aiActions.isEmpty();
-//        if(canPlay) {
-//            aiActions.clear();
-//            return canPlay;
-//        }
         pursueEnemy();
         gameState.AiMarkEnemy=true;
         for(AiAction action : aiActions) {
@@ -144,23 +138,6 @@ public class AIPlayer{
 
     }
 
-    /**
-     * Check the available unit
-     * @param unit
-     * @param markedUnit
-     * @return boolean value
-     */
-//    private boolean checkAvailableUnit(Unit unit,Unit markedUnit)
-//    {
-//    	if((unit.canAttack()&&unit.withinDistance(markedUnit))||unit.getMovement())
-//    	{
-//    		return true;
-//    	}
-//    	else
-//    	{
-//    		return false;
-//    	}
-//    }
 
     /**
      * Ai cast the card from the hand
@@ -181,28 +158,7 @@ public class AIPlayer{
 
     }
 
-
-    private int chooseAiCardPosition(GameState gameState)
-    {
-
-        for(int i=1;i<=cards.size();i++)
-        {
-            Card aiCard=cards.get(i-1);
-            if(null!=aiCard&&gameState.AiPlayer.getMana()>=aiCard.getManacost())
-            {
-                return i;
-            }
-        }
-        return 0;
-    }
-
     public State getNextAiMove() {
         return nextAiMove;
-    }
-
-    public void drawCard(GameState gameState) {
-        CastSpellAction action = new CastSpellAction();
-        State state = action.processAction(gameState);
-        nextAiMove = state;
     }
 }

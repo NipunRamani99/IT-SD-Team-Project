@@ -23,8 +23,6 @@ import structures.statemachine.GameStateMachine;
  */
 public class UnitMoving implements EventProcessor {
 
-	private  GameState gameState;
-	private ActorRef out;
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message, GameStateMachine gameStateMachine) {
 		gameState.resetBoardSelection(out);

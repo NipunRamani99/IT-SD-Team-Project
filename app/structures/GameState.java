@@ -56,7 +56,7 @@ public class GameState {
 	public int id=0;
 	//public ActionType type;
 	//The mana for human player
-	public int humanMana=8;
+	public int humanMana=2;
 	//The mana for Ai player
 	public int AiMana=2;
 	

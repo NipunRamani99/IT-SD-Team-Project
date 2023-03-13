@@ -233,9 +233,14 @@ public class Unit {
 	}
 
 	public Position getDisplacement(Unit unit) {
-		Position a = position;
-		Position b = unit.getPosition();
-		Position p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		Position p=null;
+		if(unit!=null)
+		{
+			Position a = position;
+			Position b = unit.getPosition();
+			p = new Position(0, 0, a.tilex - b.tilex, a.tiley - b.tiley);
+		}
+
 		return p;
 	}
 

@@ -1,9 +1,8 @@
 package structures.statemachine;
 
 import akka.actor.ActorRef;
-import commands.BasicCommands;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import commands.BasicCommands;
 import events.*;
 import structures.GameState;
 import structures.basic.Tile;
@@ -71,10 +70,5 @@ public class NoSelectionState extends State{
     @Override
     public void enter(ActorRef out, GameState gameState) {
         System.out.println("Entering NoSelectionState");
-    }
-
-    @Override
-    public void exit(ActorRef out, GameState gameState) {
-
     }
 }

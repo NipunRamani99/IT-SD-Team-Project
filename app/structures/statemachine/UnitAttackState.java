@@ -14,12 +14,21 @@ import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
+/**
+ * UnitAttackState initiates the attack, plays the animation and updates the corresponding health values of the units involved
+ */
 public class UnitAttackState extends State{
 
 	private Unit selectedUnit = null;
 
 	private Unit enemyUnit = null;
 
+	/**
+	 *
+	 * @param selectedUnit
+	 * @param targetTile
+	 * @param isPlayer
+	 */
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean isPlayer)
 	{
 		this.selectedUnit = selectedUnit;
@@ -31,12 +40,24 @@ public class UnitAttackState extends State{
         }
 	}
 
+	/**
+	 *
+	 * @param selectedUnit
+	 * @param enemyUnit
+	 */
 	public UnitAttackState(Unit selectedUnit, Unit enemyUnit)
 	{
 		this.selectedUnit = selectedUnit;
 		this.enemyUnit = enemyUnit;
 	}
 
+	/**
+	 *
+	 * @param selectedUnit
+	 * @param targetTile
+	 * @param reactAttack
+	 * @param isPlayer
+	 */
 	public UnitAttackState(Unit selectedUnit, Tile targetTile, boolean reactAttack, boolean isPlayer)
 	{
 
@@ -64,6 +85,11 @@ public class UnitAttackState extends State{
 		}
 	}
 
+	/**
+	 *
+	 * @param out
+	 * @param gameState
+	 */
 	@Override
 	public void enter(ActorRef out, GameState gameState) {
 		System.out.println("Entering UnitAttackState");
@@ -103,20 +129,11 @@ public class UnitAttackState extends State{
         }
 	}
 
-	@Override
-	public void exit(ActorRef out, GameState gameState) {
-		
-		if(gameState.currentTurn==Turn.AI)
-		{
-			if(nextState==null)
-			{
-				nextState=new EndTurnState();
-			}
-		}
-		
-	}
-
-
+	/**
+	 *
+	 * @param out
+	 * @param gameState
+	 */
 	private void getUnitOnTileAttack(ActorRef out, GameState gameState)
 	{
 		//Attack animation

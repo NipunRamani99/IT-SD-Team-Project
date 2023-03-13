@@ -10,13 +10,22 @@ import structures.statemachine.State;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * CastSpellAction creates the state change required to cast a spell card.
+ */
 public class CastSpellAction implements AiAction{
 
 	public CastSpellAction()
 	{
 
 	}
-	
+
+	/**
+	 *
+	 * @param card
+	 * @param gameState
+	 * @return
+	 */
 	private Tile getSpellTile(Card card,GameState gameState)
 	{
 		Tile tile = null;
@@ -31,8 +40,15 @@ public class CastSpellAction implements AiAction{
 		}
 		return tile;
 	}
-	
-    @Override
+
+	/**
+	 * This method generates the state change required to cast a spell which is present in the deck.
+	 * It will find the first spell in the deck which can be cast on the board and find an appropriate tile based on the spell name.
+	 *
+	 * @param gameState
+	 * @return CardSelectedState
+	 */
+	@Override
     public State processAction(GameState gameState) {
     	List<Card> cards=gameState.board.getAiCards();
     	Optional<Card> card = cards.stream().filter(c -> {
