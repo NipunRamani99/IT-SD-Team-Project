@@ -100,7 +100,7 @@ public abstract class State {
 
 ```
 
-To give an example of how the State class is used, when the player clicks on a unit, the state of the GameStateMachine will transition from NoSelectionState to UnitMovingState which will highlight the tiles of the board according to the abilities of the unit selected.
+To give an example of how the State class is used, when the player clicks on a unit, the state of the GameStateMachine will transition from NoSelectionState to UnitSelectedState which will highlight the tiles of the board according to the abilities of the unit selected.
 
 
 
