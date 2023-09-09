@@ -17,7 +17,9 @@ After the server starts, the game can be played from any web browser by accessin
 The player can move the units on the board and order it to attack enemy units.
 
 <img src="https://github.com/NipunRamani99/IT-SD-Team-Project/blob/main/media/player_move_attack.gif?raw=true" width="60%" height="60%" />
-### Units and Spells
+
+### Units and Spells  
+
 The player can use a variety of cards which can be used deploy units or cast spells with special abilities.
 <img src="https://github.com/NipunRamani99/IT-SD-Team-Project/blob/main/media/unit_spell_use.gif?raw=true" width="60%" height="60%" />
 
